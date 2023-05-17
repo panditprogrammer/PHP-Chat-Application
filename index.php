@@ -1,9 +1,20 @@
 <?php
- require_once "core/init.php";
+require_once "core/init.php";
+if (!$userObject->isLoggedIn()) {
+    $userObject->redirect("login.php");
+}
 
- $user = $userObject->getUserById();
+$user = $userObject->getUserById();
+if (isset($_GET['username']) && !empty($_GET['username'])) {
+    $userProfileData = $userObject->getUserByUsername($_GET['username']);
+
+    if (!$userProfileData) {
+        $userObject->redirect("index.php");
+    }
+}
+
 ?>
- <!doctype html>
+<!doctype html>
 <html lang="en">
 
 <head>
@@ -35,16 +46,15 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet">
 </head>
 
-<body>
-
+<body oncontextmenu="return false;">
 
     <div class="layout-wrapper d-lg-flex">
-
+        
         <!-- Start left sidebar-menu -->
         <div class="side-menu flex-lg-column me-lg-1 ms-lg-0">
             <!-- LOGO -->
             <div class="navbar-brand-box">
-                <a href="index.php" class="logo logo-dark">
+                <a href="<?php echo ROOT_URL; ?>" class="logo logo-dark">
                     <span class="logo-sm">
                         <img src="assets/images/logo.svg" alt="" height="30">
                     </span>
@@ -63,12 +73,12 @@
                 <ul class="nav nav-pills side-menu-nav justify-content-center" role="tablist">
                     <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Profile">
                         <a class="nav-link" id="pills-user-tab" data-bs-toggle="pill" href="#pills-user" role="tab">
-                        <i class="ri-account-circle-line"></i>
+                            <i class="ri-account-circle-line"></i>
                         </a>
                     </li>
                     <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Chats">
                         <a class="nav-link active" id="pills-chat-tab" data-bs-toggle="pill" href="#pills-chat" role="tab">
-                        <i class="ri-chat-1-line"></i>
+                            <i class="ri-chat-1-line"></i>
                         </a>
                     </li>
                     <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Groups">
@@ -78,7 +88,7 @@
                     </li>
                     <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Contacts">
                         <a class="nav-link" id="pills-contacts-tab" data-bs-toggle="pill" href="#pills-contacts" role="tab">
-                        <i class="ri-contacts-book-line"></i>
+                            <i class="ri-contacts-book-line"></i>
                         </a>
                     </li>
                     <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Settings">
@@ -87,12 +97,12 @@
                         </a>
                     </li>
                     <li class="nav-item dropdown profile-user-dropdown d-inline-block d-lg-none">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img src="assets/images/users/default-user.png" alt="" class="profile-user rounded-circle">
+                        <a class="nav-link dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img src="assets/images/users/<?php echo $user->profileImg; ?>" alt="" class="profile-user rounded-circle">
                         </a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Profile <i class="ri-account-circle-line float-end text-muted"></i></a>
-                            <a class="dropdown-item" href="#">Setting <i class="ri-settings-3-line float-end text-muted"></i></a>
+                            <a class="dropdown-item" href="javascript: void(0);">Profile <i class="ri-account-circle-line float-end text-muted"></i></a>
+                            <a class="dropdown-item" href="javascript: void(0);">Setting <i class="ri-settings-3-line float-end text-muted"></i></a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="logout.php">Log out <i class="ri-logout-circle-r-line float-end text-danger"></i></a>
                         </div>
@@ -104,18 +114,18 @@
             <div class="flex-lg-column d-none d-lg-block">
                 <ul class="nav side-menu-nav justify-content-center">
                     <li class="nav-item">
-                        <a class="nav-link light-dark-mode" href="#" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="right" title="Dark / Light Mode">
-                        <i class="ri-contrast-2-line"></i>
+                        <a class="nav-link light-dark-mode" href="javascript: void(0);" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="right" title="Dark / Light Mode">
+                            <i class="ri-contrast-2-line"></i>
                         </a>
                     </li>
 
                     <li class="nav-item btn-group dropup profile-user-dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img src="assets/images/users/default-user.png" alt="" class="profile-user rounded-circle">
+                        <a class="nav-link dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img src="assets/images/users/<?php echo $user->profileImg; ?>" alt="" class="profile-user rounded-circle">
                         </a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Profile <i class="ri-account-circle-line float-end text-muted"></i></a>
-                            <a class="dropdown-item" href="#">Setting <i class="ri-settings-3-line float-end text-muted"></i></a>
+                            <a class="dropdown-item" href="javascript: void(0);">Profile <i class="ri-account-circle-line float-end text-muted"></i></a>
+                            <a class="dropdown-item" href="javascript: void(0);">Setting <i class="ri-settings-3-line float-end text-muted"></i></a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="logout.php">Log out <i class="ri-logout-circle-r-line float-end text-danger"></i></a>
                         </div>
@@ -137,14 +147,14 @@
                         <div class="px-4 pt-4">
                             <div class="user-chat-nav float-end">
                                 <div class="dropdown">
-                                    <a href="#" class="font-size-18 text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a href="javascript: void(0);" class="font-size-18 text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="ri-more-2-fill"></i>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-end">
-                                        <a class="dropdown-item" href="#">Edit</a>
-                                        <a class="dropdown-item" href="#">Action</a>
+                                        <a class="dropdown-item" href="javascript: void(0);">Edit</a>
+                                        <a class="dropdown-item" href="javascript: void(0);">Action</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">Another action</a>
+                                        <a class="dropdown-item" href="javascript: void(0);">Another action</a>
                                     </div>
                                 </div>
                             </div>
@@ -153,10 +163,10 @@
 
                         <div class="text-center p-4 border-bottom">
                             <div class="mb-4">
-                                <img src="assets/images/users/default-user.png" class="rounded-circle avatar-lg img-thumbnail" alt="">
+                                <img src="assets/images/users/<?php echo $user->profileImg; ?>" class="rounded-circle avatar-lg img-thumbnail" alt="">
                             </div>
 
-                            <h5 class="font-size-16 mb-1 text-truncate">Patricia Smith</h5>
+                            <h5 class="font-size-16 mb-1 text-truncate"><?php echo $user->name; ?></h5>
                             <p class="text-muted text-truncate mb-1"><i class="ri-record-circle-fill font-size-10 text-success me-1 ms-0 d-inline-block"></i> Active</p>
                         </div>
                         <!-- End profile user -->
@@ -181,12 +191,12 @@
                                         <div class="accordion-body">
                                             <div>
                                                 <p class="text-muted mb-1">Name</p>
-                                                <h5 class="font-size-14">Patricia Smith</h5>
+                                                <h5 class="font-size-14"><?php echo $user->name; ?></h5>
                                             </div>
 
                                             <div class="mt-4">
                                                 <p class="text-muted mb-1">Email</p>
-                                                <h5 class="font-size-14">adc@123.com</h5>
+                                                <h5 class="font-size-14"><?php echo $user->email; ?></h5>
                                             </div>
 
                                             <div class="mt-4">
@@ -230,19 +240,19 @@
                                                     <div class="ms-4 me-0">
                                                         <ul class="list-inline mb-0 font-size-18">
                                                             <li class="list-inline-item">
-                                                                <a href="#" class="text-muted px-1">
+                                                                <a href="javascript: void(0);" class="text-muted px-1">
                                                                     <i class="ri-download-2-line"></i>
                                                                 </a>
                                                             </li>
                                                             <li class="list-inline-item dropdown">
-                                                                <a class="dropdown-toggle text-muted px-1" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <a class="dropdown-toggle text-muted px-1" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                     <i class="ri-more-fill"></i>
                                                                 </a>
                                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                                    <a class="dropdown-item" href="#">Action</a>
-                                                                    <a class="dropdown-item" href="#">Another action</a>
+                                                                    <a class="dropdown-item" href="javascript: void(0);">Action</a>
+                                                                    <a class="dropdown-item" href="javascript: void(0);">Another action</a>
                                                                     <div class="dropdown-divider"></div>
-                                                                    <a class="dropdown-item" href="#">Delete</a>
+                                                                    <a class="dropdown-item" href="javascript: void(0);">Delete</a>
                                                                 </div>
                                                             </li>
                                                         </ul>
@@ -267,19 +277,19 @@
                                                     <div class="ms-4 me-0">
                                                         <ul class="list-inline mb-0 font-size-18">
                                                             <li class="list-inline-item">
-                                                                <a href="#" class="text-muted px-1">
+                                                                <a href="javascript: void(0);" class="text-muted px-1">
                                                                     <i class="ri-download-2-line"></i>
                                                                 </a>
                                                             </li>
                                                             <li class="list-inline-item dropdown">
-                                                                <a class="dropdown-toggle text-muted px-1" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <a class="dropdown-toggle text-muted px-1" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                     <i class="ri-more-fill"></i>
                                                                 </a>
                                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                                    <a class="dropdown-item" href="#">Action</a>
-                                                                    <a class="dropdown-item" href="#">Another action</a>
+                                                                    <a class="dropdown-item" href="javascript: void(0);">Action</a>
+                                                                    <a class="dropdown-item" href="javascript: void(0);">Another action</a>
                                                                     <div class="dropdown-divider"></div>
-                                                                    <a class="dropdown-item" href="#">Delete</a>
+                                                                    <a class="dropdown-item" href="javascript: void(0);">Delete</a>
                                                                 </div>
                                                             </li>
                                                         </ul>
@@ -304,19 +314,19 @@
                                                     <div class="ms-4 me-0">
                                                         <ul class="list-inline mb-0 font-size-18">
                                                             <li class="list-inline-item">
-                                                                <a href="#" class="text-muted px-1">
+                                                                <a href="javascript: void(0);" class="text-muted px-1">
                                                                     <i class="ri-download-2-line"></i>
                                                                 </a>
                                                             </li>
                                                             <li class="list-inline-item dropdown">
-                                                                <a class="dropdown-toggle text-muted px-1" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <a class="dropdown-toggle text-muted px-1" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                     <i class="ri-more-fill"></i>
                                                                 </a>
                                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                                    <a class="dropdown-item" href="#">Action</a>
-                                                                    <a class="dropdown-item" href="#">Another action</a>
+                                                                    <a class="dropdown-item" href="javascript: void(0);">Action</a>
+                                                                    <a class="dropdown-item" href="javascript: void(0);">Another action</a>
                                                                     <div class="dropdown-divider"></div>
-                                                                    <a class="dropdown-item" href="#">Delete</a>
+                                                                    <a class="dropdown-item" href="javascript: void(0);">Delete</a>
                                                                 </div>
                                                             </li>
                                                         </ul>
@@ -341,19 +351,19 @@
                                                     <div class="ms-4 me-0">
                                                         <ul class="list-inline mb-0 font-size-18">
                                                             <li class="list-inline-item">
-                                                                <a href="#" class="text-muted px-1">
+                                                                <a href="javascript: void(0);" class="text-muted px-1">
                                                                     <i class="ri-download-2-line"></i>
                                                                 </a>
                                                             </li>
                                                             <li class="list-inline-item dropdown">
-                                                                <a class="dropdown-toggle text-muted px-1" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <a class="dropdown-toggle text-muted px-1" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                     <i class="ri-more-fill"></i>
                                                                 </a>
                                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                                    <a class="dropdown-item" href="#">Action</a>
-                                                                    <a class="dropdown-item" href="#">Another action</a>
+                                                                    <a class="dropdown-item" href="javascript: void(0);">Action</a>
+                                                                    <a class="dropdown-item" href="javascript: void(0);">Another action</a>
                                                                     <div class="dropdown-divider"></div>
-                                                                    <a class="dropdown-item" href="#">Delete</a>
+                                                                    <a class="dropdown-item" href="javascript: void(0);">Delete</a>
                                                                 </div>
                                                             </li>
                                                         </ul>
@@ -395,7 +405,7 @@
 
                             <div class="owl-carousel owl-theme" id="user-status-carousel">
                                 <div class="item">
-                                    <a href="#" class="user-status-box">
+                                    <a href="javascript: void(0);" class="user-status-box">
                                         <div class="avatar-xs mx-auto d-block chat-user-img online">
                                             <img src="assets/images/users/avatar-2.jpg" alt="user-img" class="img-fluid rounded-circle">
                                             <span class="user-status"></span>
@@ -405,7 +415,7 @@
                                     </a>
                                 </div>
                                 <div class="item">
-                                    <a href="#" class="user-status-box">
+                                    <a href="javascript: void(0);" class="user-status-box">
                                         <div class="avatar-xs mx-auto d-block chat-user-img online">
                                             <img src="assets/images/users/avatar-4.jpg" alt="user-img" class="img-fluid rounded-circle">
                                             <span class="user-status"></span>
@@ -416,7 +426,7 @@
                                 </div>
 
                                 <div class="item">
-                                    <a href="#" class="user-status-box">
+                                    <a href="javascript: void(0);" class="user-status-box">
                                         <div class="avatar-xs mx-auto d-block chat-user-img online">
                                             <img src="assets/images/users/avatar-5.jpg" alt="user-img" class="img-fluid rounded-circle">
                                             <span class="user-status"></span>
@@ -427,7 +437,7 @@
                                 </div>
 
                                 <div class="item">
-                                    <a href="#" class="user-status-box">
+                                    <a href="javascript: void(0);" class="user-status-box">
                                         <div class="avatar-xs mx-auto d-block chat-user-img online">
                                             <img src="assets/images/users/avatar-6.jpg" alt="user-img" class="img-fluid rounded-circle">
                                             <span class="user-status"></span>
@@ -438,7 +448,7 @@
                                 </div>
 
                                 <div class="item">
-                                    <a href="#" class="user-status-box">
+                                    <a href="javascript: void(0);" class="user-status-box">
                                         <div class="avatar-xs mx-auto d-block chat-user-img online">
                                             <span class="avatar-title rounded-circle bg-primary-subtle text-primary">
                                                 T
@@ -462,8 +472,11 @@
                             <div class="chat-message-list px-2" data-simplebar>
 
                                 <ul class="list-unstyled chat-list chat-user-list">
-                                    <li>
-                                        <a href="#">
+                                    <?php $userObject->getAllUsers(); ?>
+
+                                    <!--
+                                         <li>
+                                        <a href="javascript: void(0);">
                                             <div class="d-flex">
                                                 <div class="chat-user-img online align-self-center me-3 ms-0">
                                                     <img src="assets/images/users/avatar-2.jpg" class="rounded-circle avatar-xs" alt="">
@@ -478,9 +491,11 @@
                                             </div>
                                         </a>
                                     </li>
+                                 -->
 
-                                    <li class="unread">
-                                        <a href="#">
+
+                                    <!-- <li class="unread">
+                                        <a href="javascript: void(0);">
                                             <div class="d-flex">
                                                 <div class="chat-user-img away align-self-center me-3 ms-0">
                                                     <img src="assets/images/users/avatar-3.jpg" class="rounded-circle avatar-xs" alt="">
@@ -499,7 +514,7 @@
                                     </li>
 
                                     <li>
-                                        <a href="#">
+                                        <a href="javascript: void(0);">
                                             <div class="d-flex">
                                                 <div class="chat-user-img align-self-center me-3 ms-0">
                                                     <div class="avatar-xs">
@@ -518,7 +533,7 @@
                                     </li>
 
                                     <li class="active">
-                                        <a href="#">
+                                        <a href="javascript: void(0);">
                                             <div class="d-flex">
                                                 <div class="chat-user-img online align-self-center me-3 ms-0">
                                                     <img src="assets/images/users/avatar-4.jpg" class="rounded-circle avatar-xs" alt="">
@@ -532,8 +547,9 @@
                                             </div>
                                         </a>
                                     </li>
+
                                     <li class="unread">
-                                        <a href="#">
+                                        <a href="javascript: void(0);">
                                             <div class="d-flex">
                                                 <div class="chat-user-img align-self-center me-3 ms-0">
                                                     <div class="avatar-xs">
@@ -553,8 +569,9 @@
                                             </div>
                                         </a>
                                     </li>
+
                                     <li>
-                                        <a href="#">
+                                        <a href="javascript: void(0);">
                                             <div class="d-flex">
                                                 <div class="chat-user-img away align-self-center me-3 ms-0">
                                                     <img src="assets/images/users/avatar-6.jpg" class="rounded-circle avatar-xs" alt="">
@@ -568,8 +585,9 @@
                                             </div>
                                         </a>
                                     </li>
+
                                     <li class="typing">
-                                        <a href="#">
+                                        <a href="javascript: void(0);">
                                             <div class="d-flex">
                                                 <div class="chat-user-img align-self-center online me-3 ms-0">
                                                     <div class="avatar-xs">
@@ -593,7 +611,7 @@
                                     </li>
 
                                     <li>
-                                        <a href="#">
+                                        <a href="javascript: void(0);">
                                             <div class="d-flex">
                                                 <div class="chat-user-img align-self-center online me-3 ms-0">
                                                     <div class="avatar-xs">
@@ -611,8 +629,9 @@
                                             </div>
                                         </a>
                                     </li>
+
                                     <li>
-                                        <a href="#">
+                                        <a href="javascript: void(0);">
                                             <div class="d-flex">
                                                 <div class="chat-user-img away align-self-center me-3 ms-0">
                                                     <img src="assets/images/users/avatar-7.jpg" class="rounded-circle avatar-xs" alt="">
@@ -626,8 +645,9 @@
                                             </div>
                                         </a>
                                     </li>
+
                                     <li>
-                                        <a href="#">
+                                        <a href="javascript: void(0);">
                                             <div class="d-flex">
                                                 <div class="chat-user-img align-self-center online me-3 ms-0">
                                                     <div class="avatar-xs">
@@ -645,8 +665,9 @@
                                             </div>
                                         </a>
                                     </li>
+
                                     <li>
-                                        <a href="#">
+                                        <a href="javascript: void(0);">
                                             <div class="d-flex">
                                                 <div class="chat-user-img away align-self-center me-3 ms-0">
                                                     <img src="assets/images/users/avatar-8.jpg" class="rounded-circle avatar-xs" alt="">
@@ -660,8 +681,9 @@
                                             </div>
                                         </a>
                                     </li>
+
                                     <li>
-                                        <a href="#">
+                                        <a href="javascript: void(0);">
                                             <div class="d-flex">
                                                 <div class="chat-user-img align-self-center online me-3 ms-0">
                                                     <div class="avatar-xs">
@@ -678,7 +700,7 @@
                                                 <div class="font-size-11">11/07</div>
                                             </div>
                                         </a>
-                                    </li>
+                                    </li> -->
                                 </ul>
                             </div>
                         </div>
@@ -941,7 +963,7 @@
 
                             <ul class="list-unstyled chat-list">
                                 <li>
-                                    <a href="#">
+                                    <a href="javascript: void(0);">
                                         <div class="d-flex align-items-center">
                                             <div class="chat-user-img me-3 ms-0">
                                                 <div class="avatar-xs">
@@ -958,7 +980,7 @@
                                 </li>
 
                                 <li>
-                                    <a href="#">
+                                    <a href="javascript: void(0);">
                                         <div class="d-flex align-items-center">
                                             <div class="chat-user-img me-3 ms-0">
                                                 <div class="avatar-xs">
@@ -975,7 +997,7 @@
                                 </li>
 
                                 <li>
-                                    <a href="#">
+                                    <a href="javascript: void(0);">
                                         <div class="d-flex align-items-center">
                                             <div class="chat-user-img me-3 ms-0">
                                                 <div class="avatar-xs">
@@ -992,7 +1014,7 @@
                                 </li>
 
                                 <li>
-                                    <a href="#">
+                                    <a href="javascript: void(0);">
                                         <div class="d-flex align-items-center">
                                             <div class="chat-user-img me-3 ms-0">
                                                 <div class="avatar-xs">
@@ -1010,7 +1032,7 @@
                                 </li>
 
                                 <li>
-                                    <a href="#">
+                                    <a href="javascript: void(0);">
                                         <div class="d-flex align-items-center">
                                             <div class="chat-user-img me-3 ms-0">
                                                 <div class="avatar-xs">
@@ -1027,7 +1049,7 @@
                                 </li>
 
                                 <li>
-                                    <a href="#">
+                                    <a href="javascript: void(0);">
                                         <div class="d-flex align-items-center">
                                             <div class="chat-user-img me-3 ms-0">
                                                 <div class="avatar-xs">
@@ -1124,13 +1146,13 @@
                                                 <h5 class="font-size-14 m-0">Albert Rodarte</h5>
                                             </div>
                                             <div class="dropdown">
-                                                <a href="#" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="javascript: void(0);" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="#">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Block <i class="ri-forbid-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Block <i class="ri-forbid-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1142,13 +1164,13 @@
                                                 <h5 class="font-size-14 m-0">Allison Etter</h5>
                                             </div>
                                             <div class="dropdown">
-                                                <a href="#" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="javascript: void(0);" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="#">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Block <i class="ri-forbid-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Block <i class="ri-forbid-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1169,13 +1191,13 @@
                                                 <h5 class="font-size-14 m-0">Craig Smiley</h5>
                                             </div>
                                             <div class="dropdown">
-                                                <a href="#" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="javascript: void(0);" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="#">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Block <i class="ri-forbid-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Block <i class="ri-forbid-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1196,13 +1218,13 @@
                                                 <h5 class="font-size-14 m-0">Daniel Clay</h5>
                                             </div>
                                             <div class="dropdown">
-                                                <a href="#" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="javascript: void(0);" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="#">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Block <i class="ri-forbid-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Block <i class="ri-forbid-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1215,13 +1237,13 @@
                                             </div>
 
                                             <div class="dropdown">
-                                                <a href="#" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="javascript: void(0);" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="#">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Block <i class="ri-forbid-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Block <i class="ri-forbid-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1244,13 +1266,13 @@
                                                 <h5 class="font-size-14 m-0">Iris Wells</h5>
                                             </div>
                                             <div class="dropdown">
-                                                <a href="#" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="javascript: void(0);" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="#">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Block <i class="ri-forbid-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Block <i class="ri-forbid-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1271,13 +1293,13 @@
                                                 <h5 class="font-size-14 m-0">Juan Flakes</h5>
                                             </div>
                                             <div class="dropdown">
-                                                <a href="#" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="javascript: void(0);" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="#">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Block <i class="ri-forbid-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Block <i class="ri-forbid-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1289,13 +1311,13 @@
                                                 <h5 class="font-size-14 m-0">John Hall</h5>
                                             </div>
                                             <div class="dropdown">
-                                                <a href="#" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="javascript: void(0);" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="#">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Block <i class="ri-forbid-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Block <i class="ri-forbid-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1307,13 +1329,13 @@
                                                 <h5 class="font-size-14 m-0">Joy Southern</h5>
                                             </div>
                                             <div class="dropdown">
-                                                <a href="#" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="javascript: void(0);" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="#">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Block <i class="ri-forbid-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Block <i class="ri-forbid-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1334,13 +1356,13 @@
                                                 <h5 class="font-size-14 m-0">Mary Farmer</h5>
                                             </div>
                                             <div class="dropdown">
-                                                <a href="#" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="javascript: void(0);" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="#">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Block <i class="ri-forbid-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Block <i class="ri-forbid-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1351,13 +1373,13 @@
                                                 <h5 class="font-size-14 m-0">Mark Messer</h5>
                                             </div>
                                             <div class="dropdown">
-                                                <a href="#" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="javascript: void(0);" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="#">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Block <i class="ri-forbid-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Block <i class="ri-forbid-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1370,13 +1392,13 @@
                                             </div>
 
                                             <div class="dropdown">
-                                                <a href="#" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="javascript: void(0);" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="#">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Block <i class="ri-forbid-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Block <i class="ri-forbid-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1398,13 +1420,13 @@
                                                 <h5 class="font-size-14 m-0">Ossie Wilson</h5>
                                             </div>
                                             <div class="dropdown">
-                                                <a href="#" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="javascript: void(0);" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="#">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Block <i class="ri-forbid-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Block <i class="ri-forbid-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1427,13 +1449,13 @@
                                             </div>
 
                                             <div class="dropdown">
-                                                <a href="#" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="javascript: void(0);" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="#">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Block <i class="ri-forbid-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Block <i class="ri-forbid-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1445,13 +1467,13 @@
                                             </div>
 
                                             <div class="dropdown">
-                                                <a href="#" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="javascript: void(0);" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="#">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Block <i class="ri-forbid-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Block <i class="ri-forbid-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1474,13 +1496,13 @@
                                             </div>
 
                                             <div class="dropdown">
-                                                <a href="#" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="javascript: void(0);" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="#">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Block <i class="ri-forbid-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Block <i class="ri-forbid-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1503,13 +1525,13 @@
                                             </div>
 
                                             <div class="dropdown">
-                                                <a href="#" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="javascript: void(0);" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="#">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Block <i class="ri-forbid-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Block <i class="ri-forbid-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1521,13 +1543,13 @@
                                             </div>
 
                                             <div class="dropdown">
-                                                <a href="#" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="javascript: void(0);" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="#">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Block <i class="ri-forbid-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Block <i class="ri-forbid-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1539,13 +1561,13 @@
                                             </div>
 
                                             <div class="dropdown">
-                                                <a href="#" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a href="javascript: void(0);" class="text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a class="dropdown-item" href="#">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Block <i class="ri-forbid-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Block <i class="ri-forbid-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Remove <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1571,21 +1593,21 @@
 
                         <div class="text-center border-bottom p-4">
                             <div class="mb-4 profile-user">
-                                <img src="assets/images/users/default-user.png" class="rounded-circle avatar-lg img-thumbnail" alt="">
+                                <img src="assets/images/users/<?php echo $user->profileImg; ?>" class="rounded-circle avatar-lg img-thumbnail" alt="">
                                 <button type="button" class="btn btn-light bg-light avatar-xs p-0 rounded-circle profile-photo-edit">
                                     <i class="ri-pencil-fill"></i>
                                 </button>
                             </div>
 
-                            <h5 class="font-size-16 mb-1 text-truncate">Patricia Smith</h5>
+                            <h5 class="font-size-16 mb-1 text-truncate"><?php echo $user->name; ?></h5>
                             <div class="dropdown d-inline-block mb-1">
-                                <a class="text-muted dropdown-toggle pb-1 d-block" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a class="text-muted dropdown-toggle pb-1 d-block" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Available <i class="mdi mdi-chevron-down"></i>
                                 </a>
 
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Available</a>
-                                    <a class="dropdown-item" href="#">Busy</a>
+                                    <a class="dropdown-item" href="javascript: void(0);">Available</a>
+                                    <a class="dropdown-item" href="javascript: void(0);">Busy</a>
                                 </div>
                             </div>
                         </div>
@@ -1608,12 +1630,12 @@
 
                                             <div>
                                                 <p class="text-muted mb-1">Name</p>
-                                                <h5 class="font-size-14">Patricia Smith</h5>
+                                                <h5 class="font-size-14"><?php echo $user->name; ?></h5>
                                             </div>
 
                                             <div class="mt-4">
                                                 <p class="text-muted mb-1">Email</p>
-                                                <h5 class="font-size-14">adc@123.com</h5>
+                                                <h5 class="font-size-14"><?php echo $user->email; ?></h5>
                                             </div>
 
                                             <div class="mt-4">
@@ -1648,9 +1670,9 @@
                                                             Everyone <i class="mdi mdi-chevron-down"></i>
                                                         </button>
                                                         <div class="dropdown-menu dropdown-menu-end">
-                                                            <a class="dropdown-item" href="#">Everyone</a>
-                                                            <a class="dropdown-item" href="#">selected</a>
-                                                            <a class="dropdown-item" href="#">Nobody</a>
+                                                            <a class="dropdown-item" href="javascript: void(0);">Everyone</a>
+                                                            <a class="dropdown-item" href="javascript: void(0);">selected</a>
+                                                            <a class="dropdown-item" href="javascript: void(0);">Nobody</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1680,9 +1702,9 @@
                                                             Everyone <i class="mdi mdi-chevron-down"></i>
                                                         </button>
                                                         <div class="dropdown-menu dropdown-menu-end">
-                                                            <a class="dropdown-item" href="#">Everyone</a>
-                                                            <a class="dropdown-item" href="#">selected</a>
-                                                            <a class="dropdown-item" href="#">Nobody</a>
+                                                            <a class="dropdown-item" href="javascript: void(0);">Everyone</a>
+                                                            <a class="dropdown-item" href="javascript: void(0);">selected</a>
+                                                            <a class="dropdown-item" href="javascript: void(0);">Nobody</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1713,9 +1735,9 @@
                                                             Everyone <i class="mdi mdi-chevron-down"></i>
                                                         </button>
                                                         <div class="dropdown-menu dropdown-menu-end">
-                                                            <a class="dropdown-item" href="#">Everyone</a>
-                                                            <a class="dropdown-item" href="#">selected</a>
-                                                            <a class="dropdown-item" href="#">Nobody</a>
+                                                            <a class="dropdown-item" href="javascript: void(0);">Everyone</a>
+                                                            <a class="dropdown-item" href="javascript: void(0);">selected</a>
+                                                            <a class="dropdown-item" href="javascript: void(0);">Nobody</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1759,13 +1781,13 @@
                                     <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="help1" data-bs-parent="#settingprofile">
                                         <div class="accordion-body">
                                             <div class="py-3">
-                                                <h5 class="font-size-13 mb-0"><a href="#" class="text-body d-block">FAQs</a></h5>
+                                                <h5 class="font-size-13 mb-0"><a href="javascript: void(0);" class="text-body d-block">FAQs</a></h5>
                                             </div>
                                             <div class="py-3 border-top">
-                                                <h5 class="font-size-13 mb-0"><a href="#" class="text-body d-block">Contact</a></h5>
+                                                <h5 class="font-size-13 mb-0"><a href="javascript: void(0);" class="text-body d-block">Contact</a></h5>
                                             </div>
                                             <div class="py-3 border-top">
-                                                <h5 class="font-size-13 mb-0"><a href="#" class="text-body d-block">Terms & Privacy policy</a></h5>
+                                                <h5 class="font-size-13 mb-0"><a href="javascript: void(0);" class="text-body d-block">Terms & Privacy policy</a></h5>
                                             </div>
                                         </div>
                                     </div>
@@ -1784,8 +1806,17 @@
         </div>
         <!-- end chat-leftsidebar -->
 
+
+        <?php
+        if (isset($_GET['username'])) {
+            $clickedUser = null;
+        } else {
+            $clickedUser = "disabled";
+        }
+        ?>
+
         <!-- Start User chat -->
-        <div class="user-chat w-100 overflow-hidden">
+        <div class="user-chat <?php !$clickedUser ? print("user-chat-show") : ""; ?> w-100 overflow-hidden">
             <div class="d-lg-flex">
 
                 <!-- start chat conversation section -->
@@ -1795,13 +1826,16 @@
                             <div class="col-sm-4 col-8">
                                 <div class="d-flex align-items-center">
                                     <div class="d-block d-lg-none me-2 ms-0">
-                                        <a href="javascript: void(0);" class="user-chat-remove text-muted font-size-16 p-2"><i class="ri-arrow-left-s-line"></i></a>
+                                        <a href="<?php echo ROOT_URL; ?>" class="user-chat-remove text-muted font-size-16 p-2"><i class="ri-arrow-left-s-line"></i></a>
                                     </div>
                                     <div class="me-3 ms-0">
-                                        <img src="assets/images/users/avatar-4.jpg" class="rounded-circle avatar-xs" alt="">
+                                        <img src="assets/images/users/<?php !$clickedUser ? print($userProfileData->profileImg) : print("default-user.png"); ?>" class="rounded-circle avatar-xs" alt="">
                                     </div>
                                     <div class="flex-grow-1 overflow-hidden">
-                                        <h5 class="font-size-16 mb-0 text-truncate"><a href="#" class="text-reset user-profile-show">Doris Brown</a> <i class="ri-record-circle-fill font-size-10 text-success d-inline-block ms-1"></i></h5>
+                                        <h5 class="font-size-16 mb-0 text-truncate">
+                                            <a href="javascript:void(0)" class="text-reset user-profile-<?php !$clickedUser ? print("show") : print(""); ?>"><?php !$clickedUser ? print($userProfileData->username) : print(""); ?></a>
+                                            <i class="ri-record-circle-fill font-size-10 text-<?php !$clickedUser ? print("success") : print("secondary"); ?> d-inline-block ms-1"></i>
+                                        </h5>
                                     </div>
                                 </div>
                             </div>
@@ -1809,7 +1843,7 @@
                                 <ul class="list-inline user-chat-nav text-end mb-0">
                                     <li class="list-inline-item">
                                         <div class="dropdown">
-                                            <button class="btn nav-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <button class="btn nav-btn dropdown-toggle <?php echo $clickedUser ?>" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 <i class="ri-search-line"></i>
                                             </button>
                                             <div class="dropdown-menu p-0 dropdown-menu-end dropdown-menu-md">
@@ -1821,35 +1855,35 @@
                                     </li>
 
                                     <li class="list-inline-item d-none d-lg-inline-block me-2 ms-0">
-                                        <button type="button" class="btn nav-btn" data-bs-toggle="modal" data-bs-target="#audiocallModal">
+                                        <button type="button" class="btn nav-btn <?php echo $clickedUser ?>" data-bs-toggle="modal" data-bs-target="#audiocallModal">
                                             <i class="ri-phone-line"></i>
                                         </button>
                                     </li>
 
                                     <li class="list-inline-item d-none d-lg-inline-block me-2 ms-0">
-                                        <button type="button" class="btn nav-btn" data-bs-toggle="modal" data-bs-target="#videocallModal">
+                                        <button type="button" class="btn nav-btn <?php echo $clickedUser ?>" data-bs-toggle="modal" data-bs-target="#videocallModal">
                                             <i class="ri-vidicon-line"></i>
                                         </button>
                                     </li>
 
                                     <li class="list-inline-item d-none d-lg-inline-block me-2 ms-0">
-                                        <button type="button" class="btn nav-btn user-profile-show">
+                                        <button type="button" class="btn nav-btn user-profile-show <?php echo $clickedUser ?>">
                                             <i class="ri-user-line"></i>
                                         </button>
                                     </li>
 
                                     <li class="list-inline-item">
                                         <div class="dropdown">
-                                            <button class="btn nav-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <button class="btn nav-btn dropdown-toggle <?php echo $clickedUser ?>" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 <i class="ri-more-fill"></i>
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item d-block d-lg-none user-profile-show" href="#">View profile <i class="ri-user-1-line float-end text-muted"></i></a>
-                                                <a class="dropdown-item d-block d-lg-none" href="#" data-bs-toggle="modal" data-bs-target="#audiocallModal">Audio <i class="ri-phone-line float-end text-muted"></i></a>
-                                                <a class="dropdown-item d-block d-lg-none" href="#" data-bs-toggle="modal" data-bs-target="#videocallModal">Video <i class="ri-vidicon-line float-end text-muted"></i></a>
-                                                <a class="dropdown-item" href="#">Archive <i class="ri-archive-line float-end text-muted"></i></a>
-                                                <a class="dropdown-item" href="#">Muted <i class="ri-volume-mute-line float-end text-muted"></i></a>
-                                                <a class="dropdown-item" href="#">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                <a class="dropdown-item d-block d-lg-none user-profile-show" href="javascript: void(0);">View profile <i class="ri-user-1-line float-end text-muted"></i></a>
+                                                <a class="dropdown-item d-block d-lg-none" href="javascript: void(0);" data-bs-toggle="modal" data-bs-target="#audiocallModal">Audio <i class="ri-phone-line float-end text-muted"></i></a>
+                                                <a class="dropdown-item d-block d-lg-none" href="javascript: void(0);" data-bs-toggle="modal" data-bs-target="#videocallModal">Video <i class="ri-vidicon-line float-end text-muted"></i></a>
+                                                <a class="dropdown-item" href="javascript: void(0);">Archive <i class="ri-archive-line float-end text-muted"></i></a>
+                                                <a class="dropdown-item" href="javascript: void(0);">Muted <i class="ri-volume-mute-line float-end text-muted"></i></a>
+                                                <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                             </div>
                                         </div>
                                     </li>
@@ -1877,14 +1911,14 @@
                                                 <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:00</span></p>
                                             </div>
                                             <div class="dropdown align-self-start">
-                                                <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="#">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Save <i class="ri-save-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1896,7 +1930,7 @@
                             <li class="right">
                                 <div class="conversation-list">
                                     <div class="chat-avatar">
-                                        <img src="assets/images/users/default-user.png" alt="">
+                                        <img src="assets/images/users/<?php echo $user->profileImg; ?>" alt="">
                                     </div>
 
                                     <div class="user-chat-content">
@@ -1909,19 +1943,19 @@
                                             </div>
 
                                             <div class="dropdown align-self-start">
-                                                <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="#">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Save <i class="ri-save-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="conversation-name">Patricia Smith</div>
+                                        <div class="conversation-name"><?php echo $user->name; ?></div>
                                     </div>
                                 </div>
                             </li>
@@ -1948,14 +1982,14 @@
                                                 <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:05</span></p>
                                             </div>
                                             <div class="dropdown align-self-start">
-                                                <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="#">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Save <i class="ri-save-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1968,14 +2002,14 @@
                                                 <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:05</span></p>
                                             </div>
                                             <div class="dropdown align-self-start">
-                                                <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="#">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Save <i class="ri-save-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1989,7 +2023,7 @@
                             <li class="right">
                                 <div class="conversation-list">
                                     <div class="chat-avatar">
-                                        <img src="assets/images/users/default-user.png" alt="">
+                                        <img src="assets/images/users/<?php echo $user->profileImg; ?>" alt="">
                                     </div>
 
                                     <div class="user-chat-content">
@@ -2001,19 +2035,19 @@
                                                 <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:06</span></p>
                                             </div>
                                             <div class="dropdown align-self-start">
-                                                <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="#">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Save <i class="ri-save-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="conversation-name">Patricia Smith</div>
+                                        <div class="conversation-name"><?php echo $user->name; ?></div>
                                     </div>
 
                                 </div>
@@ -2044,14 +2078,14 @@
                                                                     </a>
                                                                 </li>
                                                                 <li class="list-inline-item dropdown">
-                                                                    <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                    <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                         <i class="ri-more-fill"></i>
                                                                     </a>
                                                                     <div class="dropdown-menu">
-                                                                        <a class="dropdown-item" href="#">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                                        <a class="dropdown-item" href="#">Save <i class="ri-save-line float-end text-muted"></i></a>
-                                                                        <a class="dropdown-item" href="#">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
-                                                                        <a class="dropdown-item" href="#">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                                        <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                                        <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                                        <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
+                                                                        <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                                     </div>
                                                                 </li>
                                                             </ul>
@@ -2072,14 +2106,14 @@
                                                                     </a>
                                                                 </li>
                                                                 <li class="list-inline-item dropdown">
-                                                                    <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                    <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                         <i class="ri-more-fill"></i>
                                                                     </a>
                                                                     <div class="dropdown-menu dropdown-menu-end">
-                                                                        <a class="dropdown-item" href="#">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                                        <a class="dropdown-item" href="#">Save <i class="ri-save-line float-end text-muted"></i></a>
-                                                                        <a class="dropdown-item" href="#">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
-                                                                        <a class="dropdown-item" href="#">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                                        <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                                        <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                                        <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
+                                                                        <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                                     </div>
                                                                 </li>
                                                             </ul>
@@ -2090,14 +2124,14 @@
                                             </div>
 
                                             <div class="dropdown align-self-start">
-                                                <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="#">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Save <i class="ri-save-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
 
@@ -2112,7 +2146,7 @@
                             <li class="right">
                                 <div class="conversation-list">
                                     <div class="chat-avatar">
-                                        <img src="assets/images/users/default-user.png" alt="">
+                                        <img src="assets/images/users/<?php echo $user->profileImg; ?>" alt="">
                                     </div>
 
                                     <div class="user-chat-content">
@@ -2140,12 +2174,12 @@
                                                                     </a>
                                                                 </div>
                                                                 <div class="dropdown">
-                                                                    <a class="dropdown-toggle text-muted" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                    <a class="dropdown-toggle text-muted" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                         <i class="ri-more-fill"></i>
                                                                     </a>
                                                                     <div class="dropdown-menu dropdown-menu-end">
-                                                                        <a class="dropdown-item" href="#">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                                        <a class="dropdown-item" href="#">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                                        <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                                        <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -2157,20 +2191,20 @@
                                             </div>
 
                                             <div class="dropdown align-self-start">
-                                                <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-more-2-fill"></i>
                                                 </a>
                                                 <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="#">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Save <i class="ri-save-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="#">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
+                                                    <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                 </div>
                                             </div>
 
                                         </div>
 
-                                        <div class="conversation-name">Patricia Smith</div>
+                                        <div class="conversation-name"><?php echo $user->name; ?></div>
                                     </div>
 
                                 </div>
@@ -2212,7 +2246,7 @@
                         <div class="row g-0">
 
                             <div class="col">
-                                <input type="text" class="form-control form-control-lg bg-light border-light" placeholder="Enter Message...">
+                                <input type="text" class="form-control form-control-lg bg-light border-light" <?php !$clickedUser ? print("") : print("disabled"); ?> placeholder="Enter Message...">
                             </div>
                             <div class="col-auto">
                                 <div class="chat-input-links ms-md-2 me-md-0">
@@ -2254,10 +2288,10 @@
 
                     <div class="text-center p-4 border-bottom">
                         <div class="mb-4">
-                            <img src="assets/images/users/avatar-4.jpg" class="rounded-circle avatar-lg img-thumbnail" alt="">
+                            <img src="assets/images/users/<?php !$clickedUser ? print($userProfileData->profileImg) : print("default-user.png"); ?>" class="rounded-circle avatar-lg img-thumbnail" alt="">
                         </div>
 
-                        <h5 class="font-size-16 mb-1 text-truncate">Doris Brown</h5>
+                        <h5 class="font-size-16 mb-1 text-truncate"><?php !$clickedUser ? print($userProfileData->username) : print(""); ?></h5>
                         <p class="text-muted text-truncate mb-1"><i class="ri-record-circle-fill font-size-10 text-success me-1 ms-0"></i> Active</p>
                     </div>
                     <!-- End profile user -->
@@ -2282,12 +2316,12 @@
                                     <div class="accordion-body">
                                         <div>
                                             <p class="text-muted mb-1">Name</p>
-                                            <h5 class="font-size-14">Doris Brown</h5>
+                                            <h5 class="font-size-14"><?php !$clickedUser ? print($userProfileData->name) : print(""); ?></h5>
                                         </div>
 
                                         <div class="mt-4">
                                             <p class="text-muted mb-1">Email</p>
-                                            <h5 class="font-size-14">adc@123.com</h5>
+                                            <h5 class="font-size-14"><?php !$clickedUser ? print($userProfileData->email) : print(""); ?></h5>
                                         </div>
 
                                         <div class="mt-4">
@@ -2330,19 +2364,19 @@
                                                 <div class="ms-4 me-0">
                                                     <ul class="list-inline mb-0 font-size-18">
                                                         <li class="list-inline-item">
-                                                            <a href="#" class="text-muted px-1">
+                                                            <a href="javascript: void(0);" class="text-muted px-1">
                                                                 <i class="ri-download-2-line"></i>
                                                             </a>
                                                         </li>
                                                         <li class="list-inline-item dropdown">
-                                                            <a class="dropdown-toggle text-muted px-1" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <a class="dropdown-toggle text-muted px-1" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                 <i class="ri-more-fill"></i>
                                                             </a>
                                                             <div class="dropdown-menu dropdown-menu-end">
-                                                                <a class="dropdown-item" href="#">Action</a>
-                                                                <a class="dropdown-item" href="#">Another action</a>
+                                                                <a class="dropdown-item" href="javascript: void(0);">Action</a>
+                                                                <a class="dropdown-item" href="javascript: void(0);">Another action</a>
                                                                 <div class="dropdown-divider"></div>
-                                                                <a class="dropdown-item" href="#">Delete</a>
+                                                                <a class="dropdown-item" href="javascript: void(0);">Delete</a>
                                                             </div>
                                                         </li>
                                                     </ul>
@@ -2367,19 +2401,19 @@
                                                 <div class="ms-4 me-0">
                                                     <ul class="list-inline mb-0 font-size-18">
                                                         <li class="list-inline-item">
-                                                            <a href="#" class="text-muted px-1">
+                                                            <a href="javascript: void(0);" class="text-muted px-1">
                                                                 <i class="ri-download-2-line"></i>
                                                             </a>
                                                         </li>
                                                         <li class="list-inline-item dropdown">
-                                                            <a class="dropdown-toggle text-muted px-1" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <a class="dropdown-toggle text-muted px-1" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                 <i class="ri-more-fill"></i>
                                                             </a>
                                                             <div class="dropdown-menu dropdown-menu-end">
-                                                                <a class="dropdown-item" href="#">Action</a>
-                                                                <a class="dropdown-item" href="#">Another action</a>
+                                                                <a class="dropdown-item" href="javascript: void(0);">Action</a>
+                                                                <a class="dropdown-item" href="javascript: void(0);">Another action</a>
                                                                 <div class="dropdown-divider"></div>
-                                                                <a class="dropdown-item" href="#">Delete</a>
+                                                                <a class="dropdown-item" href="javascript: void(0);">Delete</a>
                                                             </div>
                                                         </li>
                                                     </ul>
@@ -2404,19 +2438,19 @@
                                                 <div class="ms-4 me-0">
                                                     <ul class="list-inline mb-0 font-size-18">
                                                         <li class="list-inline-item">
-                                                            <a href="#" class="text-muted px-1">
+                                                            <a href="javascript: void(0);" class="text-muted px-1">
                                                                 <i class="ri-download-2-line"></i>
                                                             </a>
                                                         </li>
                                                         <li class="list-inline-item dropdown">
-                                                            <a class="dropdown-toggle text-muted px-1" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <a class="dropdown-toggle text-muted px-1" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                 <i class="ri-more-fill"></i>
                                                             </a>
                                                             <div class="dropdown-menu dropdown-menu-end">
-                                                                <a class="dropdown-item" href="#">Action</a>
-                                                                <a class="dropdown-item" href="#">Another action</a>
+                                                                <a class="dropdown-item" href="javascript: void(0);">Action</a>
+                                                                <a class="dropdown-item" href="javascript: void(0);">Another action</a>
                                                                 <div class="dropdown-divider"></div>
-                                                                <a class="dropdown-item" href="#">Delete</a>
+                                                                <a class="dropdown-item" href="javascript: void(0);">Delete</a>
                                                             </div>
                                                         </li>
                                                     </ul>
@@ -2441,19 +2475,19 @@
                                                 <div class="ms-4 me-0">
                                                     <ul class="list-inline mb-0 font-size-18">
                                                         <li class="list-inline-item">
-                                                            <a href="#" class="text-muted px-1">
+                                                            <a href="javascript: void(0);" class="text-muted px-1">
                                                                 <i class="ri-download-2-line"></i>
                                                             </a>
                                                         </li>
                                                         <li class="list-inline-item dropdown">
-                                                            <a class="dropdown-toggle text-muted px-1" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <a class="dropdown-toggle text-muted px-1" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                 <i class="ri-more-fill"></i>
                                                             </a>
                                                             <div class="dropdown-menu dropdown-menu-end">
-                                                                <a class="dropdown-item" href="#">Action</a>
-                                                                <a class="dropdown-item" href="#">Another action</a>
+                                                                <a class="dropdown-item" href="javascript: void(0);">Action</a>
+                                                                <a class="dropdown-item" href="javascript: void(0);">Another action</a>
                                                                 <div class="dropdown-divider"></div>
-                                                                <a class="dropdown-item" href="#">Delete</a>
+                                                                <a class="dropdown-item" href="javascript: void(0);">Delete</a>
                                                             </div>
                                                         </li>
                                                     </ul>
