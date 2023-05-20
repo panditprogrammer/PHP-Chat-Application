@@ -1,13 +1,19 @@
 <?php
 
+namespace MyApp;
+
+use PDO;
+
+
 class User
 {
-    public  $db, $userId;
+    public  $db, $userId, $sessionId;
     public function __construct()
     {
         $db = new Database();
         $this->db = $db->connect();
         $this->userId = $this->getId();
+        $this->sessionId = $this->getSessionId();
     }
 
     public function getId()
@@ -17,6 +23,11 @@ class User
         }
     }
 
+    // return logged in session id 
+    public function getSessionId()
+    {
+        return session_id();
+    }
 
     public function emailExist($email)
     {
@@ -108,6 +119,32 @@ class User
     {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE username = :username");
         $stmt->bindParam(":username", $username, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    }
+
+    public function updateSession()
+    {
+        $stmt = $this->db->prepare("UPDATE users SET sessionId = :sessionId WHERE id = :id");
+        $stmt->bindParam(":sessionId", $this->sessionId, PDO::PARAM_STR);
+        $stmt->bindParam(":id", $this->userId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function updateConnection($connectionId, $userId)
+    {
+        $current_timestamp = date("Y-m-d H:i:s");
+        $stmt = $this->db->prepare("UPDATE users SET connectionId = :connectionId , updated_on = :updated_on WHERE id = :id");
+        $stmt->bindParam(":connectionId", $connectionId, PDO::PARAM_STR);
+        $stmt->bindParam(":updated_on", $current_timestamp, PDO::PARAM_STR);
+        $stmt->bindParam(":id", $userId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function getUserBySession($sessionId)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE sessionId = :sessionId");
+        $stmt->bindParam(":sessionId", $sessionId, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_OBJ);
     }

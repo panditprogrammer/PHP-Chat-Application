@@ -4,24 +4,29 @@ if (!$userObject->isLoggedIn()) {
     $userObject->redirect("login.php");
 }
 
+$userObject->updateSession();
 $user = $userObject->getUserById();
+$userProfileData = null;
 if (isset($_GET['username']) && !empty($_GET['username'])) {
+    $currentUser = $_GET['username'];
     $userProfileData = $userObject->getUserByUsername($_GET['username']);
 
     if (!$userProfileData) {
+        $userObject->redirect("index.php/$currentUser");
+    } else if ($userProfileData->username === $user->username) {
         $userObject->redirect("index.php");
     }
 }
+
 
 ?>
 <!doctype html>
 <html lang="en">
 
 <head>
-
     <meta charset="utf-8" />
     <title><?php echo SITE_NAME; ?> | Pandit Programmer</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta content="Responsive Bootstrap 4 Chat App" name="description" />
     <meta content="Themesbrand" name="author" />
     <!-- App favicon -->
@@ -44,12 +49,41 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
     <!-- remixicon  -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet">
+
+    <!-- fontawesome   -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- custom css  -->
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
-<body oncontextmenu="return false;">
+<style>
+    /* site loader  */
+    #siteLoader {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 999999999999 !important;
+        background-color: #00000080 !important;
+
+    }
+</style>
+
+<body>
+
+    <div id="siteLoader">
+        <div class="spinner-border text-white" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
 
     <div class="layout-wrapper d-lg-flex">
-        
+
         <!-- Start left sidebar-menu -->
         <div class="side-menu flex-lg-column me-lg-1 ms-lg-0">
             <!-- LOGO -->
@@ -98,7 +132,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                     </li>
                     <li class="nav-item dropdown profile-user-dropdown d-inline-block d-lg-none">
                         <a class="nav-link dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img src="assets/images/users/<?php echo $user->profileImg; ?>" alt="" class="profile-user rounded-circle">
+                            <img src="assets/images/users/<?php isset($user->profileImg) ?  print($user->profileImg) : print("default-user.png"); ?>" alt="" class="profile-user rounded-circle">
                         </a>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="javascript: void(0);">Profile <i class="ri-account-circle-line float-end text-muted"></i></a>
@@ -121,7 +155,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
                     <li class="nav-item btn-group dropup profile-user-dropdown">
                         <a class="nav-link dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img src="assets/images/users/<?php echo $user->profileImg; ?>" alt="" class="profile-user rounded-circle">
+                            <img src="assets/images/users/<?php isset($user->profileImg) ? print($user->profileImg) : print("default-user.png"); ?>" alt="" class="profile-user rounded-circle">
                         </a>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="javascript: void(0);">Profile <i class="ri-account-circle-line float-end text-muted"></i></a>
@@ -163,7 +197,8 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
                         <div class="text-center p-4 border-bottom">
                             <div class="mb-4">
-                                <img src="assets/images/users/<?php echo $user->profileImg; ?>" class="rounded-circle avatar-lg img-thumbnail" alt="">
+                                <img src="assets/images/users/<?php if (isset($user->profileImg)) echo $user->profileImg;
+                                                                else echo "default-user.png"; ?>" class="rounded-circle avatar-lg img-thumbnail" alt="">
                             </div>
 
                             <h5 class="font-size-16 mb-1 text-truncate"><?php echo $user->name; ?></h5>
@@ -1593,13 +1628,14 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
                         <div class="text-center border-bottom p-4">
                             <div class="mb-4 profile-user">
-                                <img src="assets/images/users/<?php echo $user->profileImg; ?>" class="rounded-circle avatar-lg img-thumbnail" alt="">
+                                <img src="assets/images/users/<?php if (isset($userProfileData)) echo $user->profileImg;
+                                                                else echo "default-user.png"; ?>" class="rounded-circle avatar-lg img-thumbnail" alt="">
                                 <button type="button" class="btn btn-light bg-light avatar-xs p-0 rounded-circle profile-photo-edit">
                                     <i class="ri-pencil-fill"></i>
                                 </button>
                             </div>
 
-                            <h5 class="font-size-16 mb-1 text-truncate"><?php echo $user->name; ?></h5>
+                            <h5 class="font-size-16 mb-1 text-truncate"><?php if (isset($userProfileData)) echo $user->name; ?></h5>
                             <div class="dropdown d-inline-block mb-1">
                                 <a class="text-muted dropdown-toggle pb-1 d-block" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Available <i class="mdi mdi-chevron-down"></i>
@@ -1630,12 +1666,12 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
                                             <div>
                                                 <p class="text-muted mb-1">Name</p>
-                                                <h5 class="font-size-14"><?php echo $user->name; ?></h5>
+                                                <h5 class="font-size-14"><?php if (isset($userProfileData)) echo $user->name; ?></h5>
                                             </div>
 
                                             <div class="mt-4">
                                                 <p class="text-muted mb-1">Email</p>
-                                                <h5 class="font-size-14"><?php echo $user->email; ?></h5>
+                                                <h5 class="font-size-14"><?php if (isset($userProfileData)) echo $user->email; ?></h5>
                                             </div>
 
                                             <div class="mt-4">
@@ -1806,17 +1842,8 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
         </div>
         <!-- end chat-leftsidebar -->
 
-
-        <?php
-        if (isset($_GET['username'])) {
-            $clickedUser = null;
-        } else {
-            $clickedUser = "disabled";
-        }
-        ?>
-
-        <!-- Start User chat -->
-        <div class="user-chat <?php !$clickedUser ? print("user-chat-show") : ""; ?> w-100 overflow-hidden">
+        <!-- Start User Conversation  -->
+        <div class="user-chat <?php $userProfileData ? print("user-chat-show") : ""; ?> w-100 overflow-hidden">
             <div class="d-lg-flex">
 
                 <!-- start chat conversation section -->
@@ -1829,21 +1856,21 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                         <a href="<?php echo ROOT_URL; ?>" class="user-chat-remove text-muted font-size-16 p-2"><i class="ri-arrow-left-s-line"></i></a>
                                     </div>
                                     <div class="me-3 ms-0">
-                                        <img src="assets/images/users/<?php !$clickedUser ? print($userProfileData->profileImg) : print("default-user.png"); ?>" class="rounded-circle avatar-xs" alt="">
+                                        <img src="assets/images/users/<?php $userProfileData ? print($userProfileData->profileImg) : print("default-user.png"); ?>" class="rounded-circle avatar-xs" alt="">
                                     </div>
                                     <div class="flex-grow-1 overflow-hidden">
                                         <h5 class="font-size-16 mb-0 text-truncate">
-                                            <a href="javascript:void(0)" class="text-reset user-profile-<?php !$clickedUser ? print("show") : print(""); ?>"><?php !$clickedUser ? print($userProfileData->username) : print(""); ?></a>
-                                            <i class="ri-record-circle-fill font-size-10 text-<?php !$clickedUser ? print("success") : print("secondary"); ?> d-inline-block ms-1"></i>
+                                            <a href="javascript:void(0)" class="text-reset user-profile-<?php $userProfileData ? print("show") : print(""); ?>"><?php $userProfileData ? print($userProfileData->username) : print(""); ?></a>
+                                            <i class="ri-record-circle-fill font-size-10 text-<?php $userProfileData ? print("success") : print("secondary"); ?> d-inline-block ms-1"></i>
                                         </h5>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-sm-8 col-4">
                                 <ul class="list-inline user-chat-nav text-end mb-0">
-                                    <li class="list-inline-item">
+                                    <!-- <li class="list-inline-item">
                                         <div class="dropdown">
-                                            <button class="btn nav-btn dropdown-toggle <?php echo $clickedUser ?>" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <button class="btn nav-btn dropdown-toggle <?php if (!isset($userProfileData)) echo "disabled"; ?>" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 <i class="ri-search-line"></i>
                                             </button>
                                             <div class="dropdown-menu p-0 dropdown-menu-end dropdown-menu-md">
@@ -1852,35 +1879,33 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                                 </div>
                                             </div>
                                         </div>
-                                    </li>
+                                    </li> -->
 
-                                    <li class="list-inline-item d-none d-lg-inline-block me-2 ms-0">
-                                        <button type="button" class="btn nav-btn <?php echo $clickedUser ?>" data-bs-toggle="modal" data-bs-target="#audiocallModal">
+                                    <li class="list-inline-item d-lg-inline-block me-2 ms-0" title="Voice Call">
+                                        <button type="button" class="btn nav-btn <?php if (!isset($userProfileData)) echo "disabled"; ?>" data-bs-toggle="modal" data-bs-target="#audiocallModal">
                                             <i class="ri-phone-line"></i>
                                         </button>
                                     </li>
 
-                                    <li class="list-inline-item d-none d-lg-inline-block me-2 ms-0">
-                                        <button type="button" class="btn nav-btn <?php echo $clickedUser ?>" data-bs-toggle="modal" data-bs-target="#videocallModal">
+                                    <li class="list-inline-item d-lg-inline-block me-2 ms-0" title="Video Call">
+                                        <button type="button" class="btn nav-btn <?php if (!isset($userProfileData)) echo "disabled"; ?>" data-bs-toggle="modal" id="videoCallBtn" data-user="<?php if (isset($userProfileData)) echo $userProfileData->id; ?>" data-bs-target="#videocallModal">
                                             <i class="ri-vidicon-line"></i>
                                         </button>
                                     </li>
 
                                     <li class="list-inline-item d-none d-lg-inline-block me-2 ms-0">
-                                        <button type="button" class="btn nav-btn user-profile-show <?php echo $clickedUser ?>">
+                                        <button type="button" class="btn nav-btn user-profile-show <?php if (!isset($userProfileData)) echo "disabled"; ?>">
                                             <i class="ri-user-line"></i>
                                         </button>
                                     </li>
 
                                     <li class="list-inline-item">
                                         <div class="dropdown">
-                                            <button class="btn nav-btn dropdown-toggle <?php echo $clickedUser ?>" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="ri-more-fill"></i>
+                                            <button class="btn nav-btn dropdown-toggle <?php if (!isset($userProfileData)) echo "disabled"; ?>" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="ri-more-2-fill"></i>
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-end">
                                                 <a class="dropdown-item d-block d-lg-none user-profile-show" href="javascript: void(0);">View profile <i class="ri-user-1-line float-end text-muted"></i></a>
-                                                <a class="dropdown-item d-block d-lg-none" href="javascript: void(0);" data-bs-toggle="modal" data-bs-target="#audiocallModal">Audio <i class="ri-phone-line float-end text-muted"></i></a>
-                                                <a class="dropdown-item d-block d-lg-none" href="javascript: void(0);" data-bs-toggle="modal" data-bs-target="#videocallModal">Video <i class="ri-vidicon-line float-end text-muted"></i></a>
                                                 <a class="dropdown-item" href="javascript: void(0);">Archive <i class="ri-archive-line float-end text-muted"></i></a>
                                                 <a class="dropdown-item" href="javascript: void(0);">Muted <i class="ri-volume-mute-line float-end text-muted"></i></a>
                                                 <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
@@ -1895,348 +1920,370 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
                     <!-- start chat conversation -->
                     <div class="chat-conversation p-3 p-lg-4" data-simplebar="init">
-                        <ul class="list-unstyled mb-0">
-                            <li>
-                                <div class="conversation-list">
-                                    <div class="chat-avatar">
-                                        <img src="assets/images/users/avatar-4.jpg" alt="">
-                                    </div>
-
-                                    <div class="user-chat-content">
-                                        <div class="ctext-wrap">
-                                            <div class="ctext-wrap-content">
-                                                <p class="mb-0">
-                                                    Good morning
-                                                </p>
-                                                <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:00</span></p>
-                                            </div>
-                                            <div class="dropdown align-self-start">
-                                                <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="ri-more-2-fill"></i>
-                                                </a>
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="conversation-name">Doris Brown</div>
-                                    </div>
-                                </div>
-                            </li>
-
-                            <li class="right">
-                                <div class="conversation-list">
-                                    <div class="chat-avatar">
-                                        <img src="assets/images/users/<?php echo $user->profileImg; ?>" alt="">
-                                    </div>
-
-                                    <div class="user-chat-content">
-                                        <div class="ctext-wrap">
-                                            <div class="ctext-wrap-content">
-                                                <p class="mb-0">
-                                                    Good morning, How are you? What about our next meeting?
-                                                </p>
-                                                <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:02</span></p>
-                                            </div>
-
-                                            <div class="dropdown align-self-start">
-                                                <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="ri-more-2-fill"></i>
-                                                </a>
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
-                                                </div>
-                                            </div>
+                        <?php
+                        if ($userProfileData) {
+                        ?>
+                            <ul class="list-unstyled mb-0">
+                                <li>
+                                    <div class="conversation-list">
+                                        <div class="chat-avatar">
+                                            <img src="assets/images/users/avatar-4.jpg" alt="">
                                         </div>
 
-                                        <div class="conversation-name"><?php echo $user->name; ?></div>
-                                    </div>
-                                </div>
-                            </li>
-
-                            <li>
-                                <div class="chat-day-title">
-                                    <span class="title">Today</span>
-                                </div>
-                            </li>
-
-                            <li>
-                                <div class="conversation-list">
-                                    <div class="chat-avatar">
-                                        <img src="assets/images/users/avatar-4.jpg" alt="">
-                                    </div>
-
-                                    <div class="user-chat-content">
-
-                                        <div class="ctext-wrap">
-                                            <div class="ctext-wrap-content">
-                                                <p class="mb-0">
-                                                    Yeah everything is fine
-                                                </p>
-                                                <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:05</span></p>
-                                            </div>
-                                            <div class="dropdown align-self-start">
-                                                <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="ri-more-2-fill"></i>
-                                                </a>
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                        <div class="user-chat-content">
+                                            <div class="ctext-wrap">
+                                                <div class="ctext-wrap-content">
+                                                    <p class="mb-0">
+                                                        Good morning
+                                                    </p>
+                                                    <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:00</span></p>
+                                                </div>
+                                                <div class="dropdown align-self-start">
+                                                    <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="ri-more-2-fill"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <div class="conversation-name">Doris Brown</div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li class="right">
+                                    <div class="conversation-list">
+                                        <div class="chat-avatar">
+                                            <img src="assets/images/users/<?php if (isset($userProfileData)) echo $user->profileImg;
+                                                                            else echo "default-user.png"; ?>" alt="">
                                         </div>
 
-                                        <div class="ctext-wrap">
-                                            <div class="ctext-wrap-content">
-                                                <p class="mb-0">
-                                                    & Next meeting tomorrow 10.00AM
-                                                </p>
-                                                <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:05</span></p>
-                                            </div>
-                                            <div class="dropdown align-self-start">
-                                                <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="ri-more-2-fill"></i>
-                                                </a>
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                        <div class="user-chat-content">
+                                            <div class="ctext-wrap">
+                                                <div class="ctext-wrap-content">
+                                                    <p class="mb-0">
+                                                        Good morning, How are you? What about our next meeting?
+                                                    </p>
+                                                    <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:02</span></p>
                                                 </div>
-                                            </div>
-                                        </div>
 
-                                        <div class="conversation-name">Doris Brown</div>
-                                    </div>
-
-                                </div>
-                            </li>
-
-                            <li class="right">
-                                <div class="conversation-list">
-                                    <div class="chat-avatar">
-                                        <img src="assets/images/users/<?php echo $user->profileImg; ?>" alt="">
-                                    </div>
-
-                                    <div class="user-chat-content">
-                                        <div class="ctext-wrap">
-                                            <div class="ctext-wrap-content">
-                                                <p class="mb-0">
-                                                    Wow that's great
-                                                </p>
-                                                <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:06</span></p>
-                                            </div>
-                                            <div class="dropdown align-self-start">
-                                                <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="ri-more-2-fill"></i>
-                                                </a>
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="conversation-name"><?php echo $user->name; ?></div>
-                                    </div>
-
-                                </div>
-                            </li>
-
-                            <li>
-                                <div class="conversation-list">
-                                    <div class="chat-avatar">
-                                        <img src="assets/images/users/avatar-4.jpg" alt="">
-                                    </div>
-
-                                    <div class="user-chat-content">
-                                        <div class="ctext-wrap">
-
-                                            <div class="ctext-wrap-content">
-                                                <ul class="list-inline message-img  mb-0">
-                                                    <li class="list-inline-item message-img-list me-2 ms-0">
-                                                        <div>
-                                                            <a class="popup-img d-inline-block m-1" href="assets/images/small/img-1.jpg" title="Project 1">
-                                                                <img src="assets/images/small/img-1.jpg" alt="" class="rounded border">
-                                                            </a>
-                                                        </div>
-                                                        <div class="message-img-link">
-                                                            <ul class="list-inline mb-0">
-                                                                <li class="list-inline-item">
-                                                                    <a download="img-1.jpg" href="assets/images/small/img-1.jpg" class="fw-medium">
-                                                                        <i class="ri-download-2-line"></i>
-                                                                    </a>
-                                                                </li>
-                                                                <li class="list-inline-item dropdown">
-                                                                    <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                        <i class="ri-more-fill"></i>
-                                                                    </a>
-                                                                    <div class="dropdown-menu">
-                                                                        <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                                        <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
-                                                                        <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
-                                                                        <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </li>
-
-                                                    <li class="list-inline-item message-img-list">
-                                                        <div>
-                                                            <a class="popup-img d-inline-block m-1" href="assets/images/small/img-2.jpg" title="Project 2">
-                                                                <img src="assets/images/small/img-2.jpg" alt="" class="rounded border">
-                                                            </a>
-                                                        </div>
-                                                        <div class="message-img-link">
-                                                            <ul class="list-inline mb-0">
-                                                                <li class="list-inline-item">
-                                                                    <a download="img-2.jpg" href="assets/images/small/img-2.jpg" class="fw-medium">
-                                                                        <i class="ri-download-2-line"></i>
-                                                                    </a>
-                                                                </li>
-                                                                <li class="list-inline-item dropdown">
-                                                                    <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                        <i class="ri-more-fill"></i>
-                                                                    </a>
-                                                                    <div class="dropdown-menu dropdown-menu-end">
-                                                                        <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                                        <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
-                                                                        <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
-                                                                        <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                                <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:09</span></p>
-                                            </div>
-
-                                            <div class="dropdown align-self-start">
-                                                <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="ri-more-2-fill"></i>
-                                                </a>
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                <div class="dropdown align-self-start">
+                                                    <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="ri-more-2-fill"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    </div>
                                                 </div>
                                             </div>
 
+                                            <div class="conversation-name"><?php if (isset($userProfileData)) echo $user->name; ?></div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="chat-day-title">
+                                        <span class="title">Today</span>
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="conversation-list">
+                                        <div class="chat-avatar">
+                                            <img src="assets/images/users/avatar-4.jpg" alt="">
                                         </div>
 
-                                        <div class="conversation-name">Doris Brown</div>
+                                        <div class="user-chat-content">
+
+                                            <div class="ctext-wrap">
+                                                <div class="ctext-wrap-content">
+                                                    <p class="mb-0">
+                                                        Yeah everything is fine
+                                                    </p>
+                                                    <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:05</span></p>
+                                                </div>
+                                                <div class="dropdown align-self-start">
+                                                    <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="ri-more-2-fill"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="ctext-wrap">
+                                                <div class="ctext-wrap-content">
+                                                    <p class="mb-0">
+                                                        & Next meeting tomorrow 10.00AM
+                                                    </p>
+                                                    <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:05</span></p>
+                                                </div>
+                                                <div class="dropdown align-self-start">
+                                                    <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="ri-more-2-fill"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="conversation-name">Doris Brown</div>
+                                        </div>
+
                                     </div>
+                                </li>
 
-                                </div>
-                            </li>
+                                <li class="right">
+                                    <div class="conversation-list">
+                                        <div class="chat-avatar">
+                                            <img src="assets/images/users/<?php if (isset($userProfileData)) echo $user->profileImg;
+                                                                            else echo "default-user.png"; ?>" alt="">
+                                        </div>
 
-                            <li class="right">
-                                <div class="conversation-list">
-                                    <div class="chat-avatar">
-                                        <img src="assets/images/users/<?php echo $user->profileImg; ?>" alt="">
+                                        <div class="user-chat-content">
+                                            <div class="ctext-wrap">
+                                                <div class="ctext-wrap-content">
+                                                    <p class="mb-0">
+                                                        Wow that's great
+                                                    </p>
+                                                    <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:06</span></p>
+                                                </div>
+                                                <div class="dropdown align-self-start">
+                                                    <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="ri-more-2-fill"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="conversation-name"><?php if (isset($userProfileData)) echo $user->name; ?></div>
+                                        </div>
+
                                     </div>
+                                </li>
 
-                                    <div class="user-chat-content">
-                                        <div class="ctext-wrap">
+                                <li>
+                                    <div class="conversation-list">
+                                        <div class="chat-avatar">
+                                            <img src="assets/images/users/avatar-4.jpg" alt="">
+                                        </div>
 
-                                            <div class="ctext-wrap-content">
-                                                <div class="card p-2 mb-2">
-                                                    <div class="d-flex flex-wrap align-items-center attached-file">
-                                                        <div class="avatar-sm me-3 ms-0 attached-file-avatar">
-                                                            <div class="avatar-title bg-primary-subtle text-primary rounded font-size-20">
-                                                                <i class="ri-file-text-fill"></i>
+                                        <div class="user-chat-content">
+                                            <div class="ctext-wrap">
+
+                                                <div class="ctext-wrap-content">
+                                                    <ul class="list-inline message-img  mb-0">
+                                                        <li class="list-inline-item message-img-list me-2 ms-0">
+                                                            <div>
+                                                                <a class="popup-img d-inline-block m-1" href="assets/images/small/img-1.jpg" title="Project 1">
+                                                                    <img src="assets/images/small/img-1.jpg" alt="" class="rounded border">
+                                                                </a>
                                                             </div>
-                                                        </div>
-                                                        <div class="flex-grow-1 overflow-hidden">
-                                                            <div class="text-start">
-                                                                <h5 class="font-size-14 text-truncate mb-1">admin_v1.0.zip</h5>
-                                                                <p class="text-muted text-truncate font-size-13 mb-0">12.5 MB</p>
+                                                            <div class="message-img-link">
+                                                                <ul class="list-inline mb-0">
+                                                                    <li class="list-inline-item">
+                                                                        <a download="img-1.jpg" href="assets/images/small/img-1.jpg" class="fw-medium">
+                                                                            <i class="ri-download-2-line"></i>
+                                                                        </a>
+                                                                    </li>
+                                                                    <li class="list-inline-item dropdown">
+                                                                        <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                            <i class="ri-more-fill"></i>
+                                                                        </a>
+                                                                        <div class="dropdown-menu">
+                                                                            <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                                            <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                                            <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
+                                                                            <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                                        </div>
+                                                                    </li>
+                                                                </ul>
                                                             </div>
-                                                        </div>
-                                                        <div class="ms-4 me-0">
-                                                            <div class="d-flex gap-2 font-size-20 d-flex align-items-start">
-                                                                <div>
-                                                                    <a download="admin_v1.0.zip" href="assets/images/small/admin_v1.0.zip" class="fw-medium">
-                                                                        <i class="ri-download-2-line"></i>
-                                                                    </a>
+                                                        </li>
+
+                                                        <li class="list-inline-item message-img-list">
+                                                            <div>
+                                                                <a class="popup-img d-inline-block m-1" href="assets/images/small/img-2.jpg" title="Project 2">
+                                                                    <img src="assets/images/small/img-2.jpg" alt="" class="rounded border">
+                                                                </a>
+                                                            </div>
+                                                            <div class="message-img-link">
+                                                                <ul class="list-inline mb-0">
+                                                                    <li class="list-inline-item">
+                                                                        <a download="img-2.jpg" href="assets/images/small/img-2.jpg" class="fw-medium">
+                                                                            <i class="ri-download-2-line"></i>
+                                                                        </a>
+                                                                    </li>
+                                                                    <li class="list-inline-item dropdown">
+                                                                        <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                            <i class="ri-more-fill"></i>
+                                                                        </a>
+                                                                        <div class="dropdown-menu dropdown-menu-end">
+                                                                            <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                                            <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                                            <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
+                                                                            <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                                        </div>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                    <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:09</span></p>
+                                                </div>
+
+                                                <div class="dropdown align-self-start">
+                                                    <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="ri-more-2-fill"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="conversation-name">Doris Brown</div>
+                                        </div>
+
+                                    </div>
+                                </li>
+
+                                <li class="right">
+                                    <div class="conversation-list">
+                                        <div class="chat-avatar">
+                                            <img src="assets/images/users/<?php if (isset($userProfileData)) echo $user->profileImg;
+                                                                            else echo "default-user.png"; ?>" alt="">
+                                        </div>
+
+                                        <div class="user-chat-content">
+                                            <div class="ctext-wrap">
+
+                                                <div class="ctext-wrap-content">
+                                                    <div class="card p-2 mb-2">
+                                                        <div class="d-flex flex-wrap align-items-center attached-file">
+                                                            <div class="avatar-sm me-3 ms-0 attached-file-avatar">
+                                                                <div class="avatar-title bg-primary-subtle text-primary rounded font-size-20">
+                                                                    <i class="ri-file-text-fill"></i>
                                                                 </div>
-                                                                <div class="dropdown">
-                                                                    <a class="dropdown-toggle text-muted" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                        <i class="ri-more-fill"></i>
-                                                                    </a>
-                                                                    <div class="dropdown-menu dropdown-menu-end">
-                                                                        <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
-                                                                        <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                            </div>
+                                                            <div class="flex-grow-1 overflow-hidden">
+                                                                <div class="text-start">
+                                                                    <h5 class="font-size-14 text-truncate mb-1">admin_v1.0.zip</h5>
+                                                                    <p class="text-muted text-truncate font-size-13 mb-0">12.5 MB</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="ms-4 me-0">
+                                                                <div class="d-flex gap-2 font-size-20 d-flex align-items-start">
+                                                                    <div>
+                                                                        <a download="admin_v1.0.zip" href="assets/images/small/admin_v1.0.zip" class="fw-medium">
+                                                                            <i class="ri-download-2-line"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="dropdown">
+                                                                        <a class="dropdown-toggle text-muted" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                            <i class="ri-more-fill"></i>
+                                                                        </a>
+                                                                        <div class="dropdown-menu dropdown-menu-end">
+                                                                            <a class="dropdown-item" href="javascript: void(0);">Share <i class="ri-share-line float-end text-muted"></i></a>
+                                                                            <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
+
+                                                    <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:16</span></p>
                                                 </div>
 
-                                                <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <span class="align-middle">10:16</span></p>
+                                                <div class="dropdown align-self-start">
+                                                    <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="ri-more-2-fill"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
+                                                        <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                    </div>
+                                                </div>
+
                                             </div>
 
-                                            <div class="dropdown align-self-start">
-                                                <a class="dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="ri-more-2-fill"></i>
-                                                </a>
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Forward <i class="ri-chat-forward-line float-end text-muted"></i></a>
-                                                    <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                            <div class="conversation-name"><?php if (isset($userProfileData)) echo $user->name; ?></div>
+                                        </div>
+
+                                    </div>
+                                </li>
+
+                                <li>
+                                    <div class="conversation-list">
+                                        <div class="chat-avatar">
+                                            <img src="assets/images/users/avatar-4.jpg" alt="">
+                                        </div>
+
+                                        <div class="user-chat-content">
+                                            <div class="ctext-wrap">
+                                                <div class="ctext-wrap-content">
+                                                    <p class="mb-0">
+                                                        typing
+                                                        <span class="animate-typing">
+                                                            <span class="dot"></span>
+                                                            <span class="dot"></span>
+                                                            <span class="dot"></span>
+                                                        </span>
+                                                    </p>
                                                 </div>
                                             </div>
 
+                                            <div class="conversation-name">Doris Brown</div>
                                         </div>
 
-                                        <div class="conversation-name"><?php echo $user->name; ?></div>
                                     </div>
+                                </li>
 
-                                </div>
-                            </li>
+                            </ul>
+                        <?php
+                        } else {
+                        ?>
+                            <style>
+                                .chat-conversation .simplebar-content {
+                                    display: flex;
+                                    height: 100%;
+                                    justify-content: center;
+                                    align-items: center;
+                                }
+                            </style>
+                            <h5 class="text-secondary">Select a user to start Conversation!</h5>
 
-                            <li>
-                                <div class="conversation-list">
-                                    <div class="chat-avatar">
-                                        <img src="assets/images/users/avatar-4.jpg" alt="">
-                                    </div>
-
-                                    <div class="user-chat-content">
-                                        <div class="ctext-wrap">
-                                            <div class="ctext-wrap-content">
-                                                <p class="mb-0">
-                                                    typing
-                                                    <span class="animate-typing">
-                                                        <span class="dot"></span>
-                                                        <span class="dot"></span>
-                                                        <span class="dot"></span>
-                                                    </span>
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div class="conversation-name">Doris Brown</div>
-                                    </div>
-
-                                </div>
-                            </li>
-
-                        </ul>
+                        <?php
+                        }
+                        ?>
                     </div>
                     <!-- end chat conversation end -->
 
@@ -2246,23 +2293,23 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                         <div class="row g-0">
 
                             <div class="col">
-                                <input type="text" class="form-control form-control-lg bg-light border-light" <?php !$clickedUser ? print("") : print("disabled"); ?> placeholder="Enter Message...">
+                                <input type="text" class="form-control form-control-lg bg-light border-light" <?php if (!isset($userProfileData)) echo "disabled"; ?> placeholder="Enter Message...">
                             </div>
                             <div class="col-auto">
                                 <div class="chat-input-links ms-md-2 me-md-0">
                                     <ul class="list-inline mb-0">
                                         <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Emoji">
-                                            <button type="button" class="btn btn-link text-decoration-none font-size-16 btn-lg waves-effect">
+                                            <button type="button" class="btn btn-link text-decoration-none font-size-16 btn-lg waves-effect <?php if (!isset($userProfileData)) echo "disabled"; ?>">
                                                 <i class="ri-emotion-happy-line"></i>
                                             </button>
                                         </li>
                                         <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Attached File">
-                                            <button type="button" class="btn btn-link text-decoration-none font-size-16 btn-lg waves-effect">
+                                            <button type="button" class="btn btn-link text-decoration-none font-size-16 btn-lg waves-effect <?php if (!isset($userProfileData)) echo "disabled"; ?>">
                                                 <i class="ri-attachment-line"></i>
                                             </button>
                                         </li>
                                         <li class="list-inline-item">
-                                            <button type="submit" class="btn btn-primary font-size-16 btn-lg chat-send waves-effect waves-light">
+                                            <button type="submit" class="btn btn-primary font-size-16 btn-lg chat-send waves-effect waves-light <?php if (!isset($userProfileData)) echo "disabled"; ?>">
                                                 <i class="ri-send-plane-2-fill"></i>
                                             </button>
                                         </li>
@@ -2288,10 +2335,10 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
                     <div class="text-center p-4 border-bottom">
                         <div class="mb-4">
-                            <img src="assets/images/users/<?php !$clickedUser ? print($userProfileData->profileImg) : print("default-user.png"); ?>" class="rounded-circle avatar-lg img-thumbnail" alt="">
+                            <img src="assets/images/users/<?php $userProfileData ? print($userProfileData->profileImg) : print("default-user.png"); ?>" class="rounded-circle avatar-lg img-thumbnail" alt="">
                         </div>
 
-                        <h5 class="font-size-16 mb-1 text-truncate"><?php !$clickedUser ? print($userProfileData->username) : print(""); ?></h5>
+                        <h5 class="font-size-16 mb-1 text-truncate"><?php $userProfileData ? print($userProfileData->username) : print(""); ?></h5>
                         <p class="text-muted text-truncate mb-1"><i class="ri-record-circle-fill font-size-10 text-success me-1 ms-0"></i> Active</p>
                     </div>
                     <!-- End profile user -->
@@ -2316,12 +2363,12 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                     <div class="accordion-body">
                                         <div>
                                             <p class="text-muted mb-1">Name</p>
-                                            <h5 class="font-size-14"><?php !$clickedUser ? print($userProfileData->name) : print(""); ?></h5>
+                                            <h5 class="font-size-14"><?php $userProfileData ? print($userProfileData->name) : print(""); ?></h5>
                                         </div>
 
                                         <div class="mt-4">
                                             <p class="text-muted mb-1">Email</p>
-                                            <h5 class="font-size-14"><?php !$clickedUser ? print($userProfileData->email) : print(""); ?></h5>
+                                            <h5 class="font-size-14"><?php $userProfileData ? print($userProfileData->email) : print(""); ?></h5>
                                         </div>
 
                                         <div class="mt-4">
@@ -2506,82 +2553,91 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
             </div>
             <!-- End User chat -->
 
-            <!-- audiocall Modal -->
-            <div class="modal fade" id="audiocallModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            <div class="text-center p-4">
-                                <div class="avatar-lg mx-auto mb-4">
-                                    <img src="assets/images/users/avatar-4.jpg" alt="" class="img-thumbnail rounded-circle">
-                                </div>
-
-                                <h5 class="text-truncate">Doris Brown</h5>
-                                <p class="text-muted">Start Audio Call</p>
-
-                                <div class="mt-5">
-                                    <ul class="list-inline mb-1">
-                                        <li class="list-inline-item px-2 me-2 ms-0">
-                                            <button type="button" class="btn btn-danger avatar-sm rounded-circle" data-bs-dismiss="modal">
-                                                <span class="avatar-title bg-transparent font-size-20">
-                                                    <i class="ri-close-fill"></i>
-                                                </span>
-                                            </button>
-                                        </li>
-                                        <li class="list-inline-item px-2">
-                                            <button type="button" class="btn btn-success avatar-sm rounded-circle">
-                                                <span class="avatar-title bg-transparent font-size-20">
-                                                    <i class="ri-phone-fill"></i>
-                                                </span>
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- audiocall Modal -->
-
-            <!-- videocall Modal -->
-            <div class="modal fade" id="videocallModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            <div class="text-center p-4">
-                                <div class="avatar-lg mx-auto mb-4">
-                                    <img src="assets/images/users/avatar-4.jpg" alt="" class="img-thumbnail rounded-circle">
-                                </div>
-
-                                <h5 class="text-truncate">Doris Brown</h5>
-                                <p class="text-muted mb-0">Start Video Call</p>
-
-                                <div class="mt-5">
-                                    <ul class="list-inline mb-1">
-                                        <li class="list-inline-item px-2 me-2 ms-0">
-                                            <button type="button" class="btn btn-danger avatar-sm rounded-circle" data-bs-dismiss="modal">
-                                                <span class="avatar-title bg-transparent font-size-20">
-                                                    <i class="ri-close-fill"></i>
-                                                </span>
-                                            </button>
-                                        </li>
-                                        <li class="list-inline-item px-2">
-                                            <button type="button" class="btn btn-success avatar-sm rounded-circle">
-                                                <span class="avatar-title bg-transparent font-size-20">
-                                                    <i class="ri-vidicon-fill"></i>
-                                                </span>
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <!-- end modal -->
         </div>
+
+
+        <!-- audiocall Modal -->
+        <div class="modal fade" id="audiocallModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="text-center p-4">
+                            <div class="avatar-lg mx-auto mb-4">
+                                <img src="assets/images/users/avatar-4.jpg" alt="" class="img-thumbnail rounded-circle">
+                            </div>
+
+                            <h5 class="text-truncate">Doris Brown</h5>
+                            <p class="text-muted">Start Audio Call</p>
+
+                            <div class="mt-5">
+                                <ul class="list-inline mb-1">
+                                    <li class="list-inline-item px-2 me-2 ms-0">
+                                        <button type="button" class="btn btn-danger avatar-sm rounded-circle" data-bs-dismiss="modal">
+                                            <span class="avatar-title bg-transparent font-size-20">
+                                                <i class="ri-close-fill"></i>
+                                            </span>
+                                        </button>
+                                    </li>
+                                    <li class="list-inline-item px-2">
+                                        <button type="button" class="btn btn-success avatar-sm rounded-circle">
+                                            <span class="avatar-title bg-transparent font-size-20">
+                                                <i class="ri-phone-fill"></i>
+                                            </span>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- audiocall Modal -->
+
+        <!-- videocall Modal -->
+        <div class="modal fade" id="videocallModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content m-0 video-container">
+                    <div class="modal-body d-flex justify-content-center align-items-center p-0">
+                        <video id="remoteVideo" autoplay></video>
+                        <video id="localVideo" autoplay></video>
+
+                        <div class="video-overlay" id="video-overlay">
+                            <div class="avatar-lg mx-auto my-2">
+                                <img src="assets/images/users/<?php $userProfileData ? print($userProfileData->profileImg) : print("default-user.png"); ?>" id="remote-profileImg" alt="remoteUser" class="img-fluid rounded-circle">
+                            </div>
+
+                            <h5 class="text-truncate text-white my-1" id="remote-username"> <?php $userProfileData ? print($userProfileData->username) : print("Unknown"); ?> </h5>
+                            <div class="d-flex justify-content-center align-items-center text-white mb-0">
+                                <i class="ri-vidicon-fill fs-5 px-2"></i>
+                                <span id="calling-type"></span>
+                            </div>
+
+                            <div class="text-white text-center videoDuration p-2">
+                                <span class="p-2 rounded" id="videoDuration">00:00</span>
+                            </div>
+
+                            <div class="my-4 d-flex justify-content-center align-items-center">
+                                <button type="button" id="callDeclineBtn" class="btn btn-danger rounded px-5 py-2 me-2 me-md-4">
+                                    <i class="fa-solid fa-phone-slash"></i>
+                                </button>
+                                <button type="button" id="callHangupBtn" class="btn btn-danger rounded px-5 py-2 me-2 me-md-4">
+                                    <i class="fa-solid fa-phone-slash"></i>
+                                </button>
+                                <button type="button" id="callReceiveBtn" class="btn btn-success rounded px-5 py-2 ms-2 ms-md-4">
+                                    <i class="fa-sharp fa-solid fa-phone-volume"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
         <!-- end  layout wrapper -->
 
         <!-- JAVASCRIPT -->
@@ -2598,9 +2654,18 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
         <!-- page init -->
         <script src="assets/js/pages/index.init.js"></script>
-
         <script src="assets/js/app.js"></script>
 
+
+        <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+
+        <!-- jquery timer  -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/timer.jquery/0.7.0/timer.jquery.js"></script>
+        <!-- custom js  -->
+        <script>
+            const conn = new WebSocket("ws://localhost:8080/?token=<?php echo $userObject->sessionId; ?>")
+        </script>
+        <script src="assets/js/index.js"></script>
 </body>
 
 </html>

@@ -3,7 +3,7 @@ session_start();
 require_once "classes/Database.php";
 require_once "classes/User.php";
 
-$userObject = new User;
+$userObject = new \MyApp\User;
 
 
 define("ROOT_URL","/callme/");

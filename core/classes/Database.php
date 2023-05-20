@@ -1,4 +1,7 @@
 <?php
+namespace MyApp;
+use PDO;
+
 class Database
 {
     public function connect()
