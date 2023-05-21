@@ -18,17 +18,26 @@ $(document).ready(function () {
 
 
     const mediaAccess = {
-        video: true
+        video: true,
+        audio: true
+    }
+
+    // for audio (setup stun server)
+    const config = {
+        iceServers: [
+            { urls: 'stun:stun1.l.google.com:19302' },
+        ]
     }
 
     // to get the media from remote client
     const mediaOptions = {
         offerToReceiveVideo: 1,
+        offerToReceiveAudio: 1
     }
 
     function getConnection() {
         if (!peerConn) {
-            peerConn = new RTCPeerConnection();
+            peerConn = new RTCPeerConnection(config);
         }
     }
 
@@ -142,7 +151,7 @@ $(document).ready(function () {
                 }
 
                 if (peerConn.iceConnectionState === "connected") {
-                    send("client-already-oncall");
+                    send("client-already-oncall", null, by);
                 } else {
                     // display incoming call alert 
                     $("#remote-username").text(username);
