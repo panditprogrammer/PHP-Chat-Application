@@ -125,8 +125,9 @@ class User
 
     public function updateSession()
     {
-        $stmt = $this->db->prepare("UPDATE users SET sessionId = :sessionId WHERE id = :id");
+        $stmt = $this->db->prepare("UPDATE users SET sessionId = :sessionId , updated_on = :updated_on WHERE id = :id");
         $stmt->bindParam(":sessionId", $this->sessionId, PDO::PARAM_STR);
+        $stmt->bindParam(":updated_on", $current_timestamp, PDO::PARAM_STR);
         $stmt->bindParam(":id", $this->userId, PDO::PARAM_INT);
         $stmt->execute();
     }

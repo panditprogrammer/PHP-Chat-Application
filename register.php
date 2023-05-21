@@ -9,7 +9,7 @@ require_once "core/init.php";
     <meta charset="utf-8" />
     <title>Register | <?php echo SITE_NAME; ?> </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Responsive Bootstrap 4 Chat App" name="description" />
+    <meta content="Register in <?php echo SITE_NAME; ?> to make Video/Audio Call For FREE without installing any third party apps on your devices. " name="description" />
     <meta content="Themesbrand" name="author" />
     <!-- App favicon -->
     <link rel="shortcut icon" href="assets/images/favicon.ico">
@@ -39,7 +39,7 @@ require_once "core/init.php";
                         </a>
 
                         <h4>Sign up</h4>
-                        <p class="text-muted mb-4">Get your Chatvia account now.</p>
+                        <p class="text-muted mb-4">Get your <?php echo SITE_NAME; ?> account now.</p>
 
                     </div>
 
@@ -87,7 +87,7 @@ require_once "core/init.php";
                                     </div>
 
                                     <div class="mt-4 text-center">
-                                        <p class="text-muted mb-0">By registering you agree to the Chatvia <a href="#" class="text-primary">Terms of Use</a></p>
+                                        <p class="text-muted mb-0">By registering you agree to the <?php echo SITE_NAME; ?> <a href="#" class="text-primary">Terms of Use</a></p>
                                     </div>
 
                                 </form>
@@ -99,7 +99,7 @@ require_once "core/init.php";
                         <p>Already have an account ? <a href="login.php" class="fw-medium text-primary"> Signin </a> </p>
                         <p>© <script>
                                 document.write(new Date().getFullYear())
-                            </script> <a href="#">Pandit Programmer</a> </p>
+                            </script> <a href="http://panditprogrammer.com" target="blank">PanditProgrammer.com</a> </p>
                     </div>
                 </div>
             </div>

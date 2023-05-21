@@ -46,8 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     <meta charset="utf-8" />
     <title>Log in | <?php echo SITE_NAME; ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Responsive Bootstrap 4 Chat App" name="description" />
-    <meta content="Themesbrand" name="author" />
+    <meta content="Login to <?php echo SITE_NAME; ?> to Enjoy FREE Online Video/ Audio Callig to friends and Family. " name="description" />
+    <meta content="Pandit Programmer" name="author" />
     <!-- App favicon -->
     <link rel="shortcut icon" href="assets/images/favicon.ico">
 
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                         </a>
 
                         <h4>Sign in</h4>
-                        <p class="text-muted mb-4">Sign in to continue to Chatvia.</p>
+                        <p class="text-muted mb-4">Sign in to continue to <?php echo SITE_NAME; ?>.</p>
                         <?php
                         if (isset($msg))
                             echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                         <p>©
                             <script>
                                 document.write(new Date().getFullYear())
-                            </script> <a href="#">Pandit Programmer</a>
+                            </script> <a href="http://panditprogrammer.com" target="blank">Pandit Programmer</a>
                         </p>
                     </div>
                 </div>

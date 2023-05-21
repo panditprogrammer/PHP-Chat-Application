@@ -107,6 +107,7 @@ $(document).ready(function () {
 
     // start a video call 
     videoCallBtn.on("click", () => {
+        videoCallBtn.prop("disabled", true);
         makeVideoCallCSS();
         $("#calling-type").text("Calling...");
         getCameraAccess();
@@ -115,6 +116,7 @@ $(document).ready(function () {
 
     // hangup on going call 
     callHangupBtn.click(() => {
+        callHangupBtn.prop("disabled", true);
         callHangup();
         hideCallScreen;
         location.reload();
@@ -143,17 +145,30 @@ $(document).ready(function () {
                     send("client-already-oncall");
                 } else {
                     // display incoming call alert 
-                    $("#caller-username").text(username);
-                    $("#caller-profileImg").attr("src", `assets/images/users/${profileImg}`);
+                    $("#remote-username").text(username);
+                    $("#remote-profileImg").attr("src", `assets/images/users/${profileImg}`);
                     $("#calling-type").text("Incoming Call...");
+                    console.log(message);
                     displayCallScreen();
 
-                    // receive incoming call 
-                    callReceiveBtn.click((e) => {
-                        e.stopPropagation();
-                        callReceiveCSS();
-                        send("client-is-ready", null, sendTo);
-                    });
+                    // checking username exist in url (if user chat is open )
+                    if (location.href.indexOf(username) > -1) {
+
+                        // receive incoming call 
+                        callReceiveBtn.click((e) => {
+                            e.stopPropagation();
+                            callReceiveCSS();
+                            send("client-is-ready", null, sendTo);
+                        });
+                    } else {
+                        // receive incoming call 
+                        callReceiveBtn.click((e) => {
+                            e.stopPropagation();
+                            callReceiveCSS();
+                            redirectToCallScreen(username, by);
+                        });
+                    }
+
 
 
                     // reject incoming call 
@@ -204,14 +219,17 @@ $(document).ready(function () {
                 break;
 
             case "client-rejected":
+                callHangupBtn.prop("disabled", true);
                 videoOverlay.fadeIn();
                 $("#calling-type").text("Call Rejected");
                 refreshPage(3000);
                 break;
 
             case "client-hangup":
+                callHangupBtn.prop("disabled", true);
                 videoOverlay.fadeIn();
                 $("#calling-type").text("Call Disconnected");
+                callTimer.timer('pause');
                 refreshPage(3000);
                 break;
 
@@ -234,6 +252,33 @@ $(document).ready(function () {
         incomingCallCSS();
     }
 
+    function displayRunningCall() {
+        $("#videocallModal").modal("show");
+        callReceiveCSS();
+    }
+
+    function redirectToCallScreen(username, sendTo) {
+        if (location.href.indexOf(username) == -1) {
+            sessionStorage.setItem("redirect", true);
+            sessionStorage.setItem("sendTo", sendTo);
+            location.href = "/callme/" + username;
+        }
+    }
+
+
+    if (sessionStorage.getItem("redirect")) {
+        sendTo = sessionStorage.getItem("sendTo");
+        let waitForWebSocket = setInterval(() => {
+            if (conn.readyState === 1) {
+                send("client-is-ready", null, sendTo);
+                clearInterval(waitForWebSocket);
+            }
+        }, 500);
+        sessionStorage.removeItem("redirect");
+        sessionStorage.removeItem("sendTo");
+        displayRunningCall();
+    }
+
     function hideCallScreen() {
         $("#videocallModal").modal("hide");
     }
@@ -247,7 +292,7 @@ $(document).ready(function () {
 
     }
 
-    send("is-client-is-ready", null, sendTo);
+    send("is-client-ready", null, sendTo);
 
     function makeVideoCallCSS() {
         callReceiveBtn.hide();
@@ -255,6 +300,7 @@ $(document).ready(function () {
         callHangupBtn.show();
         callHangupBtn.removeClass("me-2");
     }
+
 
     function incomingCallCSS() {
         callReceiveBtn.show();

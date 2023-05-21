@@ -25,10 +25,11 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
 <head>
     <meta charset="utf-8" />
-    <title><?php echo SITE_NAME; ?> | Pandit Programmer</title>
+    <title><?php echo SITE_NAME; ?> | Online Free Video/Audio Calling </title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta content="Responsive Bootstrap 4 Chat App" name="description" />
-    <meta content="Themesbrand" name="author" />
+    <meta content="Video/Audio Calling Website (<?php echo SITE_NAME; ?>) is Free for Everyone who want to make HD video call to their friends and family without any third party Apps. This Website is created for Only Education Purpose such as Online Teaching , Training , Consulting, Support for remote user to Chat Online Absolutely FREE." name="description" />
+    <meta content="Pandit Programmer (Chandan Prajapati)" name="author" />
+    <meta name="keywords" content="Free Video/Audio Calling, Make video call using website online, free voice calling website, video calling Web Application. Free Online Chatting Apps, Online Video Chatting, Online HD Voice Calling, ">
     <!-- App favicon -->
     <link rel="shortcut icon" href="assets/images/favicon.ico">
 
