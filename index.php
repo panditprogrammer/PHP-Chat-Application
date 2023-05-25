@@ -202,7 +202,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                                                 else echo "default-user.png"; ?>" class="rounded-circle avatar-lg img-thumbnail" alt="">
                             </div>
 
-                            <h5 class="font-size-16 mb-1 text-truncate"><?php echo $user->name; ?></h5>
+                            <h5 class="font-size-16 mb-1 text-truncate"><?php $user->name ? print($user->name) : print($user->username); ?></h5>
                             <p class="text-muted text-truncate mb-1"><i class="ri-record-circle-fill font-size-10 text-success me-1 ms-0 d-inline-block"></i> Active</p>
                         </div>
                         <!-- End profile user -->
@@ -227,7 +227,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                         <div class="accordion-body">
                                             <div>
                                                 <p class="text-muted mb-1">Name</p>
-                                                <h5 class="font-size-14"><?php echo $user->name; ?></h5>
+                                                <h5 class="font-size-14"><?php $user->name ? print($user->name) : print($user->username); ?></h5>
                                             </div>
 
                                             <div class="mt-4">
@@ -1629,14 +1629,14 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
                         <div class="text-center border-bottom p-4">
                             <div class="mb-4 profile-user">
-                                <img src="assets/images/users/<?php if (isset($userProfileData)) echo $user->profileImg;
+                                <img src="assets/images/users/<?php if (isset($user->profileImg)) echo $user->profileImg;
                                                                 else echo "default-user.png"; ?>" class="rounded-circle avatar-lg img-thumbnail" alt="">
                                 <button type="button" class="btn btn-light bg-light avatar-xs p-0 rounded-circle profile-photo-edit">
                                     <i class="ri-pencil-fill"></i>
                                 </button>
                             </div>
 
-                            <h5 class="font-size-16 mb-1 text-truncate"><?php if (isset($userProfileData)) echo $user->name; ?></h5>
+                            <h5 class="font-size-16 mb-1 text-truncate"><?php $user->name ? print($user->name) : print($user->username); ?></h5>
                             <div class="dropdown d-inline-block mb-1">
                                 <a class="text-muted dropdown-toggle pb-1 d-block" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Available <i class="mdi mdi-chevron-down"></i>
@@ -1667,12 +1667,12 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
                                             <div>
                                                 <p class="text-muted mb-1">Name</p>
-                                                <h5 class="font-size-14"><?php if (isset($userProfileData)) echo $user->name; ?></h5>
+                                                <h5 class="font-size-14"> <?php $user->name ? print($user->name) : print($user->username); ?></h5>
                                             </div>
 
                                             <div class="mt-4">
                                                 <p class="text-muted mb-1">Email</p>
-                                                <h5 class="font-size-14"><?php if (isset($userProfileData)) echo $user->email; ?></h5>
+                                                <h5 class="font-size-14"><?php echo $user->email; ?></h5>
                                             </div>
 
                                             <div class="mt-4">
@@ -2664,7 +2664,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/timer.jquery/0.7.0/timer.jquery.js"></script>
         <!-- custom js  -->
         <script>
-            const conn = new WebSocket("ws://localhost:8080/?token=<?php echo $userObject->sessionId; ?>")
+            const conn = new WebSocket("ws://localhost:8090/?token=<?php echo $userObject->sessionId; ?>");
         </script>
         <script src="assets/js/index.js"></script>
 </body>

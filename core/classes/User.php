@@ -43,6 +43,18 @@ class User
         }
     }
 
+    public function registerUser($email, $username, $password)
+    {
+        $password = $this->hash($password);
+        $current_timestamp = date("Y-m-d H:i:s");
+        $stmt = $this->db->prepare("INSERT INTO users (email,username,password,created_on) VALUES (:email,:username,:password,:created_on)");
+        $stmt->bindParam(":email", $email, PDO::PARAM_STR);
+        $stmt->bindParam(":username", $username, PDO::PARAM_STR);
+        $stmt->bindParam(":password", $password, PDO::PARAM_STR);
+        $stmt->bindParam(":created_on", $current_timestamp, PDO::PARAM_STR);
+        return $stmt->execute();
+    }
+
     public function hash($password)
     {
         return password_hash($password, PASSWORD_DEFAULT);

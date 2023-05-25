@@ -157,7 +157,7 @@ $(document).ready(function () {
                     $("#remote-username").text(username);
                     $("#remote-profileImg").attr("src", `assets/images/users/${profileImg}`);
                     $("#calling-type").text("Incoming Call...");
-                    console.log(message);
+                  
                     displayCallScreen();
 
                     // checking username exist in url (if user chat is open )
