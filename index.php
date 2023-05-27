@@ -12,9 +12,9 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
     $userProfileData = $userObject->getUserByUsername($_GET['username']);
 
     if (!$userProfileData) {
-        $userObject->redirect("index.php/$currentUser");
+        $userObject->redirect(ROOT_URL."$currentUser");
     } else if ($userProfileData->username === $user->username) {
-        $userObject->redirect("index.php");
+        $userObject->redirect(ROOT_URL);
     }
 }
 
@@ -137,7 +137,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                         </a>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="javascript: void(0);">Profile <i class="ri-account-circle-line float-end text-muted"></i></a>
-                            <a class="dropdown-item" href="javascript: void(0);">Setting <i class="ri-settings-3-line float-end text-muted"></i></a>
+                            <a class="dropdown-item" href="javascript: void(0);">Setting <i class="ri-settings-2-line float-end text-muted"></i></a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="logout.php">Log out <i class="ri-logout-circle-r-line float-end text-danger"></i></a>
                         </div>
@@ -160,7 +160,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                         </a>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="javascript: void(0);">Profile <i class="ri-account-circle-line float-end text-muted"></i></a>
-                            <a class="dropdown-item" href="javascript: void(0);">Setting <i class="ri-settings-3-line float-end text-muted"></i></a>
+                            <a class="dropdown-item" href="javascript: void(0);">Setting <i class="ri-settings-2-line float-end text-muted"></i></a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="logout.php">Log out <i class="ri-logout-circle-r-line float-end text-danger"></i></a>
                         </div>
@@ -179,7 +179,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                 <div class="tab-pane" id="pills-user" role="tabpanel" aria-labelledby="pills-user-tab">
                     <!-- Start profile content -->
                     <div>
-                        <div class="px-4 pt-4">
+                        <div class="px-2 pt-2">
                             <div class="user-chat-nav float-end">
                                 <div class="dropdown">
                                     <a href="javascript: void(0);" class="font-size-18 text-muted dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -196,7 +196,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                             <h4 class="mb-0">My Profile</h4>
                         </div>
 
-                        <div class="text-center p-4 border-bottom">
+                        <div class="text-center p-2 border-bottom">
                             <div class="mb-4">
                                 <img src="assets/images/users/<?php if (isset($user->profileImg)) echo $user->profileImg;
                                                                 else echo "default-user.png"; ?>" class="rounded-circle avatar-lg img-thumbnail" alt="">
@@ -208,7 +208,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                         <!-- End profile user -->
 
                         <!-- Start user-profile-desc -->
-                        <div class="p-4 user-profile-desc" data-simplebar>
+                        <div class="p-2 user-profile-desc" data-simplebar>
                             <div class="text-muted">
                                 <p class="mb-4">If several languages coalesce, the grammar of the resulting language is more simple and regular than that of the individual.</p>
                             </div>
@@ -261,7 +261,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                         <div class="accordion-body">
                                             <div class="card p-2 border mb-2">
                                                 <div class="d-flex align-items-center">
-                                                    <div class="avatar-sm me-3 ms-0">
+                                                    <div class="avatar-sm me-2 ms-0">
                                                         <div class="avatar-title bg-primary-subtle text-primary rounded font-size-20">
                                                             <i class="ri-file-text-fill"></i>
                                                         </div>
@@ -298,7 +298,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
                                             <div class="card p-2 border mb-2">
                                                 <div class="d-flex align-items-center">
-                                                    <div class="avatar-sm me-3 ms-0">
+                                                    <div class="avatar-sm me-2 ms-0">
                                                         <div class="avatar-title bg-primary-subtle text-primary rounded font-size-20">
                                                             <i class="ri-image-fill"></i>
                                                         </div>
@@ -335,7 +335,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
                                             <div class="card p-2 border mb-2">
                                                 <div class="d-flex align-items-center">
-                                                    <div class="avatar-sm me-3 ms-0">
+                                                    <div class="avatar-sm me-2 ms-0">
                                                         <div class="avatar-title bg-primary-subtle text-primary rounded font-size-20">
                                                             <i class="ri-image-fill"></i>
                                                         </div>
@@ -372,7 +372,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
                                             <div class="card p-2 border mb-2">
                                                 <div class="d-flex align-items-center">
-                                                    <div class="avatar-sm me-3 ms-0">
+                                                    <div class="avatar-sm me-2 ms-0">
                                                         <div class="avatar-title bg-primary-subtle text-primary rounded font-size-20">
                                                             <i class="ri-file-text-fill"></i>
                                                         </div>
@@ -424,17 +424,17 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                 <div class="tab-pane fade show active" id="pills-chat" role="tabpanel" aria-labelledby="pills-chat-tab">
                     <!-- Start chats content -->
                     <div>
-                        <div class="px-4 pt-4">
+                        <div class="px-2 pt-2">
                             <h4 class="mb-4">Chats</h4>
                             <div class="search-box chat-search-box">
-                                <div class="input-group mb-3 rounded-3">
-                                    <span class="input-group-text text-muted bg-light pe-1 ps-3" id="basic-addon1">
+                                <div class="input-group mb-2 rounded-2">
+                                    <span class="input-group-text text-muted bg-light pe-1 ps-2" id="basic-addon1">
                                         <i class="ri-search-line search-icon font-size-18"></i>
                                     </span>
                                     <input type="text" class="form-control bg-light" placeholder="Search messages or users" aria-label="Search messages or users" aria-describedby="basic-addon1">
                                 </div>
                             </div> <!-- Search Box-->
-                        </div> <!-- .p-4 -->
+                        </div> <!-- .p-2 -->
 
                         <!-- Start user status -->
                         <div class="px-4 pb-4" dir="ltr">
@@ -447,7 +447,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                             <span class="user-status"></span>
                                         </div>
 
-                                        <h5 class="font-size-13 text-truncate mt-3 mb-1">Patrick</h5>
+                                        <h5 class="font-size-13 text-truncate mt-2 mb-1">Patrick</h5>
                                     </a>
                                 </div>
                                 <div class="item">
@@ -457,7 +457,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                             <span class="user-status"></span>
                                         </div>
 
-                                        <h5 class="font-size-13 text-truncate mt-3 mb-1">Doris</h5>
+                                        <h5 class="font-size-13 text-truncate mt-2 mb-1">Doris</h5>
                                     </a>
                                 </div>
 
@@ -468,7 +468,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                             <span class="user-status"></span>
                                         </div>
 
-                                        <h5 class="font-size-13 text-truncate mt-3 mb-1">Emily</h5>
+                                        <h5 class="font-size-13 text-truncate mt-2 mb-1">Emily</h5>
                                     </a>
                                 </div>
 
@@ -479,7 +479,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                             <span class="user-status"></span>
                                         </div>
 
-                                        <h5 class="font-size-13 text-truncate mt-3 mb-1">Steve</h5>
+                                        <h5 class="font-size-13 text-truncate mt-2 mb-1">Steve</h5>
                                     </a>
                                 </div>
 
@@ -492,7 +492,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                             <span class="user-status"></span>
                                         </div>
 
-                                        <h5 class="font-size-13 text-truncate mt-3 mb-1">Teresa</h5>
+                                        <h5 class="font-size-13 text-truncate mt-2 mb-1">Teresa</h5>
                                     </a>
                                 </div>
 
@@ -503,7 +503,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
                         <!-- Start chat-message-list -->
                         <div class="">
-                            <h5 class="mb-3 px-3 font-size-16">Recent</h5>
+                            <h5 class="mb-2 px-2 font-size-16">Recent</h5>
 
                             <div class="chat-message-list px-2" data-simplebar>
 
@@ -514,7 +514,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                          <li>
                                         <a href="javascript: void(0);">
                                             <div class="d-flex">
-                                                <div class="chat-user-img online align-self-center me-3 ms-0">
+                                                <div class="chat-user-img online align-self-center me-2 ms-0">
                                                     <img src="assets/images/users/avatar-2.jpg" class="rounded-circle avatar-xs" alt="">
                                                     <span class="user-status"></span>
                                                 </div>
@@ -533,8 +533,8 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                     <!-- <li class="unread">
                                         <a href="javascript: void(0);">
                                             <div class="d-flex">
-                                                <div class="chat-user-img away align-self-center me-3 ms-0">
-                                                    <img src="assets/images/users/avatar-3.jpg" class="rounded-circle avatar-xs" alt="">
+                                                <div class="chat-user-img away align-self-center me-2 ms-0">
+                                                    <img src="assets/images/users/avatar-2.jpg" class="rounded-circle avatar-xs" alt="">
                                                     <span class="user-status"></span>
                                                 </div>
                                                 <div class="flex-grow-1 overflow-hidden">
@@ -552,7 +552,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                     <li>
                                         <a href="javascript: void(0);">
                                             <div class="d-flex">
-                                                <div class="chat-user-img align-self-center me-3 ms-0">
+                                                <div class="chat-user-img align-self-center me-2 ms-0">
                                                     <div class="avatar-xs">
                                                         <span class="avatar-title rounded-circle bg-primary-subtle text-primary">
                                                             G
@@ -571,7 +571,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                     <li class="active">
                                         <a href="javascript: void(0);">
                                             <div class="d-flex">
-                                                <div class="chat-user-img online align-self-center me-3 ms-0">
+                                                <div class="chat-user-img online align-self-center me-2 ms-0">
                                                     <img src="assets/images/users/avatar-4.jpg" class="rounded-circle avatar-xs" alt="">
                                                     <span class="user-status"></span>
                                                 </div>
@@ -587,7 +587,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                     <li class="unread">
                                         <a href="javascript: void(0);">
                                             <div class="d-flex">
-                                                <div class="chat-user-img align-self-center me-3 ms-0">
+                                                <div class="chat-user-img align-self-center me-2 ms-0">
                                                     <div class="avatar-xs">
                                                         <span class="avatar-title rounded-circle bg-primary-subtle text-primary">
                                                             D
@@ -609,7 +609,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                     <li>
                                         <a href="javascript: void(0);">
                                             <div class="d-flex">
-                                                <div class="chat-user-img away align-self-center me-3 ms-0">
+                                                <div class="chat-user-img away align-self-center me-2 ms-0">
                                                     <img src="assets/images/users/avatar-6.jpg" class="rounded-circle avatar-xs" alt="">
                                                     <span class="user-status"></span>
                                                 </div>
@@ -625,7 +625,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                     <li class="typing">
                                         <a href="javascript: void(0);">
                                             <div class="d-flex">
-                                                <div class="chat-user-img align-self-center online me-3 ms-0">
+                                                <div class="chat-user-img align-self-center online me-2 ms-0">
                                                     <div class="avatar-xs">
                                                         <span class="avatar-title rounded-circle bg-primary-subtle text-primary">
                                                             A
@@ -649,7 +649,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                     <li>
                                         <a href="javascript: void(0);">
                                             <div class="d-flex">
-                                                <div class="chat-user-img align-self-center online me-3 ms-0">
+                                                <div class="chat-user-img align-self-center online me-2 ms-0">
                                                     <div class="avatar-xs">
                                                         <span class="avatar-title rounded-circle bg-primary-subtle text-primary">
                                                             M
@@ -669,7 +669,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                     <li>
                                         <a href="javascript: void(0);">
                                             <div class="d-flex">
-                                                <div class="chat-user-img away align-self-center me-3 ms-0">
+                                                <div class="chat-user-img away align-self-center me-2 ms-0">
                                                     <img src="assets/images/users/avatar-7.jpg" class="rounded-circle avatar-xs" alt="">
                                                     <span class="user-status"></span>
                                                 </div>
@@ -685,7 +685,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                     <li>
                                         <a href="javascript: void(0);">
                                             <div class="d-flex">
-                                                <div class="chat-user-img align-self-center online me-3 ms-0">
+                                                <div class="chat-user-img align-self-center online me-2 ms-0">
                                                     <div class="avatar-xs">
                                                         <span class="avatar-title rounded-circle bg-primary-subtle text-primary">
                                                             J
@@ -705,7 +705,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                     <li>
                                         <a href="javascript: void(0);">
                                             <div class="d-flex">
-                                                <div class="chat-user-img away align-self-center me-3 ms-0">
+                                                <div class="chat-user-img away align-self-center me-2 ms-0">
                                                     <img src="assets/images/users/avatar-8.jpg" class="rounded-circle avatar-xs" alt="">
                                                     <span class="user-status"></span>
                                                 </div>
@@ -721,7 +721,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                     <li>
                                         <a href="javascript: void(0);">
                                             <div class="d-flex">
-                                                <div class="chat-user-img align-self-center online me-3 ms-0">
+                                                <div class="chat-user-img align-self-center online me-2 ms-0">
                                                     <div class="avatar-xs">
                                                         <span class="avatar-title rounded-circle bg-primary-subtle text-primary">
                                                             S
@@ -750,7 +750,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                 <div class="tab-pane" id="pills-groups" role="tabpanel" aria-labelledby="pills-groups-tab">
                     <!-- Start Groups content -->
                     <div>
-                        <div class="p-4">
+                        <div class="p-2">
                             <div class="user-chat-nav float-end">
                                 <div data-bs-toggle="tooltip" data-bs-placement="bottom" title="Create group">
                                     <!-- Button trigger modal -->
@@ -771,7 +771,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                             </button>
                                         </div>
-                                        <div class="modal-body p-4">
+                                        <div class="modal-body p-2">
                                             <form>
                                                 <div class="mb-4">
                                                     <label for="addgroupname-input" class="form-label">Group Name</label>
@@ -779,7 +779,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                                 </div>
                                                 <div class="mb-4">
                                                     <label class="form-label">Group Members</label>
-                                                    <div class="mb-3">
+                                                    <div class="mb-2">
                                                         <button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#groupmembercollapse" aria-expanded="false" aria-controls="groupmembercollapse">
                                                             Select Members
                                                         </button>
@@ -793,7 +793,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                                             <div class="card-body p-2">
                                                                 <div data-simplebar style="max-height: 150px;">
                                                                     <div>
-                                                                        <div class="p-3 fw-bold text-primary">
+                                                                        <div class="p-2 fw-bold text-primary">
                                                                             A
                                                                         </div>
 
@@ -815,7 +815,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                                                     </div>
 
                                                                     <div>
-                                                                        <div class="p-3 fw-bold text-primary">
+                                                                        <div class="p-2 fw-bold text-primary">
                                                                             C
                                                                         </div>
 
@@ -831,7 +831,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                                                     </div>
 
                                                                     <div>
-                                                                        <div class="p-3 fw-bold text-primary">
+                                                                        <div class="p-2 fw-bold text-primary">
                                                                             D
                                                                         </div>
 
@@ -847,7 +847,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                                                     </div>
 
                                                                     <div>
-                                                                        <div class="p-3 fw-bold text-primary">
+                                                                        <div class="p-2 fw-bold text-primary">
                                                                             I
                                                                         </div>
 
@@ -863,7 +863,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                                                     </div>
 
                                                                     <div>
-                                                                        <div class="p-3 fw-bold text-primary">
+                                                                        <div class="p-2 fw-bold text-primary">
                                                                             J
                                                                         </div>
 
@@ -893,7 +893,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                                                     </div>
 
                                                                     <div>
-                                                                        <div class="p-3 fw-bold text-primary">
+                                                                        <div class="p-2 fw-bold text-primary">
                                                                             M
                                                                         </div>
 
@@ -916,7 +916,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                                                     </div>
 
                                                                     <div>
-                                                                        <div class="p-3 fw-bold text-primary">
+                                                                        <div class="p-2 fw-bold text-primary">
                                                                             P
                                                                         </div>
 
@@ -932,7 +932,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                                                     </div>
 
                                                                     <div>
-                                                                        <div class="p-3 fw-bold text-primary">
+                                                                        <div class="p-2 fw-bold text-primary">
                                                                             R
                                                                         </div>
 
@@ -948,7 +948,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                                                     </div>
 
                                                                     <div>
-                                                                        <div class="p-3 fw-bold text-primary">
+                                                                        <div class="p-2 fw-bold text-primary">
                                                                             S
                                                                         </div>
 
@@ -968,7 +968,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="mb-3">
+                                                <div class="mb-2">
                                                     <label for="addgroupdescription-input" class="form-label">Description</label>
                                                     <textarea class="form-control" id="addgroupdescription-input" rows="3" placeholder="Enter Description"></textarea>
                                                 </div>
@@ -984,8 +984,8 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                             <!-- End add group Modal -->
 
                             <div class="search-box chat-search-box">
-                                <div class="input-group rounded-3">
-                                    <span class="input-group-text text-muted bg-light pe-1 ps-3" id="basic-addon1">
+                                <div class="input-group rounded-2">
+                                    <span class="input-group-text text-muted bg-light pe-1 ps-2" id="basic-addon1">
                                         <i class="ri-search-line search-icon font-size-18"></i>
                                     </span>
                                     <input type="text" class="form-control bg-light" placeholder="Search groups..." aria-label="Search groups..." aria-describedby="basic-addon1">
@@ -994,14 +994,14 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                         </div>
 
                         <!-- Start chat-group-list -->
-                        <div class="p-4 chat-message-list chat-group-list" data-simplebar>
+                        <div class="p-2 chat-message-list chat-group-list" data-simplebar>
 
 
                             <ul class="list-unstyled chat-list">
                                 <li>
                                     <a href="javascript: void(0);">
                                         <div class="d-flex align-items-center">
-                                            <div class="chat-user-img me-3 ms-0">
+                                            <div class="chat-user-img me-2 ms-0">
                                                 <div class="avatar-xs">
                                                     <span class="avatar-title rounded-circle bg-primary-subtle text-primary">
                                                         G
@@ -1018,7 +1018,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                 <li>
                                     <a href="javascript: void(0);">
                                         <div class="d-flex align-items-center">
-                                            <div class="chat-user-img me-3 ms-0">
+                                            <div class="chat-user-img me-2 ms-0">
                                                 <div class="avatar-xs">
                                                     <span class="avatar-title rounded-circle bg-primary-subtle text-primary">
                                                         R
@@ -1035,7 +1035,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                 <li>
                                     <a href="javascript: void(0);">
                                         <div class="d-flex align-items-center">
-                                            <div class="chat-user-img me-3 ms-0">
+                                            <div class="chat-user-img me-2 ms-0">
                                                 <div class="avatar-xs">
                                                     <span class="avatar-title rounded-circle bg-primary-subtle text-primary">
                                                         D
@@ -1052,7 +1052,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                 <li>
                                     <a href="javascript: void(0);">
                                         <div class="d-flex align-items-center">
-                                            <div class="chat-user-img me-3 ms-0">
+                                            <div class="chat-user-img me-2 ms-0">
                                                 <div class="avatar-xs">
                                                     <span class="avatar-title rounded-circle bg-primary-subtle text-primary">
                                                         D
@@ -1070,7 +1070,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                 <li>
                                     <a href="javascript: void(0);">
                                         <div class="d-flex align-items-center">
-                                            <div class="chat-user-img me-3 ms-0">
+                                            <div class="chat-user-img me-2 ms-0">
                                                 <div class="avatar-xs">
                                                     <span class="avatar-title rounded-circle bg-primary-subtle text-primary">
                                                         P
@@ -1087,7 +1087,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                 <li>
                                     <a href="javascript: void(0);">
                                         <div class="d-flex align-items-center">
-                                            <div class="chat-user-img me-3 ms-0">
+                                            <div class="chat-user-img me-2 ms-0">
                                                 <div class="avatar-xs">
                                                     <span class="avatar-title rounded-circle bg-primary-subtle text-primary">
                                                         B
@@ -1112,7 +1112,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                 <div class="tab-pane" id="pills-contacts" role="tabpanel" aria-labelledby="pills-contacts-tab">
                     <!-- Start Contact content -->
                     <div>
-                        <div class="p-4">
+                        <div class="p-2">
                             <div class="user-chat-nav float-end">
                                 <div data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add Contact">
                                     <!-- Button trigger modal -->
@@ -1132,13 +1132,13 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                             </button>
                                         </div>
-                                        <div class="modal-body p-4">
+                                        <div class="modal-body p-2">
                                             <form>
-                                                <div class="mb-3">
+                                                <div class="mb-2">
                                                     <label for="addcontactemail-input" class="form-label">Email</label>
                                                     <input type="email" class="form-control" id="addcontactemail-input" placeholder="Enter Email">
                                                 </div>
-                                                <div class="mb-3">
+                                                <div class="mb-2">
                                                     <label for="addcontact-invitemessage-input" class="form-label">Invatation Message</label>
                                                     <textarea class="form-control" id="addcontact-invitemessage-input" rows="3" placeholder="Enter Message"></textarea>
                                                 </div>
@@ -1154,9 +1154,9 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                             <!-- End Add contact Modal -->
 
                             <div class="search-box chat-search-box">
-                                <div class="input-group bg-light  input-group-lg rounded-3">
+                                <div class="input-group bg-light  input-group-lg rounded-2">
                                     <div class="input-group-prepend">
-                                        <button class="btn btn-link text-decoration-none text-muted pe-1 ps-3" type="button">
+                                        <button class="btn btn-link text-decoration-none text-muted pe-1 ps-2" type="button">
                                             <i class="ri-search-line search-icon font-size-18"></i>
                                         </button>
                                     </div>
@@ -1165,13 +1165,13 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                             </div>
                             <!-- End search-box -->
                         </div>
-                        <!-- end p-4 -->
+                        <!-- end p-2 -->
 
                         <!-- Start contact lists -->
-                        <div class="p-4 chat-message-list chat-group-list" data-simplebar>
+                        <div class="p-2 chat-message-list chat-group-list" data-simplebar>
 
                             <div>
-                                <div class="p-3 fw-bold text-primary">
+                                <div class="p-2 fw-bold text-primary">
                                     A
                                 </div>
 
@@ -1215,8 +1215,8 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                             </div>
                             <!-- end contact list A -->
 
-                            <div class="mt-3">
-                                <div class="p-3 fw-bold text-primary">
+                            <div class="mt-2">
+                                <div class="p-2 fw-bold text-primary">
                                     C
                                 </div>
 
@@ -1242,8 +1242,8 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                             </div>
                             <!-- end contact list C -->
 
-                            <div class="mt-3">
-                                <div class="p-3 fw-bold text-primary">
+                            <div class="mt-2">
+                                <div class="p-2 fw-bold text-primary">
                                     D
                                 </div>
 
@@ -1289,8 +1289,8 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                             </div>
                             <!-- end contact list D -->
 
-                            <div class="mt-3">
-                                <div class="p-3 fw-bold text-primary">
+                            <div class="mt-2">
+                                <div class="p-2 fw-bold text-primary">
                                     I
                                 </div>
 
@@ -1317,8 +1317,8 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                             </div>
                             <!-- end contact list I -->
 
-                            <div class="mt-3">
-                                <div class="p-3 fw-bold text-primary">
+                            <div class="mt-2">
+                                <div class="p-2 fw-bold text-primary">
                                     J
                                 </div>
 
@@ -1380,8 +1380,8 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                             </div>
                             <!-- end contact list J -->
 
-                            <div class="mt-3">
-                                <div class="p-3 fw-bold text-primary">
+                            <div class="mt-2">
+                                <div class="p-2 fw-bold text-primary">
                                     M
                                 </div>
 
@@ -1444,8 +1444,8 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                             </div>
                             <!-- end contact list M -->
 
-                            <div class="mt-3">
-                                <div class="p-3 fw-bold text-primary">
+                            <div class="mt-2">
+                                <div class="p-2 fw-bold text-primary">
                                     O
                                 </div>
 
@@ -1472,8 +1472,8 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                             </div>
                             <!-- end contact list O -->
 
-                            <div class="mt-3">
-                                <div class="p-3 fw-bold text-primary">
+                            <div class="mt-2">
+                                <div class="p-2 fw-bold text-primary">
                                     P
                                 </div>
 
@@ -1519,8 +1519,8 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                             </div>
                             <!-- end contact list P -->
 
-                            <div class="mt-3">
-                                <div class="p-3 fw-bold text-primary">
+                            <div class="mt-2">
+                                <div class="p-2 fw-bold text-primary">
                                     R
                                 </div>
 
@@ -1548,8 +1548,8 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                             </div>
                             <!-- end contact list R -->
 
-                            <div class="mt-3">
-                                <div class="p-3 fw-bold text-primary">
+                            <div class="mt-2">
+                                <div class="p-2 fw-bold text-primary">
                                     S
                                 </div>
 
@@ -1623,11 +1623,11 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                 <div class="tab-pane" id="pills-setting" role="tabpanel" aria-labelledby="pills-setting-tab">
                     <!-- Start Settings content -->
                     <div>
-                        <div class="px-4 pt-4">
+                        <div class="px-2 pt-2">
                             <h4 class="mb-0">Settings</h4>
                         </div>
 
-                        <div class="text-center border-bottom p-4">
+                        <div class="text-center border-bottom p-2">
                             <div class="mb-4 profile-user">
                                 <img src="assets/images/users/<?php if (isset($user->profileImg)) echo $user->profileImg;
                                                                 else echo "default-user.png"; ?>" class="rounded-circle avatar-lg img-thumbnail" alt="">
@@ -1651,7 +1651,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                         <!-- End profile user -->
 
                         <!-- Start User profile description -->
-                        <div class="p-4 user-profile-desc" data-simplebar>
+                        <div class="p-2 user-profile-desc" data-simplebar>
                             <div id="settingprofile" class="accordion">
                                 <div class="accordion-item card border mb-2">
                                     <div class="accordion-header" id="personalinfo1">
@@ -1697,7 +1697,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                     </div>
                                     <div id="privacy" class="accordion-collapse collapse" aria-labelledby="privacy1" data-bs-parent="#settingprofile">
                                         <div class="accordion-body">
-                                            <div class="py-3">
+                                            <div class="py-2">
                                                 <div class="d-flex align-items-center">
                                                     <div class="flex-grow-1 overflow-hidden">
                                                         <h5 class="font-size-13 mb-0 text-truncate">Profile photo</h5>
@@ -1714,7 +1714,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="py-3 border-top">
+                                            <div class="py-2 border-top">
                                                 <div class="d-flex align-items-center">
                                                     <div class="flex-grow-1 overflow-hidden">
                                                         <h5 class="font-size-13 mb-0 text-truncate">Last seen</h5>
@@ -1729,7 +1729,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                                 </div>
                                             </div>
 
-                                            <div class="py-3 border-top">
+                                            <div class="py-2 border-top">
                                                 <div class="d-flex align-items-center">
                                                     <div class="flex-grow-1 overflow-hidden">
                                                         <h5 class="font-size-13 mb-0 text-truncate">Status</h5>
@@ -1747,7 +1747,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                                 </div>
                                             </div>
 
-                                            <div class="py-3 border-top">
+                                            <div class="py-2 border-top">
                                                 <div class="d-flex align-items-center">
                                                     <div class="flex-grow-1 overflow-hidden">
                                                         <h5 class="font-size-13 mb-0 text-truncate">Read receipts</h5>
@@ -1761,7 +1761,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                                 </div>
                                             </div>
 
-                                            <div class="py-3 border-top">
+                                            <div class="py-2 border-top">
                                                 <div class="d-flex align-items-center">
                                                     <div class="flex-grow-1 overflow-hidden">
                                                         <h5 class="font-size-13 mb-0 text-truncate">Groups</h5>
@@ -1817,13 +1817,13 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                     </div>
                                     <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="help1" data-bs-parent="#settingprofile">
                                         <div class="accordion-body">
-                                            <div class="py-3">
+                                            <div class="py-2">
                                                 <h5 class="font-size-13 mb-0"><a href="javascript: void(0);" class="text-body d-block">FAQs</a></h5>
                                             </div>
-                                            <div class="py-3 border-top">
+                                            <div class="py-2 border-top">
                                                 <h5 class="font-size-13 mb-0"><a href="javascript: void(0);" class="text-body d-block">Contact</a></h5>
                                             </div>
-                                            <div class="py-3 border-top">
+                                            <div class="py-2 border-top">
                                                 <h5 class="font-size-13 mb-0"><a href="javascript: void(0);" class="text-body d-block">Terms & Privacy policy</a></h5>
                                             </div>
                                         </div>
@@ -1849,14 +1849,14 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
                 <!-- start chat conversation section -->
                 <div class="w-100 overflow-hidden position-relative">
-                    <div class="p-3 p-lg-4 border-bottom user-chat-topbar">
+                    <div class="p-2 p-md-2 border-bottom user-chat-topbar">
                         <div class="row align-items-center">
                             <div class="col-sm-4 col-8">
                                 <div class="d-flex align-items-center">
                                     <div class="d-block d-lg-none me-2 ms-0">
                                         <a href="<?php echo ROOT_URL; ?>" class="user-chat-remove text-muted font-size-16 p-2"><i class="ri-arrow-left-s-line"></i></a>
                                     </div>
-                                    <div class="me-3 ms-0">
+                                    <div class="me-2 ms-0">
                                         <img src="assets/images/users/<?php isset($userProfileData->profileImg) ? print($userProfileData->profileImg) : print("default-user.png"); ?>" class="rounded-circle avatar-xs" alt="">
                                     </div>
                                     <div class="flex-grow-1 overflow-hidden">
@@ -1920,7 +1920,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                     <!-- end chat user head -->
 
                     <!-- start chat conversation -->
-                    <div class="chat-conversation p-3 p-lg-4 " data-simplebar="init">
+                    <div class="chat-conversation p-2 p-md-2 " data-simplebar="init">
                         <?php
                         if ($userProfileData) {
                         ?>
@@ -1948,7 +1948,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                     <!-- end chat conversation end -->
 
                     <!-- start chat input section -->
-                    <div class="chat-input-section p-3 p-lg-4 border-top mb-0">
+                    <div class="chat-input-section p-2 p-md-2 border-top mb-0">
 
                         <form method="post" id="chatForm" class="row g-0">
 
@@ -1987,7 +1987,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
                 <!-- start User profile detail sidebar -->
                 <div class="user-profile-sidebar">
-                    <div class="px-3 px-lg-4 pt-3 pt-lg-4">
+                    <div class="px-2 px-lg-4 pt-2 pt-lg-4">
                         <div class="user-chat-nav text-end">
                             <button type="button" class="btn nav-btn" id="user-profile-hide">
                                 <i class="ri-close-line"></i>
@@ -1995,7 +1995,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                         </div>
                     </div>
 
-                    <div class="text-center p-4 border-bottom">
+                    <div class="text-center p-2 border-bottom">
                         <div class="mb-4">
                             <img src="assets/images/users/<?php $userProfileData ? print($userProfileData->profileImg) : print("default-user.png"); ?>" class="rounded-circle avatar-lg img-thumbnail" alt="">
                         </div>
@@ -2006,7 +2006,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                     <!-- End profile user -->
 
                     <!-- Start user-profile-desc -->
-                    <div class="p-4 user-profile-desc" data-simplebar>
+                    <div class="p-2 user-profile-desc" data-simplebar>
                         <div class="text-muted">
                             <p class="mb-4">If several languages coalesce, the grammar of the resulting language is more simple and regular than that of the individual.</p>
                         </div>
@@ -2058,7 +2058,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                     <div class="accordion-body">
                                         <div class="card p-2 border mb-2">
                                             <div class="d-flex align-items-center">
-                                                <div class="avatar-sm me-3 ms-0">
+                                                <div class="avatar-sm me-2 ms-0">
                                                     <div class="avatar-title bg-primary-subtle text-primary rounded font-size-20">
                                                         <i class="ri-file-text-fill"></i>
                                                     </div>
@@ -2095,7 +2095,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
                                         <div class="card p-2 border mb-2">
                                             <div class="d-flex align-items-center">
-                                                <div class="avatar-sm me-3 ms-0">
+                                                <div class="avatar-sm me-2 ms-0">
                                                     <div class="avatar-title bg-primary-subtle text-primary rounded font-size-20">
                                                         <i class="ri-image-fill"></i>
                                                     </div>
@@ -2132,7 +2132,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
                                         <div class="card p-2 border mb-2">
                                             <div class="d-flex align-items-center">
-                                                <div class="avatar-sm me-3 ms-0">
+                                                <div class="avatar-sm me-2 ms-0">
                                                     <div class="avatar-title bg-primary-subtle text-primary rounded font-size-20">
                                                         <i class="ri-image-fill"></i>
                                                     </div>
@@ -2169,7 +2169,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
                                         <div class="card p-2 border mb-2">
                                             <div class="d-flex align-items-center">
-                                                <div class="avatar-sm me-3 ms-0">
+                                                <div class="avatar-sm me-2 ms-0">
                                                     <div class="avatar-title bg-primary-subtle text-primary rounded font-size-20">
                                                         <i class="ri-file-text-fill"></i>
                                                     </div>
@@ -2224,7 +2224,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <div class="text-center p-4">
+                        <div class="text-center p-2">
                             <div class="avatar-lg mx-auto mb-4">
                                 <img src="assets/images/users/avatar-4.jpg" alt="" class="img-thumbnail rounded-circle">
                             </div>

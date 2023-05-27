@@ -361,7 +361,7 @@ $(document).ready(function () {
     $("#chatForm").submit(function (e) {
         e.preventDefault();
         $.ajax({
-            url: "send.php",
+            url: "send-receive.php",
             type: "POST",
             contentType: false,
             processData: false,
@@ -375,8 +375,6 @@ $(document).ready(function () {
             },
             success: function (res) {
                 if (res === "1") {
-                    alert("sent");
-                } else {
                     $("#submitBtn").html('<i class="ri-send-plane-2-fill"></i>');
                     $("#chatForm").trigger("reset");
                 }
@@ -385,21 +383,28 @@ $(document).ready(function () {
     });
 
 
+    var fromUser = $("#fromUser").val();
+    var sendToUser = $("#sendToUser").val();
+
+    // if chat is opened 
+    if (sendToUser) {
+        let refreshMessage = setInterval(() => {
+            getMessage();
+            if ($("#chatMessages")[0])
+                $("#chatMessages")[0].scrollIntoView(false);
+        }, 500);
+    }
+
+
     // get the message 
-    let refreshMessage = setInterval(() => {
-        getMessage();
-        $("#chatMessages")[0].scrollIntoView(false);
-    }, 500);
-
-
     function getMessage() {
-        let fromUser = $("#fromUser").val();
-        let sendToUser = $("#sendToUser").val();
         $.ajax({
-            url: "send.php",
-            type: "POST",
+            url: "send-receive.php",
+            type: "GET",
+            cache: false,
             data: { fromUser: fromUser, sendToUser: sendToUser, fetch: true },
             success: function (res) {
+                
                 let messages = JSON.parse(res);
                 let htmlStr = "";
                 if (typeof (messages) === "object") {

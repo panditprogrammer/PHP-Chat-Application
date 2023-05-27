@@ -3,7 +3,7 @@
 namespace MyApp;
 
 use PDO;
-
+use PDOException;
 
 class User
 {
@@ -11,7 +11,12 @@ class User
     public function __construct()
     {
         $db = new Database();
-        $this->db = $db->connect();
+        try {
+            $this->db = $db->connect();
+        } catch (PDOException) {
+            die("Database connection Failed!");
+        }
+
         $this->userId = $this->getId();
         $this->sessionId = $this->getSessionId();
     }
@@ -100,15 +105,16 @@ class User
         $stmt->execute();
         $users = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-        foreach ($users as $user) {
+        if ($users) {
+            foreach ($users as $user) {
 
-            if (isset($_GET['username']) && $_GET['username'] === $user->username) {
-                $active = "active";
-            } else {
-                $active = null;
-            }
+                if (isset($_GET['username']) && $_GET['username'] === $user->username) {
+                    $active = "active";
+                } else {
+                    $active = null;
+                }
 
-            print('<li class="' . $active . '">
+                print('<li class="' . $active . '">
                         <a href="' . ROOT_URL . $user->username . '">
                             <div class="d-flex">
                                 <div class="chat-user-img online align-self-center me-3 ms-0">
@@ -124,6 +130,24 @@ class User
                             </div>
                         </a>
                     </li>');
+            }
+        } else {
+            print('<li>
+                        <a href="">
+                            <div class="d-flex">
+                                <div class="chat-user-img online align-self-center me-3 ms-0">
+                                    <img src="assets/images/users/default-user.png" class="rounded-circle avatar-xs" alt="">
+                                    <span class="user-status"></span>
+                                </div>
+
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <h5 class="text-truncate font-size-15 mb-1"> No Users!</h5>
+                                    <p class="chat-user-message text-truncate mb-0">Sorry! user isn\'t available</p>
+                                </div>
+                                <div class="font-size-11">05 min</div>
+                            </div>
+                        </a>
+                 </li>');
         }
     }
 

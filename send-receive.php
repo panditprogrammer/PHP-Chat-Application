@@ -2,9 +2,9 @@
 require_once "core/init.php";
 
 
-if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST) && $_POST['fetch']) {
-    $fromUser = trim(stripcslashes(htmlentities($_POST['fromUser'])));
-    $sendTo = trim(stripcslashes(htmlentities($_POST['sendToUser'])));
+if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET) && $_GET['fetch'] === "true") {
+    $fromUser = trim(stripcslashes(htmlentities($_GET['fromUser'])));
+    $sendTo = trim(stripcslashes(htmlentities($_GET['sendToUser'])));
 
     if (!empty($fromUser) && !empty($sendTo)) {
         echo json_encode($userObject->getMessage($fromUser, $sendTo));

@@ -8,8 +8,11 @@ class Database
 {
 
     private $hostname = "localhost";
+
     private $database = "phpwebrtc";
+
     private $username = "root";
+
     private $password = "";
 
     public function connect()
