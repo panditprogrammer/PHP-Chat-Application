@@ -2,7 +2,7 @@
 require_once "core/init.php";
 
 if ($userObject->isLoggedIn()) {
-    $userObject->redirect("index.php");
+    $userObject->redirect(ROOT_URL);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                     if (password_verify($password, $user->password)) {
                         session_regenerate_id();
                         $_SESSION['userId'] = $user->id;
-                        $userObject->redirect("index.php");
+                        $userObject->redirect(ROOT_URL);
                     } else {
                         $msg = "Incorrect Username or Password";
                     }
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6 col-xl-5">
                     <div class="text-center mb-4">
-                        <a href="index.php" class="auth-logo mb-5 d-block">
+                        <a href="<?php echo ROOT_URL; ?>" class="auth-logo mb-5 d-block">
                             <img src="assets/images/logo-dark.png" alt="" height="30" class="logo logo-dark">
                             <img src="assets/images/logo-light.png" alt="" height="30" class="logo logo-light">
                         </a>

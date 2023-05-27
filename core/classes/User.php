@@ -108,22 +108,22 @@ class User
                 $active = null;
             }
 
-            echo '<li class="' . $active . '">
+            print('<li class="' . $active . '">
                         <a href="' . ROOT_URL . $user->username . '">
                             <div class="d-flex">
                                 <div class="chat-user-img online align-self-center me-3 ms-0">
-                                    <img src="assets/images/users/' . $user->profileImg . '" class="rounded-circle avatar-xs" alt="">
+                                    <img src="assets/images/users/' . ($user->profileImg ? $user->profileImg : "default-user.png") . '" class="rounded-circle avatar-xs" alt="">
                                     <span class="user-status"></span>
                                 </div>
 
                                 <div class="flex-grow-1 overflow-hidden">
-                                    <h5 class="text-truncate font-size-15 mb-1">' . $user->name . '</h5>
+                                    <h5 class="text-truncate font-size-15 mb-1">' . ($user->name ? $user->name : $user->username) . '</h5>
                                     <p class="chat-user-message text-truncate mb-0">Hey! there I\'m available</p>
                                 </div>
                                 <div class="font-size-11">05 min</div>
                             </div>
                         </a>
-                    </li>';
+                    </li>');
         }
     }
 
@@ -160,5 +160,28 @@ class User
         $stmt->bindParam(":sessionId", $sessionId, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_OBJ);
+    }
+
+
+    // get message from user chat 
+    public function getMessage($fromUser, $sendTo)
+    {
+        $stmt = $this->db->prepare("SELECT chatting.* FROM chatting WHERE chatting.fromUser = :fromUser AND chatting.sendTo = :sendTo OR  chatting.fromUser = :sendTo AND chatting.sendTo = :fromUser");
+        $stmt->bindParam(":fromUser", $fromUser, PDO::PARAM_INT);
+        $stmt->bindParam(":sendTo", $sendTo, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
+
+    public function saveMessage($fromUser, $sendTo, $message)
+    {
+        $current_timestamp = date("Y-m-d H:i:s");
+        $stmt = $this->db->prepare("INSERT INTO chatting (fromUser,sendTo,message,created_on) VALUES (:fromUser,:sendTo,:message,:created_on)");
+        $stmt->bindParam(":fromUser", $fromUser, PDO::PARAM_STR);
+        $stmt->bindParam(":sendTo", $sendTo, PDO::PARAM_STR);
+        $stmt->bindParam(":message", $message, PDO::PARAM_STR);
+        $stmt->bindParam(":created_on", $current_timestamp, PDO::PARAM_STR);
+        return $stmt->execute();
     }
 }

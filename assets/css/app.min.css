@@ -1064,10 +1064,6 @@
     }
 }
 
-.chat-conversation li {
-    clear: both
-}
-
 .chat-conversation .chat-avatar {
     margin: 0 16px 0 0
 }
@@ -1110,7 +1106,6 @@
 }
 
 .chat-conversation .conversation-list {
-    margin-bottom: 24px;
     display: -webkit-inline-box;
     display: -ms-inline-flexbox;
     display: inline-flex;
@@ -1220,8 +1215,9 @@
 }
 
 .chat-conversation .right .conversation-list {
-    float: right;
-    text-align: right
+    display: flex;
+    justify-content: end;
+    align-items: center;
 }
 
 .chat-conversation .right .conversation-list .ctext-wrap {

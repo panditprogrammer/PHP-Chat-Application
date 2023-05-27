@@ -2,7 +2,7 @@
 require_once "core/init.php";
 
 if ($userObject->isLoggedIn()) {
-    $userObject->redirect("index.php");
+    $userObject->redirect(ROOT_URL);
 }
 
 $email = $username = null ;
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6 col-xl-5">
                     <div class="text-center">
-                        <a href="index.php" class="auth-logo mb-5 d-block">
+                        <a href="<?php echo ROOT_URL; ?>" class="auth-logo mb-5 d-block">
                             <img src="assets/images/logo-dark.png" alt="" height="30" class="logo logo-dark">
                             <img src="assets/images/logo-light.png" alt="" height="30" class="logo logo-light">
                         </a>

@@ -157,7 +157,7 @@ $(document).ready(function () {
                     $("#remote-username").text(username);
                     $("#remote-profileImg").attr("src", `assets/images/users/${profileImg}`);
                     $("#calling-type").text("Incoming Call...");
-                  
+
                     displayCallScreen();
 
                     // checking username exist in url (if user chat is open )
@@ -345,4 +345,105 @@ $(document).ready(function () {
 
     // hide site loader 
     $("#siteLoader").fadeOut();
+});
+
+
+// ajax message  
+$(document).ready(function () {
+
+    // textarea event 
+    $("#message").keydown(function (e) {
+        if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10)) {
+            $("#chatForm").submit();
+        }
+    });
+
+    $("#chatForm").submit(function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: "send.php",
+            type: "POST",
+            contentType: false,
+            processData: false,
+            cache: false,
+            data: new FormData(this),
+            beforeSend: function () {
+                $("#submitBtn").html(`
+                    <div class="spinner-grow spinner-grow-sm" role="status">
+                    <span class="visually-hidden">sending...</span>
+                    </div>`);
+            },
+            success: function (res) {
+                if (res === "1") {
+                    alert("sent");
+                } else {
+                    $("#submitBtn").html('<i class="ri-send-plane-2-fill"></i>');
+                    $("#chatForm").trigger("reset");
+                }
+            }
+        });
+    });
+
+
+    // get the message 
+    let refreshMessage = setInterval(() => {
+        getMessage();
+        $("#chatMessages")[0].scrollIntoView(false);
+    }, 500);
+
+
+    function getMessage() {
+        let fromUser = $("#fromUser").val();
+        let sendToUser = $("#sendToUser").val();
+        $.ajax({
+            url: "send.php",
+            type: "POST",
+            data: { fromUser: fromUser, sendToUser: sendToUser, fetch: true },
+            success: function (res) {
+                let messages = JSON.parse(res);
+                let htmlStr = "";
+                if (typeof (messages) === "object") {
+                    messages.forEach(message => {
+                        if (message.fromUser == fromUser) {
+                            htmlStr += `
+                            <li class="right">
+                                <div class="conversation-list">
+                                    <div class="user-chat-content">
+                                        <div class="ctext-wrap">
+                                            <div class="ctext-wrap-content p-2">
+                                                <p class="mb-0">
+                                                   ${message.message}
+                                                </p>
+                                                <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <small class="align-middle">${message.created_on}</small></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>`;
+                        } else {
+                            htmlStr += `
+                        <li>
+                            <div class="conversation-list mb-2">
+                                <div class="user-chat-content">
+                                    <div class="ctext-wrap">
+                                        <div class="ctext-wrap-content p-2">
+                                            <p class="mb-0">
+                                                ${message.message}
+                                            </p>
+                                            <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <small class="align-middle">${message.created_on}</small></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>`;
+                        }
+
+                    });
+                }
+
+                $("#chatMessages").html(htmlStr);
+            }
+        });
+    }
+
 });
