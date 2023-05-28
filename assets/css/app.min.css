@@ -5,15 +5,15 @@
 [data-bs-theme=light] {
     --bs-white-text: #fff;
     --bs-secondary: #f5f7fb;
-    --bs-body-secondary-color: #7a7f9a;
-    --bs-text-muted: #7a7f9a;
+    --bs-body-secondary-color: #9a7a7a;
+    --bs-text-muted: #9a7a7a;
     --bs-card-logo-dark: block;
     --bs-card-logo-light: none;
     --bs-sidebar-bg: #fff;
-    --bs-sidebar-menu-item-color: #878a92;
+    --bs-sidebar-menu-item-color: #928787;
     --bs-sidebar-menu-item-active-color: var(--bs-primary);
-    --bs-sidebar-menu-item-active-bg: #f7f7ff;
-    --bs-sidebar-sub-bg: #f5f7fb;
+    --bs-sidebar-menu-item-active-bg: #fff7f7;
+    --bs-sidebar-sub-bg: #fbf5f5;
     --bs-theme-mode-icon: "";
     --bs-accordion-button-bg: #f5f7fb;
     --bs-accordion-bg: #fff;
@@ -21,15 +21,15 @@
 }
 
 [data-bs-theme=dark] {
-    --bs-white: #262e35;
+    --bs-white: #202124;
     --bs-white-rgb: 38, 46, 53;
-    --bs-light: #36404a;
+    --bs-light: #292a2b;
     --bs-light-rgb: 54, 64, 74;
     --bs-dark: #eff2f7;
     --bs-dark-rgb: 239, 242, 247;
-    --bs-secondary: #7a7f9a;
+    --bs-secondary: #9a7a7a;
     --bs-secondary-rgb: 122, 127, 154;
-    --bs-text-muted: #9aa1b9;
+    --bs-text-muted: #b99a9a;
     --bs-text-muted-rgb: 154, 161, 185;
     --bs-sidebar-bg: #36404a;
     --bs-sidebar-menu-item-color: #a6b0cf;
@@ -230,7 +230,7 @@
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-    background-color: #7269ef;
+    background-color: #ff5200;
     color: #fff;
     display: -webkit-box;
     display: -ms-flexbox;
@@ -424,8 +424,8 @@
 
 .custom-checkbox-primary .custom-control-input:checked~.custom-control-label:before,
 .custom-radio-primary .custom-control-input:checked~.custom-control-label:before {
-    background-color: #7269ef;
-    border-color: #7269ef
+    background-color: #ff5200;
+    border-color: #ff5200
 }
 
 .custom-checkbox-secondary .custom-control-input:checked~.custom-control-label:before,
@@ -874,12 +874,12 @@
 
 .side-menu-nav .nav-item .nav-link.active {
     background-color: var(--bs-sidebar-menu-item-active-bg);
-    color: #7269ef
+    color: #ff5200
 }
 
 .side-menu-nav .nav-item.show>.nav-link {
     background-color: var(--bs-sidebar-menu-item-active-bg);
-    color: #7269ef
+    color: #ff5200
 }
 
 .side-menu-nav .profile-user {
@@ -976,12 +976,12 @@
 }
 
 .chat-list li.typing .chat-user-message {
-    color: #7269ef;
+    color: #ff5200;
     font-weight: 500
 }
 
 .chat-list li.typing .chat-user-message .dot {
-    background-color: #7269ef
+    background-color: #ff5200
 }
 
 .chat-list li .unread-message {
@@ -1069,7 +1069,7 @@
 
 
 
-.user-chat-topbar{
+.user-chat-topbar {
     height: 57px;
 }
 

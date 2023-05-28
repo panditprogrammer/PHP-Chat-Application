@@ -12,7 +12,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
     $userProfileData = $userObject->getUserByUsername($_GET['username']);
 
     if (!$userProfileData) {
-        $userObject->redirect(ROOT_URL."$currentUser");
+        $userObject->redirect(ROOT_URL . "$currentUser");
     } else if ($userProfileData->username === $user->username) {
         $userObject->redirect(ROOT_URL);
     }
@@ -31,7 +31,24 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
     <meta content="Pandit Programmer (Chandan Prajapati)" name="author" />
     <meta name="keywords" content="Free Video/Audio Calling, Make video call using website online, free voice calling website, video calling Web Application. Free Online Chatting Apps, Online Video Chatting, Online HD Voice Calling, ">
     <!-- App favicon -->
-    <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+    <link rel="apple-touch-icon" sizes="57x57" href="<?php echo ROOT_URL; ?>assets/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="<?php echo ROOT_URL; ?>assets/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="<?php echo ROOT_URL; ?>assets/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="<?php echo ROOT_URL; ?>assets/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="<?php echo ROOT_URL; ?>assets/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="<?php echo ROOT_URL; ?>assets/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="<?php echo ROOT_URL; ?>assets/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="<?php echo ROOT_URL; ?>assets/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo ROOT_URL; ?>assets/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="<?php echo ROOT_URL; ?>assets/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo ROOT_URL; ?>assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="<?php echo ROOT_URL; ?>assets/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo ROOT_URL; ?>assets/favicon/favicon-16x16.png">
+    <link rel="manifest" href="<?php echo ROOT_URL; ?>assets/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="<?php echo ROOT_URL; ?>assets/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
 
     <!-- magnific-popup css -->
     <link href="assets/libs/magnific-popup/magnific-popup.css" rel="stylesheet" type="text/css" />
@@ -91,26 +108,21 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
             <div class="navbar-brand-box">
                 <a href="<?php echo ROOT_URL; ?>" class="logo logo-dark">
                     <span class="logo-sm">
-                        <img src="assets/images/logo.svg" alt="" height="30">
+                        <img src="<?php echo ROOT_URL; ?>assets/images/logo.svg" alt="" height="30">
                     </span>
                 </a>
 
-                <a href="index.html" class="logo logo-light">
+                <a href="<?php echo ROOT_URL; ?>" class="logo logo-light">
                     <span class="logo-sm">
-                        <img src="assets/images/logo.svg" alt="" height="30">
+                        <img src="<?php echo ROOT_URL; ?>assets/images/logo.svg" alt="" height="30">
                     </span>
                 </a>
             </div>
             <!-- end navbar-brand-box -->
 
             <!-- Start side-menu nav -->
-            <div class="flex-lg-column my-auto">
+            <div class="flex-lg-column mt-auto">
                 <ul class="nav nav-pills side-menu-nav justify-content-center" role="tablist">
-                    <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Profile">
-                        <a class="nav-link" id="pills-user-tab" data-bs-toggle="pill" href="#pills-user" role="tab">
-                            <i class="ri-account-circle-line"></i>
-                        </a>
-                    </li>
                     <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Chats">
                         <a class="nav-link active" id="pills-chat-tab" data-bs-toggle="pill" href="#pills-chat" role="tab">
                             <i class="ri-chat-1-line"></i>
@@ -126,48 +138,27 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                             <i class="ri-contacts-book-line"></i>
                         </a>
                     </li>
-                    <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Settings">
-                        <a class="nav-link" id="pills-setting-tab" data-bs-toggle="pill" href="#pills-setting" role="tab">
-                            <i class="ri-settings-2-line"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown profile-user-dropdown d-inline-block d-lg-none">
+                    <li class="nav-item dropdown profile-user-dropdown d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top" title="<?php $user->name ? print($user->name) : print($user->username); ?>">
                         <a class="nav-link dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <img src="assets/images/users/<?php isset($user->profileImg) ?  print($user->profileImg) : print("default-user.png"); ?>" alt="" class="profile-user rounded-circle">
                         </a>
+
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="javascript: void(0);">Profile <i class="ri-account-circle-line float-end text-muted"></i></a>
-                            <a class="dropdown-item" href="javascript: void(0);">Setting <i class="ri-settings-2-line float-end text-muted"></i></a>
+                            <a class="dropdown-item" id="pills-user-tab" data-bs-toggle="pill" href="#pills-user" role="tab">
+                                Profile <i class="ri-account-circle-line float-end text-muted"></i>
+                            </a>
+                            <a class="dropdown-item" id="pills-setting-tab" data-bs-toggle="pill" href="#pills-setting" role="tab">
+                                Setting <i class="ri-settings-2-line float-end text-muted"></i>
+                            </a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="logout.php">Log out <i class="ri-logout-circle-r-line float-end text-danger"></i></a>
+                            <a class="dropdown-item" href="<?php echo ROOT_URL; ?>logout.php">
+                                Log out <i class="ri-logout-circle-r-line float-end text-danger"></i>
+                            </a>
                         </div>
                     </li>
                 </ul>
             </div>
             <!-- end side-menu nav -->
-
-            <div class="flex-lg-column d-none d-lg-block">
-                <ul class="nav side-menu-nav justify-content-center">
-                    <li class="nav-item">
-                        <a class="nav-link light-dark-mode" href="javascript: void(0);" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="right" title="Dark / Light Mode">
-                            <i class="ri-contrast-2-line"></i>
-                        </a>
-                    </li>
-
-                    <li class="nav-item btn-group dropup profile-user-dropdown">
-                        <a class="nav-link dropdown-toggle" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img src="assets/images/users/<?php isset($user->profileImg) ? print($user->profileImg) : print("default-user.png"); ?>" alt="" class="profile-user rounded-circle">
-                        </a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="javascript: void(0);">Profile <i class="ri-account-circle-line float-end text-muted"></i></a>
-                            <a class="dropdown-item" href="javascript: void(0);">Setting <i class="ri-settings-2-line float-end text-muted"></i></a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="logout.php">Log out <i class="ri-logout-circle-r-line float-end text-danger"></i></a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <!-- Side menu user -->
         </div>
         <!-- end left sidebar-menu -->
 
@@ -1653,6 +1644,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                         <!-- Start User profile description -->
                         <div class="p-2 user-profile-desc" data-simplebar>
                             <div id="settingprofile" class="accordion">
+
                                 <div class="accordion-item card border mb-2">
                                     <div class="accordion-header" id="personalinfo1">
                                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#personalinfo" aria-expanded="true" aria-controls="personalinfo">
@@ -1684,6 +1676,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                                 <p class="text-muted mb-1">Location</p>
                                                 <h5 class="font-size-14 mb-0">California, USA</h5>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -1829,6 +1822,20 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                         </div>
                                     </div>
                                 </div>
+
+                                <hr>
+
+                                <div class="d-flex justify-content-around align-items-center text-center mt-4">
+                                    <div class="w-50">
+                                        Change Theme
+                                    </div>
+                                    <div class="w-50">
+                                        <a class="btn btn-light w-100 light-dark-mode" href="javascript: void(0);" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="right" title="Dark / Light Mode">
+                                            <i class="ri-contrast-2-line"></i>
+                                        </a>
+                                    </div>
+
+                                </div>
                             </div>
                             <!-- end profile-setting-accordion -->
                         </div>
@@ -1955,7 +1962,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                             <div class="col">
                                 <input type="hidden" name="fromUser" id="fromUser" value="<?php echo $user->id; ?>">
                                 <input type="hidden" name="sendToUser" id="sendToUser" value="<?php isset($userProfileData) ? print($userProfileData->id) : ""; ?>">
-                                <textarea autofocus name="message" id="message" title="Press CTRL + ENTER to send" style="resize: none;" rows="2" class="form-control form-control-lg bg-light border-light" <?php if (!isset($userProfileData)) echo "disabled"; ?> placeholder="Write Message..."></textarea>
+                                <textarea name="message" id="message" title="Press CTRL + ENTER to send" style="resize: none;" rows="2" class="form-control form-control-lg bg-light border-light" <?php if (!isset($userProfileData)) echo "disabled"; ?> placeholder="Write Message..."></textarea>
                             </div>
                             <div class="col-auto">
                                 <div class="chat-input-links ms-md-2 me-md-0 h-100">

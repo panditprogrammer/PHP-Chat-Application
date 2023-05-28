@@ -351,13 +351,6 @@ $(document).ready(function () {
 // ajax message  
 $(document).ready(function () {
 
-    // textarea event 
-    $("#message").keydown(function (e) {
-        if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10)) {
-            $("#chatForm").submit();
-        }
-    });
-
     $("#chatForm").submit(function (e) {
         e.preventDefault();
         $.ajax({
@@ -383,18 +376,23 @@ $(document).ready(function () {
     });
 
 
+
+    var refreshMessage;
     var fromUser = $("#fromUser").val();
     var sendToUser = $("#sendToUser").val();
 
+    fetchMessages();
     // if chat is opened 
-    if (sendToUser) {
-        let refreshMessage = setInterval(() => {
-            getMessage();
-            if ($("#chatMessages")[0])
-                $("#chatMessages")[0].scrollIntoView(false);
-        }, 500);
-    }
+    function fetchMessages() {
+        if (sendToUser) {
+            refreshMessage = setInterval(() => {
+                getMessage();
+                if ($("#chatMessages")[0])
+                    $("#chatMessages")[0].scrollIntoView(false);
+            }, 500);
+        }
 
+    }
 
     // get the message 
     function getMessage() {
@@ -404,7 +402,7 @@ $(document).ready(function () {
             cache: false,
             data: { fromUser: fromUser, sendToUser: sendToUser, fetch: true },
             success: function (res) {
-                
+
                 let messages = JSON.parse(res);
                 let htmlStr = "";
                 if (typeof (messages) === "object") {
@@ -450,5 +448,23 @@ $(document).ready(function () {
             }
         });
     }
+
+    // textarea event 
+    $("#message").keydown(function (e) {
+        if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10)) {
+            $("#chatForm").submit();
+            $("#message").focusout();
+        }
+    });
+
+
+    // when textarea is active 
+    $("#message").focusin(() => {
+        clearInterval(refreshMessage);
+    })
+
+    $("#message").focusout(() => {
+        fetchMessages();
+    })
 
 });
