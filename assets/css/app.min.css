@@ -1070,7 +1070,7 @@
 
 
 .user-chat-topbar {
-    height: 57px;
+    height: 66px;
 }
 
 
@@ -1166,9 +1166,9 @@
 
 .chat-conversation .conversation-list .ctext-wrap-content {
     padding: 12px 20px;
-    background-color: var(--bs-primary);
+    background-color: var(--bs-orange);
     border-radius: 8px 8px 8px 0;
-    color: #fff;
+    color: #000;
     position: relative
 }
 
@@ -1176,8 +1176,8 @@
     content: "";
     position: absolute;
     border: 5px solid transparent;
-    border-left-color: var(--bs-primary);
-    border-top-color: var(--bs-primary);
+    border-left-color: var(--bs-orange);
+    border-top-color: var(--bs-orange);
     left: 0;
     right: auto;
     bottom: -10px
@@ -1210,7 +1210,7 @@
     font-size: 10px;
     margin-top: 4px;
     text-align: left;
-    color: rgba(255, 255, 255, .5)
+    color: #000;
 }
 
 .chat-conversation .conversation-list .message-img {
@@ -1302,7 +1302,7 @@
 }
 
 .chat-conversation {
-    height: calc(100vh - 132px)
+    height: calc(100vh - 141px)
 }
 
 @media (max-width: 991.98px) {

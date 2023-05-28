@@ -1864,13 +1864,14 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                         <a href="<?php echo ROOT_URL; ?>" class="user-chat-remove text-muted font-size-16 p-2"><i class="ri-arrow-left-s-line"></i></a>
                                     </div>
                                     <div class="me-2 ms-0">
-                                        <img src="assets/images/users/<?php isset($userProfileData->profileImg) ? print($userProfileData->profileImg) : print("default-user.png"); ?>" class="rounded-circle avatar-xs" alt="">
+                                        <img src="assets/images/users/<?php isset($userProfileData->profileImg) ? print($userProfileData->profileImg) : print("default-user.png"); ?>" class="rounded-circle avatar-sm" alt="">
                                     </div>
                                     <div class="flex-grow-1 overflow-hidden">
-                                        <h5 class="font-size-16 mb-0 text-truncate">
-                                            <a href="javascript:void(0)" class="text-reset user-profile-<?php $userProfileData ? print("show") : print(""); ?>"><?php $userProfileData ? print($userProfileData->username) : print(""); ?></a>
-                                            <i class="ri-record-circle-fill font-size-10 text-<?php $userProfileData ? print("success") : print("secondary"); ?> d-inline-block ms-1"></i>
-                                        </h5>
+                                        <h6 class="mb-0 text-truncate">
+                                            <a href="javascript:void(0)" class="text-reset user-profile-<?php $userProfileData ? print("show") : print(""); ?>"> <?php $userProfileData ? print($userProfileData->username) : print(""); ?></a>
+                                            <i class="ri-checkbox-blank-circle-fill font-size-10 d-inline-block ms-1" id="remoteUserStatusColor"></i>
+                                        </h6>
+                                        <small class="small" id="remoteUserStatus">...</small>
                                     </div>
                                 </div>
                             </div>
@@ -1978,7 +1979,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                             </button>
                                         </li> -->
                                         <li class="list-inline-item h-100">
-                                            <button type="submit" id="submitBtn" class="btn btn-primary font-size-16 h-100 btn-lg chat-send waves-effect waves-light <?php if (!isset($userProfileData)) echo "disabled"; ?>">
+                                            <button type="submit" id="submitBtn" disabled class="btn btn-primary font-size-16 h-100 btn-lg chat-send waves-effect waves-light <?php if (!isset($userProfileData)) echo "disabled"; ?>">
                                                 <i class="ri-send-plane-2-fill"></i>
                                             </button>
                                         </li>

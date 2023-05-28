@@ -208,4 +208,29 @@ class User
         $stmt->bindParam(":created_on", $current_timestamp, PDO::PARAM_STR);
         return $stmt->execute();
     }
+
+    public function updateLastSeen($userId, $timestamp)
+    {
+        $stmt = $this->db->prepare("UPDATE users SET last_seen = :last_seen WHERE id = :userId");
+        $stmt->bindParam(":userId", $userId, PDO::PARAM_INT);
+        $stmt->bindParam(":last_seen", $timestamp, PDO::PARAM_STR);
+        return $stmt->execute();
+    }
+
+    public function updateStatus($userId, $status)
+    {
+        $stmt = $this->db->prepare("UPDATE users SET status = :status WHERE id = :userId");
+        $stmt->bindParam(":userId", $userId, PDO::PARAM_INT);
+        $stmt->bindParam(":status", $status, PDO::PARAM_STR);
+        return $stmt->execute();
+    }
+
+    // get activity 
+    public function getUserActivities($userId)
+    {
+        $stmt = $this->db->prepare("SELECT status,last_seen FROM users WHERE id = :userId");
+        $stmt->bindParam(":userId", $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    }
 }

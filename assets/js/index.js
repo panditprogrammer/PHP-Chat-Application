@@ -375,24 +375,42 @@ $(document).ready(function () {
         });
     });
 
-
-
-    var refreshMessage;
+    var refreshMessage, updateStatusInterval;
     var fromUser = $("#fromUser").val();
     var sendToUser = $("#sendToUser").val();
+    var messageInputArea = $("#message");
+    var submitBtn = $("#submitBtn");
+    var remoteUserStatus = $("#remoteUserStatus");
+    var remoteUserStatusColor = $("#remoteUserStatusColor");
+    // var 
+
 
     fetchMessages();
+    startUpdateStatus("Online");
+
+    // disable btn if input box empty 
+    function isEmptyInputArea() {
+        console.log(messageInputArea.val().trim());
+        console.log(messageInputArea.val().trim().length);
+        if (messageInputArea.val().trim().length === 0) {
+            submitBtn.prop('disabled', true);
+        } else {
+            submitBtn.prop('disabled', false);
+        }
+    }
+
     // if chat is opened 
     function fetchMessages() {
         if (sendToUser) {
-            refreshMessage = setInterval(() => {
+            // refreshMessage = setInterval(() => {
                 getMessage();
+                getRemoteActivities();
                 if ($("#chatMessages")[0])
-                    $("#chatMessages")[0].scrollIntoView(false);
-            }, 500);
+                    $("#chatMessages")[0].scrollIntoView(false); // show the recent messages 
+            // }, 500);
         }
-
     }
+
 
     // get the message 
     function getMessage() {
@@ -449,22 +467,89 @@ $(document).ready(function () {
         });
     }
 
+    // get activity from db 
+    function getRemoteActivities() {
+        $.ajax({
+            url: "send-receive.php",
+            type: "GET",
+            cache: false,
+            data: { sendTo: sendToUser, getActivity: true },
+            success: function (res) {
+                if (res !== "false") {
+                    let = activities = JSON.parse(res);
+                    if (activities.status) {
+                        remoteUserStatus.text(activities.status);
+                        remoteUserStatusColor.css("color", "#06d6a0");
+                    }
+                } else {
+                    remoteUserStatusColor.css("color", "gray");
+                    remoteUserStatus.text("Offline");
+                }
+            }
+        });
+    }
+
+    // set lastseen  
+    function updateLastSeen() {
+        let currentTimestamp = (new Date((new Date((new Date(new Date())).toISOString())).getTime() - ((new Date()).getTimezoneOffset() * 60000))).toISOString().slice(0, 19).replace('T', ' ');
+        $.ajax({
+            url: "send-receive.php",
+            type: "GET",
+            cache: false,
+            data: { fromUser: fromUser, timeStamp: currentTimestamp },
+            success: function (res) {
+                // console.log(res);
+
+            }
+        });
+    }
+
+    // check Realtime Update 
+    function updateStatus(status) {
+        $.ajax({
+            url: "send-receive.php",
+            type: "GET",
+            cache: false,
+            data: { fromUser: fromUser, status: status },
+            success: function (res) {
+                // console.log(res);
+                // fetch remote user status 
+            }
+        });
+    }
+
+    function startUpdateStatus(status) {
+        updateStatusInterval = setInterval(() => {
+            updateStatus(status);
+        }, 1000);
+    }
+
+    var LastSeenInterval = setInterval(() => {
+        updateLastSeen();
+    }, 10 * 1000);
+
     // textarea event 
-    $("#message").keydown(function (e) {
+    messageInputArea.keyup((e) => {
+
         if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10)) {
             $("#chatForm").submit();
-            $("#message").focusout();
+            messageInputArea.focusout();
         }
+        isEmptyInputArea();
     });
 
 
     // when textarea is active 
-    $("#message").focusin(() => {
+    messageInputArea.focusin(() => {
         clearInterval(refreshMessage);
+        clearInterval(updateStatusInterval);
+        startUpdateStatus("Typing...")
     })
 
-    $("#message").focusout(() => {
+    messageInputArea.focusout(() => {
         fetchMessages();
+        clearInterval(updateStatusInterval);
+        startUpdateStatus("Online");
     })
 
 });
