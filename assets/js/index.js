@@ -386,12 +386,11 @@ $(document).ready(function () {
     var activities = null;
 
 
+    if (sendToUser) {
+        RTfetchMessages();
+        setLastSeen();
+    }
 
-    // initalize 
-    // fetch 
-    RTfetchMessages();
-    setLastSeen();
-    // save 
     RTUpdateStatus(null);
 
 
@@ -474,15 +473,13 @@ $(document).ready(function () {
             url: "send-receive.php",
             type: "GET",
             cache: false,
-            data: { sendTo: sendToUser, getActivity: true },
+            data: { fromUser: fromUser, sendTo: sendToUser, getActivity: true },
             success: function (res) {
                 if (res !== "false") {
                     activities = JSON.parse(res);
                     if (activities) {
                         if (activities.status)
                             localStorage.setItem("remoteUserStatus", activities.status);
-
-                        remoteUserStatusColor.css("color", "#06d6a0");
 
                         if (lastSeenArr.length > 5) {
                             lastSeenArr.splice(0, 2);
@@ -494,8 +491,7 @@ $(document).ready(function () {
                     }
 
                 } else {
-                    remoteUserStatusColor.css("color", "gray");
-                    remoteUserStatus.text("Offline");
+                    localStorage.setItem("last_seen", "Active");
                 }
             }
         });
@@ -507,6 +503,7 @@ $(document).ready(function () {
                 localStorage.setItem("remoteUserStatus", activities.last_seen);
             } else {
                 localStorage.setItem("remoteUserStatus", "Online");
+                remoteUserStatusColor.css("color", "#06d6a0");
             }
         }, 1000);
     }
@@ -525,7 +522,7 @@ $(document).ready(function () {
 
     //===================== save current user to db  =====================
     // set lastseen  
-    function updateLastSeen() {
+    function updateLastSeen(fromUser) {
         let currentTimestamp = (new Date((new Date((new Date(new Date())).toISOString())).getTime() - ((new Date()).getTimezoneOffset() * 60000))).toISOString().slice(0, 19).replace('T', ' ');
         $.ajax({
             url: "send-receive.php",
@@ -533,15 +530,14 @@ $(document).ready(function () {
             cache: false,
             data: { fromUser: fromUser, timeStamp: currentTimestamp },
             success: function (res) {
-                // console.log(res);
-
+                // do nothing 
             }
         });
     }
 
     // set last seen 
     updateLastSeenInterval = setInterval(() => {
-        updateLastSeen();
+        updateLastSeen(fromUser);
     }, 500);
 
     // set Realtime Update 
@@ -550,9 +546,9 @@ $(document).ready(function () {
             url: "send-receive.php",
             type: "GET",
             cache: false,
-            data: { fromUser: fromUser, status: status },
+            data: { fromUser: fromUser, sendTo: sendToUser, status: status },
             success: function (res) {
-                // console.log(res);
+                // do nothing  
             }
         });
     }
@@ -562,6 +558,7 @@ $(document).ready(function () {
             updateStatus(status);
         }, 500);
     }
+
 
 
     //=====================  Utility funcs  =====================

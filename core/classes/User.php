@@ -57,6 +57,9 @@ class User
         $stmt->bindParam(":username", $username, PDO::PARAM_STR);
         $stmt->bindParam(":password", $password, PDO::PARAM_STR);
         $stmt->bindParam(":created_on", $current_timestamp, PDO::PARAM_STR);
+
+        return $stmt->execute();
+
         return $stmt->execute();
     }
 
@@ -197,9 +200,24 @@ class User
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
+    // checking numm of message 
+    private function getMessageRowsNum($fromUser, $sendTo)
+    {
+        $stmt = $this->db->prepare("SELECT count(id) as numOfMsg FROM chatting WHERE fromUser = :fromUser AND sendTo = :sendTo");
+        $stmt->bindParam(":fromUser", $fromUser, PDO::PARAM_INT);
+        $stmt->bindParam(":sendTo", $sendTo, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_NUM);
+    }
 
     public function saveMessage($fromUser, $sendTo, $message)
     {
+        // only for first time 
+        $result = $this->getMessageRowsNum($fromUser, $sendTo);
+        if ($result[0] === 0) {
+            $this->initializeActivities($fromUser, $sendTo);
+        }
+
         $current_timestamp = date("Y-m-d H:i:s");
         $stmt = $this->db->prepare("INSERT INTO chatting (fromUser,sendTo,message,created_on) VALUES (:fromUser,:sendTo,:message,:created_on)");
         $stmt->bindParam(":fromUser", $fromUser, PDO::PARAM_STR);
@@ -217,20 +235,40 @@ class User
         return $stmt->execute();
     }
 
-    public function updateStatus($userId, $status)
+    public function updateStatus($fromUser, $sendTo, $status)
     {
-        $stmt = $this->db->prepare("UPDATE users SET status = :status WHERE id = :userId");
-        $stmt->bindParam(":userId", $userId, PDO::PARAM_INT);
+        $stmt = $this->db->prepare("UPDATE activities SET status = :status WHERE fromUser = :fromUser AND sendTo = :sendTo");
         $stmt->bindParam(":status", $status, PDO::PARAM_STR);
+        $stmt->bindParam(":fromUser", $fromUser, PDO::PARAM_INT);
+        $stmt->bindParam(":sendTo", $sendTo, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
-    // get activity 
-    public function getUserActivities($userId)
+    public function getStatus($fromUser, $sendTo)
     {
-        $stmt = $this->db->prepare("SELECT status,last_seen FROM users WHERE id = :userId");
+        $stmt = $this->db->prepare("SELECT status FROM activities WHERE fromUser = :fromUser AND sendTo = :sendTo");
+        $stmt->bindParam(":fromUser", $fromUser, PDO::PARAM_INT);
+        $stmt->bindParam(":sendTo", $sendTo, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getLastSeen($userId)
+    {
+        $stmt = $this->db->prepare("SELECT last_seen FROM users WHERE users.id = :userId");
         $stmt->bindParam(":userId", $userId, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_OBJ);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
+    private function initializeActivities($fromUser, $sendTo)
+    {
+        $current_timestamp = date("Y-m-d H:i:s");
+        $stmt = $this->db->prepare("INSERT INTO activities (fromUser,sendTo,created_on) VALUES (:fromUser,:sendTo,:created_on)");
+        $stmt->bindParam(":fromUser", $fromUser, PDO::PARAM_INT);
+        $stmt->bindParam(":sendTo", $sendTo, PDO::PARAM_INT);
+        $stmt->bindParam(":created_on", $current_timestamp, PDO::PARAM_STR);
+        return $stmt->execute();
     }
 }

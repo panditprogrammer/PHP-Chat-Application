@@ -36,10 +36,11 @@ if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['timeStamp'])) {
 if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['status'])) {
 
     $fromUser = trim(stripcslashes(htmlentities($_GET['fromUser'])));
+    $sendTo = trim(stripcslashes(htmlentities($_GET['sendTo'])));
     $status = trim(stripcslashes(htmlentities($_GET['status'])));
 
-    if (!empty($fromUser)) {
-        $userObject->updateStatus($fromUser, $status);
+    if (!empty($fromUser) && !empty($sendTo)) {
+        $userObject->updateStatus($fromUser, $sendTo, $status);
         echo "true";
     } else {
         echo "false";
@@ -50,10 +51,14 @@ if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['status'])) {
 // get user activities
 if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['getActivity'])) {
 
+    $fromUser = trim(stripcslashes(htmlentities($_GET['fromUser'])));
     $sendTo = trim(stripcslashes(htmlentities($_GET['sendTo'])));
 
-    if (!empty($sendTo)) {
-        echo json_encode($userObject->getUserActivities($sendTo));
+    if (!empty($fromUser) && !empty($sendTo)) {
+        $arr0 =  $userObject->getStatus($sendTo, $fromUser) ? $userObject->getStatus($sendTo, $fromUser) : [];
+        $arr1 =  $userObject->getLastSeen($sendTo) ? $userObject->getLastSeen($sendTo) : [];
+
+        echo json_encode(array_merge($arr0, $arr1));
     } else {
         echo "false";
     }
