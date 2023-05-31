@@ -375,43 +375,37 @@ $(document).ready(function () {
         });
     });
 
-    var refreshMessage, updateStatusInterval;
+    var refreshMessage, updateStatusInterval, updateLastSeenInterval;
     var fromUser = $("#fromUser").val();
     var sendToUser = $("#sendToUser").val();
     var messageInputArea = $("#message");
     var submitBtn = $("#submitBtn");
     var remoteUserStatus = $("#remoteUserStatus");
     var remoteUserStatusColor = $("#remoteUserStatusColor");
-    // var 
+    var lastSeenArr = Array();
+    var activities = null;
 
 
-    fetchMessages();
-    startUpdateStatus("Online");
 
-    // disable btn if input box empty 
-    function isEmptyInputArea() {
-        console.log(messageInputArea.val().trim());
-        console.log(messageInputArea.val().trim().length);
-        if (messageInputArea.val().trim().length === 0) {
-            submitBtn.prop('disabled', true);
-        } else {
-            submitBtn.prop('disabled', false);
-        }
-    }
+    // initalize 
+    // fetch 
+    RTfetchMessages();
+    setLastSeen();
+    // save 
+    RTUpdateStatus(null);
 
+
+    //===================== get remote user from db  ====================
     // if chat is opened 
-    function fetchMessages() {
+    function RTfetchMessages() {
         if (sendToUser) {
-            // refreshMessage = setInterval(() => {
+            refreshMessage = setInterval(() => {
                 getMessage();
-                getRemoteActivities();
                 if ($("#chatMessages")[0])
                     $("#chatMessages")[0].scrollIntoView(false); // show the recent messages 
-            // }, 500);
+            }, 500);
         }
     }
-
-
     // get the message 
     function getMessage() {
         $.ajax({
@@ -435,7 +429,7 @@ $(document).ready(function () {
                                                 <p class="mb-0">
                                                    ${message.message}
                                                 </p>
-                                                <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <small class="align-middle">${message.created_on}</small></p>
+                                                <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <small class="align-middle">${sqlToJSFormat(message.created_on)}</small></p>
                                             </div>
                                         </div>
                                     </div>
@@ -451,7 +445,7 @@ $(document).ready(function () {
                                             <p class="mb-0">
                                                 ${message.message}
                                             </p>
-                                            <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <small class="align-middle">${message.created_on}</small></p>
+                                            <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <small class="align-middle">${sqlToJSFormat(message.created_on)}</small></p>
                                         </div>
                                     </div>
                                 </div>
@@ -467,6 +461,13 @@ $(document).ready(function () {
         });
     }
 
+    // get updated parameters 
+    if (sendToUser) {
+        setInterval(() => {
+            getRemoteActivities();
+        }, 500);
+    }
+
     // get activity from db 
     function getRemoteActivities() {
         $.ajax({
@@ -476,11 +477,22 @@ $(document).ready(function () {
             data: { sendTo: sendToUser, getActivity: true },
             success: function (res) {
                 if (res !== "false") {
-                    let = activities = JSON.parse(res);
-                    if (activities.status) {
-                        remoteUserStatus.text(activities.status);
+                    activities = JSON.parse(res);
+                    if (activities) {
+                        if (activities.status)
+                            localStorage.setItem("remoteUserStatus", activities.status);
+
                         remoteUserStatusColor.css("color", "#06d6a0");
+
+                        if (lastSeenArr.length > 5) {
+                            lastSeenArr.splice(0, 2);
+                        }
+
+                        lastSeenArr.push(activities.last_seen);
+                        localStorage.setItem("last_seen", activities.last_seen);
+
                     }
+
                 } else {
                     remoteUserStatusColor.css("color", "gray");
                     remoteUserStatus.text("Offline");
@@ -489,6 +501,29 @@ $(document).ready(function () {
         });
     }
 
+    function setLastSeen() {
+        setInterval(() => {
+            if (isSameElements(lastSeenArr)) {
+                localStorage.setItem("remoteUserStatus", activities.last_seen);
+            } else {
+                localStorage.setItem("remoteUserStatus", "Online");
+            }
+        }, 1000);
+    }
+
+
+    setInterval(() => {
+        let datetime = localStorage.getItem("remoteUserStatus").split(" ");
+        if (datetime.length === 2) {
+            remoteUserStatus.text(sqlToJSFormat(localStorage.getItem("remoteUserStatus")));
+        } else {
+            remoteUserStatus.text(localStorage.getItem("remoteUserStatus"));
+        }
+    }, 500);
+
+
+
+    //===================== save current user to db  =====================
     // set lastseen  
     function updateLastSeen() {
         let currentTimestamp = (new Date((new Date((new Date(new Date())).toISOString())).getTime() - ((new Date()).getTimezoneOffset() * 60000))).toISOString().slice(0, 19).replace('T', ' ');
@@ -504,7 +539,12 @@ $(document).ready(function () {
         });
     }
 
-    // check Realtime Update 
+    // set last seen 
+    updateLastSeenInterval = setInterval(() => {
+        updateLastSeen();
+    }, 500);
+
+    // set Realtime Update 
     function updateStatus(status) {
         $.ajax({
             url: "send-receive.php",
@@ -513,20 +553,46 @@ $(document).ready(function () {
             data: { fromUser: fromUser, status: status },
             success: function (res) {
                 // console.log(res);
-                // fetch remote user status 
             }
         });
     }
 
-    function startUpdateStatus(status) {
+    function RTUpdateStatus(status) {
         updateStatusInterval = setInterval(() => {
             updateStatus(status);
-        }, 1000);
+        }, 500);
     }
 
-    var LastSeenInterval = setInterval(() => {
-        updateLastSeen();
-    }, 10 * 1000);
+
+    //=====================  Utility funcs  =====================
+
+    // format datetime 
+    function sqlToJSFormat(sqlDateTime) {
+        let Y = m = d = null;
+        let datetime = sqlDateTime.split(" ");
+        let date = datetime[0];
+        [Y, m, d] = date.split("-");
+        return datetime[1] + ` ${d + "/" + m + "/" + Y}`;
+    }
+
+
+    // if array elements are same 
+    function isSameElements(array) {
+        var firstElement = array[0];
+        return array.every(function (element) {
+            return element === firstElement;
+        });
+    }
+
+
+    // disable btn if input box empty 
+    function isEmptyInputArea() {
+        if (messageInputArea.val().trim().length === 0) {
+            submitBtn.prop('disabled', true);
+        } else {
+            submitBtn.prop('disabled', false);
+        }
+    }
 
     // textarea event 
     messageInputArea.keyup((e) => {
@@ -538,18 +604,17 @@ $(document).ready(function () {
         isEmptyInputArea();
     });
 
-
     // when textarea is active 
     messageInputArea.focusin(() => {
         clearInterval(refreshMessage);
         clearInterval(updateStatusInterval);
-        startUpdateStatus("Typing...")
+        RTUpdateStatus("Typing...");
     })
 
     messageInputArea.focusout(() => {
-        fetchMessages();
+        RTfetchMessages();
         clearInterval(updateStatusInterval);
-        startUpdateStatus("Online");
+        RTUpdateStatus(null);
     })
 
 });

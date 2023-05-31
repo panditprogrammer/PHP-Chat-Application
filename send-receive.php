@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['status'])) {
     $fromUser = trim(stripcslashes(htmlentities($_GET['fromUser'])));
     $status = trim(stripcslashes(htmlentities($_GET['status'])));
 
-    if (!empty($fromUser) && !empty($status)) {
+    if (!empty($fromUser)) {
         $userObject->updateStatus($fromUser, $status);
         echo "true";
     } else {

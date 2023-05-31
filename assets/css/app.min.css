@@ -1067,10 +1067,20 @@
     }
 }
 
-
-
 .user-chat-topbar {
     height: 66px;
+}
+
+/* custom  */
+.user-chat .user-avatar-container {
+    position: relative;
+}
+
+/* for online user  */
+.user-chat .ri-checkbox-blank-circle-fill {
+    position: absolute;
+    bottom: 0;
+    right: 0;
 }
 
 
