@@ -7,6 +7,7 @@ if (!$userObject->isLoggedIn()) {
 $userObject->updateSession();
 $user = $userObject->getUserById();
 $userProfileData = null;
+
 if (isset($_GET['username']) && !empty($_GET['username'])) {
     $currentUser = $_GET['username'];
     $userProfileData = $userObject->getUserByUsername($_GET['username']);
@@ -1858,14 +1859,14 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                 <div class="w-100 overflow-hidden position-relative">
                     <div class="p-2 p-md-2 border-bottom user-chat-topbar">
                         <div class="row align-items-center">
-                            <div class="col-sm-4 col-8">
+                            <div class="col-md-6 col-sm-8 col-8">
                                 <div class="d-flex align-items-center">
                                     <div class="d-block d-lg-none me-2 ms-0">
                                         <a href="<?php echo ROOT_URL; ?>" class="user-chat-remove text-muted font-size-16 p-2"><i class="ri-arrow-left-s-line"></i></a>
                                     </div>
                                     <div class="me-2 ms-0 user-avatar-container">
                                         <img src="assets/images/users/<?php isset($userProfileData->profileImg) ? print($userProfileData->profileImg) : print("default-user.png"); ?>" class="rounded-circle avatar-sm" alt="">
-                                            <i class="ri-checkbox-blank-circle-fill font-size-10 d-inline-block ms-1" id="remoteUserStatusColor"></i>
+                                        <i class="ri-checkbox-blank-circle-fill font-size-10 d-inline-block ms-1" id="remoteUserStatusColor"></i>
                                     </div>
                                     <div class="flex-grow-1 overflow-hidden">
                                         <h6 class="mb-0 text-truncate">
@@ -1875,7 +1876,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-8 col-4">
+                            <div class="col-md-6 col-sm-4 col-4">
                                 <ul class="list-inline user-chat-nav text-end mb-0">
                                     <!-- <li class="list-inline-item">
                                         <div class="dropdown">
@@ -1947,7 +1948,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                     align-items: center;
                                 }
                             </style>
-                            <h5 class="text-secondary">Select a user to start Conversation!</h5>
+                            <h5 class="text-muted">Select a user to start Conversation!</h5>
 
                         <?php
                         }

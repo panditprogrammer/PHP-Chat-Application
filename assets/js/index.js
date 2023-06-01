@@ -501,6 +501,7 @@ $(document).ready(function () {
         setInterval(() => {
             if (isSameElements(lastSeenArr)) {
                 localStorage.setItem("remoteUserStatus", activities.last_seen);
+                remoteUserStatusColor.css("color", "#495057");
             } else {
                 localStorage.setItem("remoteUserStatus", "Online");
                 remoteUserStatusColor.css("color", "#06d6a0");
@@ -508,16 +509,16 @@ $(document).ready(function () {
         }, 1000);
     }
 
-
-    setInterval(() => {
-        let datetime = localStorage.getItem("remoteUserStatus").split(" ");
-        if (datetime.length === 2) {
-            remoteUserStatus.text(sqlToJSFormat(localStorage.getItem("remoteUserStatus")));
-        } else {
-            remoteUserStatus.text(localStorage.getItem("remoteUserStatus"));
-        }
-    }, 500);
-
+    if (sendToUser) {
+        setInterval(() => {
+            let datetime = localStorage.getItem("remoteUserStatus").split(" ");
+            if (datetime.length === 2) {
+                remoteUserStatus.text(sqlToJSFormat(localStorage.getItem("remoteUserStatus")));
+            } else {
+                remoteUserStatus.text(localStorage.getItem("remoteUserStatus"));
+            }
+        }, 500);
+    }
 
 
     //===================== save current user to db  =====================

@@ -122,7 +122,6 @@ class User
                             <div class="d-flex">
                                 <div class="chat-user-img online align-self-center me-3 ms-0">
                                     <img src="assets/images/users/' . ($user->profileImg ? $user->profileImg : "default-user.png") . '" class="rounded-circle avatar-xs" alt="">
-                                    <span class="user-status"></span>
                                 </div>
 
                                 <div class="flex-grow-1 overflow-hidden">
@@ -140,7 +139,7 @@ class User
                             <div class="d-flex">
                                 <div class="chat-user-img online align-self-center me-3 ms-0">
                                     <img src="assets/images/users/default-user.png" class="rounded-circle avatar-xs" alt="">
-                                    <span class="user-status"></span>
+                                    <span class="user-status" style="background-color: black;"></span>
                                 </div>
 
                                 <div class="flex-grow-1 overflow-hidden">

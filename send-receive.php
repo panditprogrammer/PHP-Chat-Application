@@ -55,10 +55,27 @@ if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['getActivity'])) {
     $sendTo = trim(stripcslashes(htmlentities($_GET['sendTo'])));
 
     if (!empty($fromUser) && !empty($sendTo)) {
-        $arr0 =  $userObject->getStatus($sendTo, $fromUser) ? $userObject->getStatus($sendTo, $fromUser) : [];
-        $arr1 =  $userObject->getLastSeen($sendTo) ? $userObject->getLastSeen($sendTo) : [];
+        $userStatus = $userObject->getStatus($sendTo, $fromUser);
+        $userLastSeen = $userObject->getLastSeen($sendTo);
+
+        $arr0 =  $userStatus ? $userStatus : [];
+        $arr1 =  $userLastSeen ? $userLastSeen : [];
 
         echo json_encode(array_merge($arr0, $arr1));
+    } else {
+        echo "false";
+    }
+    return;
+}
+
+// get single user last seen
+if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['checkLastSeen'])) {
+
+    $userId = trim(stripcslashes(htmlentities($_GET['userId'])));
+
+    if (!empty($userId)) {
+        $lastSeen = $userObject->getLastSeen($userId);
+        echo json_encode($lastSeen ?  $lastSeen : []);
     } else {
         echo "false";
     }
