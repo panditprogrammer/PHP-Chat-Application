@@ -352,6 +352,7 @@ $(document).ready(function () {
 $(document).ready(function () {
 
     $("#chatForm").submit(function (e) {
+        submitBtn.prop('disabled', true);
         e.preventDefault();
         $.ajax({
             url: "send-receive.php",
@@ -361,6 +362,7 @@ $(document).ready(function () {
             cache: false,
             data: new FormData(this),
             beforeSend: function () {
+                submitBtn.prop('disabled', true);
                 $("#submitBtn").html(`
                     <div class="spinner-grow spinner-grow-sm" role="status">
                     <span class="visually-hidden">sending...</span>
@@ -437,7 +439,7 @@ $(document).ready(function () {
                         } else {
                             htmlStr += `
                         <li>
-                            <div class="conversation-list mb-2">
+                            <div class="conversation-list mt-2">
                                 <div class="user-chat-content">
                                     <div class="ctext-wrap">
                                         <div class="ctext-wrap-content p-2">
@@ -454,26 +456,6 @@ $(document).ready(function () {
 
                     });
                 }
-
-                htmlStr += `
-                        <li>
-                            <div class="conversation-list mb-2">
-                                <div>
-                                    <div class="ctext-wrap">
-                                    
-                                    </div>
-                                </div>
-                            </div>
-                        </li> <li>
-                        <div class="conversation-list mb-2">
-                            <div>
-                                <div class="ctext-wrap">
-                                
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                        `;
 
                 $("#chatMessages").html(htmlStr);
             }
@@ -590,23 +572,35 @@ $(document).ready(function () {
         let datetime = sqlDateTime.split(" ");
         let date = datetime[0];
         let time = datetime[1];
-        [H, m, s] = time.split(":");
+        [Hr, Min, Sec] = time.split(":");
         [Y, m, d] = date.split("-");
-        let formatedDate = d + "/" + m + "/" + Y;
-        let formatedTime = H + ":" + m;
 
-        let dateObj = new Date();
-        let today = dateObj.toLocaleDateString();
-        let rawPreviouDate = new Date((new Date()).valueOf() - 1000*60*60*24);
-        yestarday = rawPreviouDate.toLocaleDateString();
+        if (m.startsWith() == "0") {
+            m = parseInt(m);
+        }
+
+        if (d.startsWith() == "0") {
+            d = parseInt(d);
+        }
+
+        let formatedDate = d + "/" + m + "/" + Y;
+        let formatedTime = Hr + ":" + Min;
+
+        let todayObj = new Date();
+        let today = todayObj.getDate() + "/" + (todayObj.getMonth() + 1) + "/" + todayObj.getFullYear();
+
+
+        let yestardayObj = new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24);
+        let yestarday = yestardayObj.getDate() + "/" + (yestardayObj.getMonth() + 1) + "/" + yestardayObj.getFullYear();
+
 
         if (today === formatedDate) {
             return ` ${"Today " + formatedTime}`;
-        }else if( yestarday === formatedDate){
+        } else if (yestarday === formatedDate) {
             return ` ${"Yestarday " + formatedTime}`;
         }
 
-        return formatedTime + " "+ formatedDate;
+        return formatedTime + " " + formatedDate;
     }
 
 
@@ -643,7 +637,7 @@ $(document).ready(function () {
         clearInterval(refreshMessage);
         clearInterval(updateStatusInterval);
         RTUpdateStatus("Typing...");
-        
+
     })
 
     messageInputArea.focusout(() => {

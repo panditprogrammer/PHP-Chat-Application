@@ -4,8 +4,8 @@ require_once "core/init.php";
 
 // get messages 
 if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['fetch'])) {
-    $fromUser = trim(stripcslashes(htmlentities($_GET['fromUser'])));
-    $sendTo = trim(stripcslashes(htmlentities($_GET['sendToUser'])));
+    $fromUser = trim(htmlentities($_GET['fromUser']));
+    $sendTo = trim(htmlentities($_GET['sendToUser']));
 
     if (!empty($fromUser) && !empty($sendTo)) {
         echo json_encode($userObject->getMessage($fromUser, $sendTo));
@@ -20,8 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['fetch'])) {
 if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['timeStamp'])) {
 
 
-    $fromUser = trim(stripcslashes(htmlentities($_GET['fromUser'])));
-    $timeStamp = trim(stripcslashes(htmlentities($_GET['timeStamp'])));
+    $fromUser = trim(htmlentities($_GET['fromUser']));
+    $timeStamp = trim(htmlentities($_GET['timeStamp']));
 
     if (!empty($fromUser) && !empty($timeStamp)) {
         $userObject->updateLastSeen($fromUser, $timeStamp);
@@ -35,9 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['timeStamp'])) {
 // update user status
 if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['status'])) {
 
-    $fromUser = trim(stripcslashes(htmlentities($_GET['fromUser'])));
-    $sendTo = trim(stripcslashes(htmlentities($_GET['sendTo'])));
-    $status = trim(stripcslashes(htmlentities($_GET['status'])));
+    $fromUser = trim(htmlentities($_GET['fromUser']));
+    $sendTo = trim(htmlentities($_GET['sendTo']));
+    $status = trim(htmlentities($_GET['status']));
 
     if (!empty($fromUser) && !empty($sendTo)) {
         $userObject->updateStatus($fromUser, $sendTo, $status);
@@ -51,8 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['status'])) {
 // get user activities
 if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['getActivity'])) {
 
-    $fromUser = trim(stripcslashes(htmlentities($_GET['fromUser'])));
-    $sendTo = trim(stripcslashes(htmlentities($_GET['sendTo'])));
+    $fromUser = trim(htmlentities($_GET['fromUser']));
+    $sendTo = trim(htmlentities($_GET['sendTo']));
 
     if (!empty($fromUser) && !empty($sendTo)) {
         $userStatus = $userObject->getStatus($sendTo, $fromUser);
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['getActivity'])) {
 // get single user last seen
 if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['checkLastSeen'])) {
 
-    $userId = trim(stripcslashes(htmlentities($_GET['userId'])));
+    $userId = trim(htmlentities($_GET['userId']));
 
     if (!empty($userId)) {
         $lastSeen = $userObject->getLastSeen($userId);
@@ -85,9 +85,9 @@ if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['checkLastSeen'])) {
 // post methods 
 if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST)) {
 
-    $fromUser = trim(stripcslashes(htmlentities($_POST['fromUser'])));
-    $sendTo = trim(stripcslashes(htmlentities($_POST['sendToUser'])));
-    $message = trim(stripcslashes(htmlentities($_POST['message'])));
+    $fromUser = trim(htmlentities($_POST['fromUser']));
+    $sendTo = trim(htmlentities($_POST['sendToUser']));
+    $message = trim(htmlentities($_POST['message']));
 
     if (!empty($fromUser) && !empty($sendTo) && !empty($message)) {
 

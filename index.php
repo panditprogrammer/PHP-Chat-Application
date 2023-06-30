@@ -1855,9 +1855,8 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
         <div class="user-chat <?php $userProfileData ? print("user-chat-show") : ""; ?> w-100 overflow-hidden">
             <div class="d-lg-flex">
 
-                <!-- start chat conversation section -->
-                <div class="w-100 overflow-hidden position-relative">
-
+                <!-- 1. top section start chat conversation section -->
+                <div class="w-100">
                     <!-- start top chat header -->
                     <div class="p-2 p-md-2 border-bottom user-chat-topbar">
                         <div class="row align-items-center">
@@ -1874,7 +1873,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                         <h6 class="mb-0 text-truncate">
                                             <a href="javascript:void(0)" class="text-reset user-profile-<?php $userProfileData ? print("show") : print(""); ?>"> <?php $userProfileData ? print($userProfileData->username) : print(""); ?></a>
                                         </h6>
-                                        <small class="small d-block" style="font-size: 0.75rem;"  id="remoteUserStatus">...</small>
+                                        <small class="small d-block" style="font-size: 0.75rem;" id="remoteUserStatus">...</small>
                                     </div>
                                 </div>
                             </div>
@@ -1928,21 +1927,30 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                             </div>
                         </div>
                     </div>
-                     <!-- end top chat header -->
+                    <!-- end top chat header -->
 
 
+                    <!-- 2. middle section  -->
                     <!-- start chat conversation body -->
                     <div class="chat-conversation p-2 p-md-2">
                         <?php
                         if ($userProfileData) {
                         ?>
-
-                            <ul class="list-unstyled mb-0" id="chatMessages">
+                            <ul class="list-unstyled mb-0 w-100" id="chatMessages">
                                 <!-- dynamic messages  -->
                             </ul>
+
                         <?php
                         } else {
                         ?>
+                            <style>
+                                .chat-conversation {
+                                    display: flex;
+                                    flex-wrap: wrap;
+                                    justify-content: center;
+                                    align-content: center;
+                                }
+                            </style>
                             <h5 class="text-muted">Select a user to start Conversation!</h5>
 
                         <?php
@@ -1952,7 +1960,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                     <!-- end chat conversation body -->
 
 
-                    <!-- start chat input section -->
+                    <!-- 3. bottom section start chat input section -->
                     <div class="chat-input-section p-2 p-md-2 border-top mb-0">
                         <form method="post" id="chatForm" class="row g-0">
 
@@ -1986,8 +1994,6 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                         </form>
                     </div>
                     <!-- end chat input section -->
-
-
                 </div>
                 <!-- end chat conversation section -->
 
@@ -2219,10 +2225,8 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                     <!-- end User profile detail sidebar -->
                 </div>
             </div>
-            <!-- End User chat -->
-
-            <!-- end modal -->
         </div>
+        <!-- End User Conversation  -->
 
 
         <!-- audiocall Modal -->

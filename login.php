@@ -117,15 +117,17 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                                     </div>
 
                                     <div class="mb-4">
-                                        <div class="float-end">
-                                            <a href="reset-password.php" class="text-muted font-size-13">Forgot password?</a>
-                                        </div>
+                                       
                                         <label class="form-label">Password</label>
                                         <div class="input-group mb-3 bg-light-subtle rounded-3">
                                             <span class="input-group-text text-muted" id="basic-addon4">
                                                 <i class="ri-lock-2-line"></i>
                                             </span>
                                             <input type="password" name="password" class="form-control form-control-lg border-light bg-light-subtle" placeholder="Enter Password" aria-label="Enter Password" aria-describedby="basic-addon4">
+                                        </div>
+
+                                        <div class="float-end">
+                                            <a href="reset-password.php" class="text-muted font-size-13">Forgot password?</a>
                                         </div>
                                     </div>
 
