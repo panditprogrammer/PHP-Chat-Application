@@ -569,8 +569,24 @@ $(document).ready(function () {
         let Y = m = d = null;
         let datetime = sqlDateTime.split(" ");
         let date = datetime[0];
+        let time = datetime[1];
+        [H, m, s] = time.split(":");
         [Y, m, d] = date.split("-");
-        return datetime[1] + ` ${d + "/" + m + "/" + Y}`;
+        let formatedDate = d + "/" + m + "/" + Y;
+        let formatedTime = H + ":" + m;
+
+        let dateObj = new Date();
+        let today = dateObj.toLocaleDateString();
+        let rawPreviouDate = new Date((new Date()).valueOf() - 1000*60*60*24);
+        yestarday = rawPreviouDate.toLocaleDateString();
+
+        if (today === formatedDate) {
+            return ` ${"Today " + formatedTime}`;
+        }else if( yestarday === formatedDate){
+            return ` ${"Yestarday " + formatedTime}`;
+        }
+
+        return ` ${"Last seen at "+ formatedDate}`;
     }
 
 

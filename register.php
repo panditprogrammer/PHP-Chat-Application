@@ -5,7 +5,7 @@ if ($userObject->isLoggedIn()) {
     $userObject->redirect(ROOT_URL);
 }
 
-$email = $username = null ;
+$email = $username = null;
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
     if (isset($_POST)) {
@@ -16,24 +16,29 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
         if ($password === $cpassword) {
 
-            if (!empty($username) && !empty($password)) {
+            if (preg_match('/^[a-z0-9]+(-?[a-z0-9]+)*$/i', $username)) {
 
-                if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                if (!empty($username) && !empty($password)) {
 
-                    if ($userObject->emailExist($email)) {
-                        $msg = "Email already exist!";
-                    } else {
-                        if ($userObject->registerUser($email, $username, $password)) {
-                            $userObject->redirect("login.php");
+                    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+
+                        if ($userObject->emailExist($email)) {
+                            $msg = "Email already exist!";
                         } else {
-                            $msg = "Unable to Register! Please try again.";
+                            if ($userObject->registerUser($email, $username, $password)) {
+                                $userObject->redirect("login.php");
+                            } else {
+                                $msg = "Unable to Register! Please try again.";
+                            }
                         }
+                    } else {
+                        $msg = "Invalid Email format!";
                     }
                 } else {
-                    $msg = "Invalid Email format!";
+                    $msg = "Please fill the required fields!";
                 }
             } else {
-                $msg = "Please fill the required fields!";
+                $msg = "Invalid Username format!";
             }
         } else {
             $msg = "Password Missmatch!";

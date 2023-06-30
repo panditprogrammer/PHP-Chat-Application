@@ -1872,7 +1872,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                         <h6 class="mb-0 text-truncate">
                                             <a href="javascript:void(0)" class="text-reset user-profile-<?php $userProfileData ? print("show") : print(""); ?>"> <?php $userProfileData ? print($userProfileData->username) : print(""); ?></a>
                                         </h6>
-                                        <small class="small" id="remoteUserStatus">...</small>
+                                        <small class="small d-block" style="font-size: 0.75rem;"  id="remoteUserStatus">...</small>
                                     </div>
                                 </div>
                             </div>
