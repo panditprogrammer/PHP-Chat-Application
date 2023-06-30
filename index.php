@@ -1857,6 +1857,8 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
                 <!-- start chat conversation section -->
                 <div class="w-100 overflow-hidden position-relative">
+
+                    <!-- start top chat header -->
                     <div class="p-2 p-md-2 border-bottom user-chat-topbar">
                         <div class="row align-items-center">
                             <div class="col-md-6 col-sm-8 col-8">
@@ -1926,10 +1928,11 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                             </div>
                         </div>
                     </div>
-                    <!-- end chat user head -->
+                     <!-- end top chat header -->
 
-                    <!-- start chat conversation -->
-                    <div class="chat-conversation p-2 p-md-2 " data-simplebar="init">
+
+                    <!-- start chat conversation body -->
+                    <div class="chat-conversation p-2 p-md-2">
                         <?php
                         if ($userProfileData) {
                         ?>
@@ -1940,25 +1943,17 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                         <?php
                         } else {
                         ?>
-                            <style>
-                                .chat-conversation .simplebar-content {
-                                    display: flex;
-                                    height: 100%;
-                                    justify-content: center;
-                                    align-items: center;
-                                }
-                            </style>
                             <h5 class="text-muted">Select a user to start Conversation!</h5>
 
                         <?php
                         }
                         ?>
                     </div>
-                    <!-- end chat conversation end -->
+                    <!-- end chat conversation body -->
+
 
                     <!-- start chat input section -->
                     <div class="chat-input-section p-2 p-md-2 border-top mb-0">
-
                         <form method="post" id="chatForm" class="row g-0">
 
                             <div class="col">
@@ -1991,6 +1986,8 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                         </form>
                     </div>
                     <!-- end chat input section -->
+
+
                 </div>
                 <!-- end chat conversation section -->
 

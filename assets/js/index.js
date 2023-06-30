@@ -455,6 +455,26 @@ $(document).ready(function () {
                     });
                 }
 
+                htmlStr += `
+                        <li>
+                            <div class="conversation-list mb-2">
+                                <div>
+                                    <div class="ctext-wrap">
+                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </li> <li>
+                        <div class="conversation-list mb-2">
+                            <div>
+                                <div class="ctext-wrap">
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                        `;
+
                 $("#chatMessages").html(htmlStr);
             }
         });
@@ -586,7 +606,7 @@ $(document).ready(function () {
             return ` ${"Yestarday " + formatedTime}`;
         }
 
-        return ` ${"Last seen at "+ formatedDate}`;
+        return formatedTime + " "+ formatedDate;
     }
 
 
@@ -623,6 +643,7 @@ $(document).ready(function () {
         clearInterval(refreshMessage);
         clearInterval(updateStatusInterval);
         RTUpdateStatus("Typing...");
+        
     })
 
     messageInputArea.focusout(() => {

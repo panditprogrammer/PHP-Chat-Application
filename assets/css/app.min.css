@@ -1317,12 +1317,13 @@
 }
 
 .chat-conversation {
-    height: calc(100vh - 141px)
+    height: calc(100vh - 141px);
+    overflow-y: auto;
 }
 
 @media (max-width: 991.98px) {
     .chat-conversation {
-        /* height: calc(100vh - 152px); */
+        height: calc(100vh - 141px);
         margin-top: 73px;
         margin-bottom: 78px;
     }
