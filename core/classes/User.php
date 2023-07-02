@@ -117,6 +117,23 @@ class User
                     $active = null;
                 }
 
+                $dateFormat = date("d/m/Y", strtotime($user->last_seen));
+                $timeFormat = date("H:i", strtotime($user->last_seen));
+
+                $today = date("d/m/Y");
+                $yestarday = date("d/m/Y", strtotime("yesterday"));
+
+                if ($dateFormat === $today) {
+                    $last_seen = "Today $timeFormat";
+                } else if ($dateFormat === $yestarday) {
+                    $last_seen = "Yestarday $timeFormat";
+                } else {
+                    $last_seen = $timeFormat . " " . $dateFormat;
+                }
+
+
+
+
                 print('<li class="' . $active . '">
                         <a href="' . ROOT_URL . $user->username . '">
                             <div class="d-flex">
@@ -128,7 +145,7 @@ class User
                                     <h5 class="text-truncate font-size-15 mb-1">' . ($user->name ? $user->name : $user->username) . '</h5>
                                     <p class="chat-user-message text-truncate mb-0">Hey! there I\'m available</p>
                                 </div>
-                                <div class="font-size-11">05 min</div>
+                                <div class="font-size-11">' . ($last_seen) . '</div> 
                             </div>
                         </a>
                     </li>');

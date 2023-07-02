@@ -1,4 +1,5 @@
 <?php
+
 require_once "core/init.php";
 
 
@@ -7,14 +8,56 @@ if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['fetch'])) {
     $fromUser = trim(htmlentities($_GET['fromUser']));
     $sendTo = trim(htmlentities($_GET['sendToUser']));
 
+
+    function size2Byte($size)
+    {
+        $units = array('KB', 'MB', 'GB', 'TB');
+        $currUnit = '';
+        while (count($units) > 0  &&  $size > 1024) {
+            $currUnit = array_shift($units);
+            $size /= 1024;
+        }
+        return ($size | 0) ." " . $currUnit;
+    }
+
+
     if (!empty($fromUser) && !empty($sendTo)) {
-        echo json_encode($userObject->getMessage($fromUser, $sendTo));
+
+        $data = $userObject->getMessage($fromUser, $sendTo);
+        $messageDataArr = json_decode(json_encode($data), true);
+
+        foreach ($messageDataArr as $key => $value) {
+
+            foreach ($value as $k => $v) {
+
+                if ($k === "message") {
+
+                    $rawMessage = $messageDataArr[$key][$k];
+                    $msgArr = explode("!!bin!!", $rawMessage);
+
+                    $data = array("message" => $msgArr[0]);
+
+                    // modify result array and set file info with string message 
+                    if (count($msgArr) > 1) {
+                        $attachFilePath = "public/images/" . $msgArr[1];
+                        $data = array_merge($data, pathinfo($attachFilePath), array("filesize" => size2Byte(filesize($attachFilePath))), array("mimetype" => mime_content_type($attachFilePath)));
+                        $messageDataArr[$key]["message"] = $data;
+                    } else {
+                        $data = array_merge($data, array("filesize" => 0));
+                        $messageDataArr[$key]["message"] = $data;
+                    }
+                    $messageDataArr[$key][$k] = $data;
+                }
+            }
+        }
+
+        echo json_encode($messageDataArr);
     } else {
         echo "0";
     }
+
     return;
 }
-
 
 // update user last seen 
 if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['timeStamp'])) {
@@ -88,6 +131,19 @@ if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST)) {
     $fromUser = trim(htmlentities($_POST['fromUser']));
     $sendTo = trim(htmlentities($_POST['sendToUser']));
     $message = trim(htmlentities($_POST['message']));
+
+    $attachment = $_FILES['attachment'];
+
+    if ($attachment['error'] === 0) {
+
+        $fileName = time() . "_" . $attachment['name'];
+        $message .= "!!bin!!" . $fileName;
+        // upload attach file 
+        move_uploaded_file($attachment['tmp_name'], "public/images/" . $fileName);
+    }
+
+
+
 
     if (!empty($fromUser) && !empty($sendTo) && !empty($message)) {
 

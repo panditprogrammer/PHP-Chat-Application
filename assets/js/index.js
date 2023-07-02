@@ -1,4 +1,3 @@
-
 $(document).ready(function () {
     const videoCallBtn = $("#videoCallBtn");
     const callReceiveBtn = $("#callReceiveBtn");
@@ -41,12 +40,12 @@ $(document).ready(function () {
         }
     }
 
-    // show the video time while playing 
+    // show the video time while playing
     function showCallTimer() {
         callTimer.timer({ format: '%H:%M:%S' });
     }
 
-    // get the camera permission 
+    // get the camera permission
     async function getCameraAccess() {
         let mediaStream;
         try {
@@ -59,7 +58,7 @@ $(document).ready(function () {
             localStream = mediaStream;
             localStream.getTracks().forEach(track => peerConn.addTrack(track, localStream));
             // setInterval(() => {
-            //     setVideoDuration(localVideo);
+            // setVideoDuration(localVideo);
             // }, 400);
 
         } catch (error) {
@@ -67,7 +66,7 @@ $(document).ready(function () {
         }
     }
 
-    // request for connecting to remote client 
+    // request for connecting to remote client
     async function createOffer(sendTo) {
         await sendIceCandidate(sendTo);
         await peerConn.createOffer(mediaOptions);
@@ -108,13 +107,13 @@ $(document).ready(function () {
             }
         }
 
-        // set the remote video 
+        // set the remote video
         peerConn.ontrack = e => {
             remoteVideo.srcObject = e.streams[0];
         }
     }
 
-    // start a video call 
+    // start a video call
     videoCallBtn.on("click", () => {
         videoCallBtn.prop("disabled", true);
         makeVideoCallCSS();
@@ -123,7 +122,7 @@ $(document).ready(function () {
         send("is-client-ready", null, sendTo);
     })
 
-    // hangup on going call 
+    // hangup on going call
     callHangupBtn.click(() => {
         callHangupBtn.prop("disabled", true);
         callHangup();
@@ -153,7 +152,7 @@ $(document).ready(function () {
                 if (peerConn.iceConnectionState === "connected") {
                     send("client-already-oncall", null, by);
                 } else {
-                    // display incoming call alert 
+                    // display incoming call alert
                     $("#remote-username").text(username);
                     $("#remote-profileImg").attr("src", `assets/images/users/${profileImg}`);
                     $("#calling-type").text("Incoming Call...");
@@ -163,14 +162,14 @@ $(document).ready(function () {
                     // checking username exist in url (if user chat is open )
                     if (location.href.indexOf(username) > -1) {
 
-                        // receive incoming call 
+                        // receive incoming call
                         callReceiveBtn.click((e) => {
                             e.stopPropagation();
                             callReceiveCSS();
                             send("client-is-ready", null, sendTo);
                         });
                     } else {
-                        // receive incoming call 
+                        // receive incoming call
                         callReceiveBtn.click((e) => {
                             e.stopPropagation();
                             callReceiveCSS();
@@ -180,7 +179,7 @@ $(document).ready(function () {
 
 
 
-                    // reject incoming call 
+                    // reject incoming call
                     callDeclineBtn.click((e) => {
                         e.stopPropagation();
                         videoOverlay.fadeIn(500);
@@ -331,7 +330,7 @@ $(document).ready(function () {
 
 
 
-// calling screen control 
+// calling screen control
 $(document).ready(function () {
     let videoOverlay = $("#video-overlay");
     videoOverlay.click(function (e) {
@@ -343,16 +342,34 @@ $(document).ready(function () {
         videoOverlay.fadeIn(500);
     });
 
-    // hide site loader 
+    // hide site loader
     $("#siteLoader").fadeOut();
 });
 
 
-// ajax message  
+// ajax message
 $(document).ready(function () {
+
+
+    // when file is attach
+    let isFileSelected = false;
+    $("#showFileAttached").hide();
+    $("#uploading-status").hide();
+    $('#attachment').change(function (e) {
+        if ($('#attachment').val()) {
+            $("#showFileAttached").show();
+            isFileSelected = true;
+        } else {
+            $("#showFileAttached").hide();
+            isFileSelected = false;
+        }
+    });
+
+
 
     $("#chatForm").submit(function (e) {
         submitBtn.prop('disabled', true);
+        $("#uploading-status").show();
         e.preventDefault();
         $.ajax({
             url: "send-receive.php",
@@ -364,14 +381,16 @@ $(document).ready(function () {
             beforeSend: function () {
                 submitBtn.prop('disabled', true);
                 $("#submitBtn").html(`
-                    <div class="spinner-grow spinner-grow-sm" role="status">
-                    <span class="visually-hidden">sending...</span>
-                    </div>`);
+                                    <div class="spinner-grow spinner-grow-sm" role="status">
+                                        <span class="visually-hidden">sending...</span>
+                                </div>`);
             },
             success: function (res) {
                 if (res === "1") {
                     $("#submitBtn").html('<i class="ri-send-plane-2-fill"></i>');
                     $("#chatForm").trigger("reset");
+                    $("#uploading-status").hide();
+                    $("#showFileAttached").hide();
                 }
             }
         });
@@ -396,18 +415,20 @@ $(document).ready(function () {
     RTUpdateStatus(null);
 
 
-    //===================== get remote user from db  ====================
-    // if chat is opened 
+    //===================== get remote user from db ====================
+    // if chat is opened
     function RTfetchMessages() {
         if (sendToUser) {
             refreshMessage = setInterval(() => {
                 getMessage();
                 if ($("#chatMessages")[0])
-                    $("#chatMessages")[0].scrollIntoView(false); // show the recent messages 
+                    $("#chatMessages")[0].scrollIntoView(false); // show the recent messages
             }, 500);
         }
     }
-    // get the message 
+
+
+    // get the message
     function getMessage() {
         $.ajax({
             url: "send-receive.php",
@@ -415,44 +436,199 @@ $(document).ready(function () {
             cache: false,
             data: { fromUser: fromUser, sendToUser: sendToUser, fetch: true },
             success: function (res) {
-
                 let messages = JSON.parse(res);
+
                 let htmlStr = "";
                 if (typeof (messages) === "object") {
                     messages.forEach(message => {
+
+
                         if (message.fromUser == fromUser) {
+
                             htmlStr += `
-                            <li class="right">
-                                <div class="conversation-list">
-                                    <div class="user-chat-content">
-                                        <div class="ctext-wrap">
-                                            <div class="ctext-wrap-content p-2">
-                                                <p class="mb-0">
-                                                   ${message.message}
+                                        <li class="right">
+                                            <div class="conversation-list">
+                                                <div class="user-chat-content">
+                                                    <div class="ctext-wrap">
+                                                    `;
+
+
+                            // Image or String 
+                            if (message.message.mimetype && message.message.mimetype.startsWith("image/")) {
+
+                                htmlStr += ` <div class="ctext-wrap-content p-2">
+                                                <div class="d-flex align-items-start position-relative">
+                                                    <!-- attach image  -->
+                                                    <a class="popup-img d-inline-block" href="${message.message.dirname + "/" + message.message.basename}" title="Project 1">
+                                                        <img src="${message.message.dirname + "/" + message.message.basename}" alt="" class="attach-img rounded">
+                                                    </a>
+
+                                                    <!-- attach image dropdown menu  -->
+                                                    <div class="message-img-link left-0">
+                                                        <a class="dropdown-toggle dropdown-toggle-btn p-1" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <i class="ri-more-2-fill"></i>
+                                                        </a>
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item" download="${message.message.basename.slice(message.message.basename.indexOf("_"))}" href="${message.message.dirname + "/" + message.message.basename}" class="fw-medium"> Download
+                                                                <i class="ri-download-2-line float-end text-muted"></i>
+                                                            </a>
+                                                            <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                            <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                            <a class="dropdown-item text-danger" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <p class="chat-time mb-0">
+                                                     <span class="text-trancate"> ${message.message.extension} : ${message.message.filesize} </span>
+                                                     <span><i class="ri-time-line align-middle"></i> ${sqlToJSFormat(message.created_on)} </span>
                                                 </p>
-                                                <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <small class="align-middle">${sqlToJSFormat(message.created_on)}</small></p>
+                                            </div>`;
+
+                            } else if (message.message.mimetype && message.message.mimetype.startsWith("application/")) {
+                                htmlStr += ` <div class="ctext-wrap-content p-2">
+                                                <div class="card mb-1">
+                                                    <div class="d-flex flex-wrap align-items-start p-2 py-1">
+                                                        <!-- attach file  -->
+                                                        <div class="text-start flex-grow-1 overflow-hidden">
+                                                            <h3> <i class="ri-file-2-fill"></i> </h3>
+                                                            <h5 class="font-size-14 text-truncate mb-1">${message.message.basename.slice(message.message.basename.indexOf("_"))}</h5>
+                                                            <p class="text-muted text-truncate font-size-13 mb-0"> ${message.message.filesize} </p>
+                                                        </div>
+
+                                                        <div class="ms-4">
+                                                            <a download="${message.message.basename.slice(message.message.basename.indexOf("_"))}" href="${message.message.dirname + "/" + message.message.basename}" class="p-2 font-size-20 fw-medium">
+                                                                <i class="ri-download-2-line"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="message-img-link">
+                                                        <a class="dropdown-toggle dropdown-toggle-btn p-1" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <i class="ri-more-2-fill"></i>
+                                                        </a>
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item" download="${message.message.dirname + "/" + message.message.basename}" href="public/images/1688207375${message.message.dirname + "/" + message.message.basename}"> Download
+                                                                <i class="ri-download-2-line float-end text-muted"></i>
+                                                            </a>
+                                                            <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <p class="chat-time mb-0">
+                                                    <span class="text-trancate"> ${message.message.extension} : ${message.message.filesize} </span>
+                                                     <span><i class="ri-time-line align-middle"></i> ${sqlToJSFormat(message.created_on)} </span>
+                                                 </p>
+                                            </div>`;
+                            } else {
+                                htmlStr += `<div class="ctext-wrap-content p-2">
+                                                            <p class="mb-0">
+                                                                ${message.message.message}
+                                                            </p>
+                                                            <p class="chat-time mb-0">
+                                                            <small> <i class="ri-time-line align-middle"></i> ${sqlToJSFormat(message.created_on)}</small>
+                                                            </p>
+                                                    </div>`;
+
+                            }
+
+                            htmlStr += `     
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>`;
+                                        </li>`;
+
                         } else {
-                            htmlStr += `
-                        <li>
-                            <div class="conversation-list mt-2">
-                                <div class="user-chat-content">
-                                    <div class="ctext-wrap">
+                            htmlStr += `<li>
+                                        <div class="conversation-list mt-2">
+                                            <div class="user-chat-content">
+                                                <div class="ctext-wrap">`;
+
+                            // Image or String 
+                            if (message.message.mimetype && message.message.mimetype.startsWith("image/")) {
+                                htmlStr += ` <div class="ctext-wrap-content p-2">
+                                                    <div class="d-flex align-items-start position-relative">
+                                                        <!-- attach image  -->
+                                                        <a class="popup-img d-inline-block" href="${message.message.dirname + "/" + message.message.basename}" title="Project 1">
+                                                            <img src="${message.message.dirname + "/" + message.message.basename}" alt="" class="attach-img rounded">
+                                                        </a>
+
+                                                        <!-- attach image dropdown menu  -->
+                                                        <div class="message-img-link">
+                                                            <a class="dropdown-toggle dropdown-toggle-btn p-1" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <i class="ri-more-2-fill"></i>
+                                                            </a>
+                                                            <div class="dropdown-menu">
+                                                                <a class="dropdown-item" download="${message.message.basename.slice(message.message.basename.indexOf("_"))}" href="${message.message.dirname + "/" + message.message.basename}" class="fw-medium"> Download
+                                                                    <i class="ri-download-2-line float-end text-muted"></i>
+                                                                </a>
+                                                                <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                                <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                                <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <p class="chat-time mb-0">
+                                                    <span class="text-trancate"> ${message.message.extension} : ${message.message.filesize} </span>
+                                                    <span><i class="ri-time-line align-middle"></i> ${sqlToJSFormat(message.created_on)} </span>
+                                                    </p>
+                                                </div>
+                                            </div>`;
+                            } else if (message.message.mimetype && message.message.mimetype.startsWith("application/")) {
+                                htmlStr += `<div class="ctext-wrap-content p-2">
+                                                <div class="card mb-1">
+                                                    <div class="d-flex flex-wrap align-items-start p-2 py-1">
+                                                        <!-- attach file  -->
+                                                        <div class="text-start flex-grow-1 overflow-hidden">
+                                                            <h3> <i class="ri-file-2-fill"></i> </h3>
+                                                            <h5 class="font-size-14 text-truncate mb-1">${message.message.basename.slice(message.message.basename.indexOf("_"))}</h5>
+                                                            <p class="text-muted text-truncate font-size-13 mb-0"> ${message.message.filesize} </p>
+                                                        </div>
+
+                                                        <div class="ms-4">
+                                                            <a download="${message.message.basename.slice(message.message.basename.indexOf("_"))}" href="${message.message.dirname + "/" + message.message.basename}" class="p-2 font-size-20 fw-medium">
+                                                                <i class="ri-download-2-line"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="message-img-link">
+                                                        <a class="dropdown-toggle dropdown-toggle-btn p-1" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <i class="ri-more-2-fill"></i>
+                                                        </a>
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item" download="${message.message.dirname + "/" + message.message.basename}" href="public/images/1688207375${message.message.dirname + "/" + message.message.basename}"> Download
+                                                                <i class="ri-download-2-line float-end text-muted"></i>
+                                                            </a>
+                                                            <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                        </div>
+                                                    </div>
+
+                                                 </div>
+                                                <p class="chat-time mb-0">
+                                                    <span class="text-trancate"> ${message.message.extension} : ${message.message.filesize} </span>
+                                                    <span><i class="ri-time-line align-middle"></i> ${sqlToJSFormat(message.created_on)} </span>
+                                                 </p>
+                                            </div>`;
+                            } else {
+                                htmlStr += `
                                         <div class="ctext-wrap-content p-2">
                                             <p class="mb-0">
-                                                ${message.message}
+                                                ${message.message.message}
                                             </p>
-                                            <p class="chat-time mb-0"><i class="ri-time-line align-middle"></i> <small class="align-middle">${sqlToJSFormat(message.created_on)}</small></p>
+                                            <p class="chat-time mb-0">
+                                            <small> <i class="ri-time-line align-middle"></i>  ${sqlToJSFormat(message.created_on)} </small>
+                                            </p>
+                                        </div>`;
+                            }
+
+
+                            htmlStr += `  </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>`;
+                                        </div>
+                                        </li>`;
+
                         }
+
 
                     });
                 }
@@ -462,14 +638,14 @@ $(document).ready(function () {
         });
     }
 
-    // get updated parameters 
+    // get updated parameters
     if (sendToUser) {
         setInterval(() => {
             getRemoteActivities();
         }, 500);
     }
 
-    // get activity from db 
+    // get activity from db
     function getRemoteActivities() {
         $.ajax({
             url: "send-receive.php",
@@ -523,27 +699,29 @@ $(document).ready(function () {
     }
 
 
-    //===================== save current user to db  =====================
-    // set lastseen  
+    //===================== save current user to db =====================
+    // set lastseen
     function updateLastSeen(fromUser) {
-        let currentTimestamp = (new Date((new Date((new Date(new Date())).toISOString())).getTime() - ((new Date()).getTimezoneOffset() * 60000))).toISOString().slice(0, 19).replace('T', ' ');
+        let currentTimestamp = (new Date((new Date((new Date(new Date())).toISOString())).getTime() - ((new
+            Date()).getTimezoneOffset() * 60000))).toISOString().slice(0, 19).replace('T', ' ');
         $.ajax({
             url: "send-receive.php",
             type: "GET",
             cache: false,
             data: { fromUser: fromUser, timeStamp: currentTimestamp },
             success: function (res) {
-                // do nothing 
+                // do nothing
             }
         });
     }
 
-    // set last seen 
+
+    // set last seen
     updateLastSeenInterval = setInterval(() => {
         updateLastSeen(fromUser);
     }, 500);
 
-    // set Realtime Update 
+    // set Realtime Update
     function updateStatus(status) {
         $.ajax({
             url: "send-receive.php",
@@ -551,7 +729,7 @@ $(document).ready(function () {
             cache: false,
             data: { fromUser: fromUser, sendTo: sendToUser, status: status },
             success: function (res) {
-                // do nothing  
+                // do nothing
             }
         });
     }
@@ -564,9 +742,9 @@ $(document).ready(function () {
 
 
 
-    //=====================  Utility funcs  =====================
+    //===================== Utility funcs =====================
 
-    // format datetime 
+    // format datetime
     function sqlToJSFormat(sqlDateTime) {
         let Y = m = d = null;
         let datetime = sqlDateTime.split(" ");
@@ -604,7 +782,7 @@ $(document).ready(function () {
     }
 
 
-    // if array elements are same 
+    // if array elements are same
     function isSameElements(array) {
         var firstElement = array[0];
         return array.every(function (element) {
@@ -613,7 +791,7 @@ $(document).ready(function () {
     }
 
 
-    // disable btn if input box empty 
+    // disable btn if input box empty
     function isEmptyInputArea() {
         if (messageInputArea.val().trim().length === 0) {
             submitBtn.prop('disabled', true);
@@ -622,7 +800,7 @@ $(document).ready(function () {
         }
     }
 
-    // textarea event 
+    // textarea event
     messageInputArea.keyup((e) => {
 
         if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10)) {
@@ -632,7 +810,7 @@ $(document).ready(function () {
         isEmptyInputArea();
     });
 
-    // when textarea is active 
+    // when textarea is active
     messageInputArea.focusin(() => {
         clearInterval(refreshMessage);
         clearInterval(updateStatusInterval);
@@ -646,4 +824,21 @@ $(document).ready(function () {
         RTUpdateStatus(null);
     })
 
+    // when image menu dropdown show 
+    $("a.dropdown-toggle-btn").each(this.addEventListener('show.bs.dropdown', event => {
+        clearInterval(refreshMessage);
+        clearInterval(updateStatusInterval);
+        RTUpdateStatus("Reading...");
+    }));
+
+    // when image menu dropdown hide
+    $("a.dropdown-toggle-btn").each(this.addEventListener('hide.bs.dropdown', event => {
+        RTfetchMessages();
+        clearInterval(updateStatusInterval);
+        RTUpdateStatus(null);
+    }));
+
+
 });
+
+

@@ -1962,12 +1962,38 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
                     <!-- 3. bottom section start chat input section -->
                     <div class="chat-input-section p-2 p-md-2 border-top mb-0">
-                        <form method="post" id="chatForm" class="row g-0">
+                        <form method="post" id="chatForm" class="row gx-1" enctype="multipart/form-data">
+                            <div class="uploading-status" id="uploading-status">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <div class="spinner-grow spinner-grow-sm" role="status">
+                                        <span class="visually-hidden">Sending...</span>
+                                    </div>
+                                    <span class="text-white ms-2">Sending... </span>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="chat-input-links ms-md-2 me-md-0 h-100">
+                                    <ul class="list-inline mb-0 h-100">
+                                        <li class="list-inline-item h-100 position-relative" data-bs-toggle="tooltip" data-bs-placement="top" title="Attached File">
+                                            <input type="file" style="display: none;" name="attachment" id="attachment">
+                                            <label for="attachment" class="btn btn-link text-decoration-none font-size-16 h-100 btn-lg waves-effect <?php if (!isset($userProfileData)) echo "disabled"; ?>">
+                                                <i class="ri-link"></i>
+                                            </label>
+
+                                            <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill" id="showFileAttached" style="background-color: #000;">
+                                                1<span class="visually-hidden">File Attached</span>
+                                            </span>
+
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
 
                             <div class="col">
                                 <input type="hidden" name="fromUser" id="fromUser" value="<?php echo $user->id; ?>">
                                 <input type="hidden" name="sendToUser" id="sendToUser" value="<?php isset($userProfileData) ? print($userProfileData->id) : ""; ?>">
-                                <textarea name="message" id="message" title="Press CTRL + ENTER to send" style="resize: none;" rows="2" class="form-control form-control-lg bg-light border-light" <?php if (!isset($userProfileData)) echo "disabled"; ?> placeholder="Write Message..."></textarea>
+                                <textarea name="message" id="message" title="Press CTRL + ENTER to send" style="resize: none;" rows="2" class="form-control form-control-lg bg-light" <?php if (!isset($userProfileData)) echo "disabled"; ?> placeholder="Write Message..."></textarea>
                             </div>
                             <div class="col-auto">
                                 <div class="chat-input-links ms-md-2 me-md-0 h-100">
@@ -1977,11 +2003,6 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                                 <i class="ri-emotion-happy-line"></i>
                                             </button>
                                         </li> -->
-                                        <!-- <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Attached File">
-                                            <button type="button" class="btn btn-link text-decoration-none font-size-16 btn-lg waves-effect <?php if (!isset($userProfileData)) echo "disabled"; ?>">
-                                                <i class="ri-attachment-line"></i>
-                                            </button>
-                                        </li> -->
                                         <li class="list-inline-item h-100">
                                             <button type="submit" id="submitBtn" disabled class="btn btn-primary font-size-16 h-100 btn-lg chat-send waves-effect waves-light <?php if (!isset($userProfileData)) echo "disabled"; ?>">
                                                 <i class="ri-send-plane-2-fill"></i>
@@ -1989,8 +2010,8 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                         </li>
                                     </ul>
                                 </div>
-
                             </div>
+
                         </form>
                     </div>
                     <!-- end chat input section -->

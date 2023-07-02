@@ -1,0 +1,35 @@
+
+function generateCode($characters, $length)
+{
+    $code = '';
+    $charactersLength = strlen($characters);
+
+    for ($i = 0; $i < $length; $i++) {
+        $randomIndex = rand(0, $charactersLength - 1);
+        $code .= $characters[$randomIndex];
+    }
+
+    return $code;
+}
+
+$codes = [];
+$characters = 'QWERTYUIOP123ASDFGHJKL4567ZXCVBNM890';
+
+while (count($codes) < 1000) {
+    $code = generateCode($characters, 12);
+
+    if (!in_array($code, $codes)) {
+        $codes[] = $code;
+    }
+}
+
+// Output the generated codes
+$i = 0;
+foreach ($codes as $code) {
+    $currentTimestamp = date("Y-m-d H:i:s");
+    echo $i . " => ". $code . "<br>";
+    $i++;
+    $conn->query("INSERT INTO couponcodes (code,created_on) VALUES ('$code','$currentTimestamp')");
+
+    
+}
