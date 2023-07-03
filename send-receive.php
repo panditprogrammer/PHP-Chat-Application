@@ -12,12 +12,14 @@ if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['fetch'])) {
     function size2Byte($size)
     {
         $units = array('KB', 'MB', 'GB', 'TB');
-        $currUnit = '';
+        $currUnit = null;
         while (count($units) > 0  &&  $size > 1024) {
             $currUnit = array_shift($units);
             $size /= 1024;
         }
-        return ($size | 0) ." " . $currUnit;
+        if (!$currUnit)
+            $currUnit = "Bytes";
+        return ($size | 0) . " " . $currUnit;
     }
 
 
@@ -39,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['fetch'])) {
 
                     // modify result array and set file info with string message 
                     if (count($msgArr) > 1) {
-                        $attachFilePath = "public/images/" . $msgArr[1];
+                        $attachFilePath = "public/files/" . $msgArr[1];
                         $data = array_merge($data, pathinfo($attachFilePath), array("filesize" => size2Byte(filesize($attachFilePath))), array("mimetype" => mime_content_type($attachFilePath)));
                         $messageDataArr[$key]["message"] = $data;
                     } else {
@@ -135,11 +137,10 @@ if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST)) {
     $attachment = $_FILES['attachment'];
 
     if ($attachment['error'] === 0) {
-
         $fileName = time() . "_" . $attachment['name'];
         $message .= "!!bin!!" . $fileName;
         // upload attach file 
-        move_uploaded_file($attachment['tmp_name'], "public/images/" . $fileName);
+        move_uploaded_file($attachment['tmp_name'], "public/files/" . $fileName);
     }
 
 
@@ -152,4 +153,15 @@ if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST)) {
         }
     }
     return;
+}
+
+
+
+if($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['messageId']) && $_GET['messageId'] > 0){
+    
+    if($userObject->deleteMessage($_GET['messageId'])){
+        echo "true";
+    }else{
+        echo "false";
+    }
 }

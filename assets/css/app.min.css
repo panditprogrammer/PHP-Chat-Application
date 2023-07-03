@@ -1121,7 +1121,8 @@
     overflow-y: auto;
 }
 
-@media (max-width: 991.98px) {
+@media screen and (max-width: 991.98px) {
+    
     .chat-conversation {
         height: calc(92vh - 141px);
     }
@@ -1178,16 +1179,17 @@
 
 .chat-conversation li .conversation-list {
     width: fit-content;
+    max-width: 80%;
     border-radius: .2rem;
 }
 
 
 .chat-conversation li .conversation-list .user-chat-content {
-    width: auto;
+    width: 100%;
 }
 
 .chat-conversation li .conversation-list .ctext-wrap {
-    width: inherit !important;
+    width: 100%;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -1195,12 +1197,16 @@
 }
 
 .chat-conversation li .conversation-list .ctext-wrap-content {
-    width: inherit !important;
+    width: 100%;
     padding: 12px 20px;
     background-color: var(--bs-light);
     border-radius: 8px 8px 8px 0;
     color: #000;
     position: relative;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
 }
 
 
@@ -1216,10 +1222,15 @@
 }
 
 
-.chat-conversation li .conversation-list .dropdown .dropdown-toggle {
+.chat-conversation li .conversation-list .dropdown-toggle {
     font-size: 18px;
     padding: 4px;
-    color: var(--bs-secondary-color)
+    color: var(--bs-secondary-color);
+
+}
+
+.chat-conversation li .conversation-list .dropdown-menu .text-danger {
+    color: var(--bs-danger) !important;
 }
 
 
@@ -1248,7 +1259,19 @@
 }
 
 
+@media screen and (min-width:992px) {
+    .chat-conversation li .conversation-list {
+        max-width: 75%;
+    }
+}
+
+
+
 @media screen and (max-width:400px) {
+
+    .chat-conversation li .conversation-list {
+        max-width: 90%;
+    }
 
     .chat-conversation li .conversation-list .popup-img {
         width: 150px;
@@ -1266,7 +1289,7 @@
 
 .chat-conversation li .conversation-list .message-img-link {
     position: absolute;
-    right: -1.8rem;
+    right: -2.5rem;
     top: -0.5rem;
     z-index: 99999999999999;
 }
@@ -1284,15 +1307,10 @@
 }
 
 .chat-conversation li.right .conversation-list .message-img-link {
-    left: -1.8rem;
+    left: -2.5rem;
     right: auto;
 }
 
-.chat-conversation li.right .conversation-list .ctext-wrap {
-    -webkit-box-pack: end;
-    -ms-flex-pack: end;
-    justify-content: flex-end
-}
 
 .chat-conversation li.right .conversation-list .ctext-wrap .ctext-wrap-content {
     -webkit-box-ordinal-group: 3;
@@ -1300,8 +1318,7 @@
     order: 2;
     background-color: var(--bs-secondary-bg);
     color: var(--bs-dark);
-    text-align: right;
-    border-radius: 8px 8px 0 8px
+    border-radius: 8px 8px 0 8px;
 }
 
 
@@ -1314,13 +1331,13 @@
     right: 0
 }
 
-.chat-conversation li.right .conversation-list .dropdown {
+.chat-conversation li.right .conversation-list {
     -webkit-box-ordinal-group: 2;
     -ms-flex-order: 1;
     order: 1
 }
 
-.chat-conversation li.right .conversation-list .dropdown .dropdown-menu[style] {
+.chat-conversation li.right .conversation-list .dropdown-menu[style] {
     right: 0 !important;
     left: auto !important
 }

@@ -358,6 +358,23 @@ $(document).ready(function () {
             .catch((error) => { console.error(error) });
     })
 
+    // delete message
+    $(document).on("click", ".js-delete-message", function (e) {
+        let messageId = $(this).attr("data-deleteid");
+        console.log($(this));
+        // $.ajax({
+        //     url: "send-receive.php",
+        //     type: "GET",
+        //     cache: false,
+        //     data: { messageId: messageId },
+        //     success: function (res) {
+        //         if (res === "false") {
+        //             alert("Message can't be delete!");
+        //         }
+        //     }
+        // });
+    });
+
     // when file is attach
     let isFileSelected = false;
     $("#showFileAttached").hide();
@@ -452,6 +469,7 @@ $(document).ready(function () {
 
                         if (message.fromUser == fromUser) {
 
+                            // html head 
                             htmlStr += `
                                         <li class="right">
                                             <div class="conversation-list">
@@ -460,7 +478,7 @@ $(document).ready(function () {
                                                     `;
 
 
-                            // Image or String 
+                            // html body Image or String 
                             if (message.message.mimetype && message.message.mimetype.startsWith("image/")) {
 
                                 htmlStr += ` <div class="ctext-wrap-content p-2">
@@ -471,8 +489,8 @@ $(document).ready(function () {
                                                     </a>
 
                                                     <!-- attach image dropdown menu  -->
-                                                    <div class="message-img-link left-0">
-                                                        <a class="dropdown-toggle dropdown-toggle-btn p-1" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <div class="message-img-link d-flex justify-content-center align-items-center left-0">
+                                                        <a class="dropdown-toggle dropdown-toggle-btn p-2 py-1 border rounded" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                             <i class="ri-more-2-fill"></i>
                                                         </a>
                                                         <div class="dropdown-menu">
@@ -480,7 +498,8 @@ $(document).ready(function () {
                                                                 <i class="ri-download-2-line float-end text-muted"></i>
                                                             </a>
                                                             <a class="dropdown-item js-copy-link" href="${message.message.dirname + "/" + message.message.basename}">Copy link<i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                            <a class="dropdown-item text-danger" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                            <div class="dropdown-divider my-1"></div>
+                                                            <a class="dropdown-item js-delete-message text-danger" data-deleteId="${message.id}" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-danger"></i></a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -490,7 +509,7 @@ $(document).ready(function () {
                                                 </p>
                                             </div>`;
 
-                            } else if (message.message.mimetype && message.message.mimetype.startsWith("application/")) {
+                            } else if (message.message.mimetype) {
                                 htmlStr += ` <div class="ctext-wrap-content p-2">
                                                 <div class="card mb-1">
                                                     <div class="d-flex flex-wrap align-items-start p-2 py-1">
@@ -508,16 +527,17 @@ $(document).ready(function () {
                                                         </div>
                                                     </div>
 
-                                                    <div class="message-img-link">
-                                                        <a class="dropdown-toggle dropdown-toggle-btn p-1" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <div class="message-img-link d-flex justify-content-center align-items-center">
+                                                        <a class="dropdown-toggle dropdown-toggle-btn p-2 py-1 border rounded" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                             <i class="ri-more-2-fill"></i>
                                                         </a>
                                                         <div class="dropdown-menu">
-                                                            <a class="dropdown-item" download="${message.message.dirname + "/" + message.message.basename}" href="public/images/1688207375${message.message.dirname + "/" + message.message.basename}"> Download
+                                                            <a class="dropdown-item" download="${message.message.basename.slice(message.message.basename.indexOf("_") + 1)}" href="${message.message.dirname + "/" + message.message.basename}"> Download
                                                                 <i class="ri-download-2-line float-end text-muted"></i>
                                                             </a>
                                                             <a class="dropdown-item js-copy-link" href="${message.message.dirname + "/" + message.message.basename}">Copy link<i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                            <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+                                                            <div class="dropdown-divider my-1"></div>
+                                                            <a class="dropdown-item js-delete-message text-danger" data-deleteId="${message.id}" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-danger"></i></a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -526,114 +546,140 @@ $(document).ready(function () {
                                                      <span><i class="ri-time-line align-middle"></i> ${sqlToJSFormat(message.created_on)} </span>
                                                  </p>
                                             </div>`;
-                            } else {
-                                htmlStr += `<div class="ctext-wrap-content p-2">
-                                                            <p class="mb-0">
-                                                                ${message.message.message}
-                                                            </p>
-                                                            <p class="chat-time mb-0">
-                                                            <small> <i class="ri-time-line align-middle"></i> ${sqlToJSFormat(message.created_on)}</small>
-                                                            </p>
-                                                    </div>`;
-
                             }
-
-                            htmlStr += `     
-                                                    </div>
+                            // html foot 
+                            htmlStr += `
+                                                 </div>
                                                 </div>
                                             </div>
                                         </li>`;
 
-                        } else {
-                            htmlStr += `<li>
-                                        <div class="conversation-list mt-2">
-                                            <div class="user-chat-content">
-                                                <div class="ctext-wrap">`;
 
-                            // Image or String 
+
+                            // message 
+                            htmlStr += `
+                                    <li class="right">
+                                        <div class="conversation-list">
+                                            <div class="user-chat-content">
+                                                <div class="ctext-wrap">
+                                                    <div class="ctext-wrap-content p-2">
+                                                        <p class="mb-0">
+                                                            ${message.message.message}
+                                                        </p>
+                                                        <p class="chat-time mb-0">
+                                                        <small></small>
+                                                        <small> <i class="ri-time-line align-middle"></i> ${sqlToJSFormat(message.created_on)}</small>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                     `;
+
+                        } else {
+                            // html head 
+                            htmlStr += `<li>
+                                            <div class="conversation-list mt-2">
+                                                <div class="user-chat-content">
+                                                    <div class="ctext-wrap">`;
+
+                            // html body Image or String 
                             if (message.message.mimetype && message.message.mimetype.startsWith("image/")) {
                                 htmlStr += ` <div class="ctext-wrap-content p-2">
-                                                    <div class="d-flex align-items-start position-relative">
-                                                        <!-- attach image  -->
-                                                        <a class="popup-img d-inline-block" href="${message.message.dirname + "/" + message.message.basename}" title="Project 1">
-                                                            <img src="${message.message.dirname + "/" + message.message.basename}" alt="" class="attach-img rounded">
-                                                        </a>
-
-                                                        <!-- attach image dropdown menu  -->
-                                                        <div class="message-img-link">
-                                                            <a class="dropdown-toggle dropdown-toggle-btn p-1" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                <i class="ri-more-2-fill"></i>
-                                                            </a>
-                                                            <div class="dropdown-menu">
-                                                                <a class="dropdown-item" download="${message.message.basename.slice(message.message.basename.indexOf("_") + 1)}" href="${message.message.dirname + "/" + message.message.basename}" class="fw-medium"> Download
-                                                                    <i class="ri-download-2-line float-end text-muted"></i>
+                                                            <div class="d-flex align-items-start position-relative">
+                                                                <!-- attach image  -->
+                                                                <a class="popup-img d-inline-block" href="${message.message.dirname + "/" + message.message.basename}" title="Project 1">
+                                                                    <img src="${message.message.dirname + "/" + message.message.basename}" alt="" class="attach-img rounded">
                                                                 </a>
-                                                                <a class="dropdown-item js-copy-link" href="${message.message.dirname + "/" + message.message.basename}">Copy link<i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                                <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
+
+                                                                <!-- attach image dropdown menu  -->
+                                                                <div class="message-img-link d-flex justify-content-center align-items-center">
+                                                                    <a class="dropdown-toggle dropdown-toggle-btn p-2 py-1 border rounded" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                        <i class="ri-more-2-fill"></i>
+                                                                    </a>
+                                                                    <div class="dropdown-menu">
+                                                                        <a class="dropdown-item" download="${message.message.basename.slice(message.message.basename.indexOf("_") + 1)}" href="${message.message.dirname + "/" + message.message.basename}" class="fw-medium"> Download
+                                                                            <i class="ri-download-2-line float-end text-muted"></i>
+                                                                        </a>
+                                                                        <a class="dropdown-item js-copy-link" href="${message.message.dirname + "/" + message.message.basename}">Copy link<i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                                        <div class="dropdown-divider my-1"></div>
+                                                                        <a class="dropdown-item js-delete-message text-danger" data-deleteId="${message.id}" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-danger"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <p class="chat-time mb-0">
+                                                            <span class="text-trancate"> ${message.message.extension} : ${message.message.filesize} </span>
+                                                            <span><i class="ri-time-line align-middle"></i> ${sqlToJSFormat(message.created_on)} </span>
+                                                            </p>
+                                                        </div>
+                                                    </div>`;
+                            } else if (message.message.mimetype) {
+                                htmlStr += `<div class="ctext-wrap-content p-2">
+                                                        <div class="card mb-1">
+                                                            <div class="d-flex flex-wrap align-items-start p-2 py-1">
+                                                                <!-- attach file  -->
+                                                                <div class="text-start flex-grow-1 overflow-hidden">
+                                                                    <h3> <i class="ri-file-2-fill"></i> </h3>
+                                                                    <h5 class="font-size-14 text-truncate mb-1">${message.message.basename.slice(message.message.basename.indexOf("_") + 1)}</h5>
+                                                                    <p class="text-muted text-truncate font-size-13 mb-0"> ${message.message.filesize} </p>
+                                                                </div>
+
+                                                                <div class="ms-4">
+                                                                    <a download="${message.message.basename.slice(message.message.basename.indexOf("_") + 1)}" href="${message.message.dirname + "/" + message.message.basename}" class="p-2 font-size-20 fw-medium">
+                                                                        <i class="ri-download-2-line"></i>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="message-img-link d-flex justify-content-center align-items-center">
+                                                                <a class="dropdown-toggle dropdown-toggle-btn p-2 py-1 border rounded" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                    <i class="ri-more-2-fill"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu">
+                                                                    <a class="dropdown-item" download="${message.message.dirname + "/" + message.message.basename}" href="${message.message.dirname + "/" + message.message.basename}"> Download
+                                                                        <i class="ri-download-2-line float-end text-muted"></i>
+                                                                    </a>
+                                                                    <a class="dropdown-item js-copy-link" href="${message.message.dirname + "/" + message.message.basename}">Copy link<i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                                    <div class="dropdown-divider my-1"></div>
+                                                                    <a class="dropdown-item js-delete-message text-danger" data-deleteId="${message.id}" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-danger"></i></a>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                        <p class="chat-time mb-0">
+                                                            <span class="text-trancate"> ${message.message.extension} : ${message.message.filesize} </span>
+                                                            <span><i class="ri-time-line align-middle"></i> ${sqlToJSFormat(message.created_on)} </span>
+                                                        </p>
+                                                    </div>`;
+                            }
+                            // html foot 
+                            htmlStr += ` </div>
+                                       </div>
+                                    </div>
+                                </li>`;
+
+
+                            //    message 
+                            htmlStr += `
+                                                    <li>
+                                                        <div class="conversation-list mt-2">
+                                                            <div class="user-chat-content">
+                                                                <div class="ctext-wrap">
+                                                                    <div class="ctext-wrap-content p-2">
+                                                                        <p class="mb-0">
+                                                                            ${message.message.message}
+                                                                        </p>
+                                                                        <p class="chat-time mb-0">
+                                                                        <small> <i class="ri-time-line align-middle"></i>  ${sqlToJSFormat(message.created_on)} </small>
+                                                                        <small></small>
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <p class="chat-time mb-0">
-                                                    <span class="text-trancate"> ${message.message.extension} : ${message.message.filesize} </span>
-                                                    <span><i class="ri-time-line align-middle"></i> ${sqlToJSFormat(message.created_on)} </span>
-                                                    </p>
-                                                </div>
-                                            </div>`;
-                            } else if (message.message.mimetype && message.message.mimetype.startsWith("application/")) {
-                                htmlStr += `<div class="ctext-wrap-content p-2">
-                                                <div class="card mb-1">
-                                                    <div class="d-flex flex-wrap align-items-start p-2 py-1">
-                                                        <!-- attach file  -->
-                                                        <div class="text-start flex-grow-1 overflow-hidden">
-                                                            <h3> <i class="ri-file-2-fill"></i> </h3>
-                                                            <h5 class="font-size-14 text-truncate mb-1">${message.message.basename.slice(message.message.basename.indexOf("_") + 1)}</h5>
-                                                            <p class="text-muted text-truncate font-size-13 mb-0"> ${message.message.filesize} </p>
-                                                        </div>
-
-                                                        <div class="ms-4">
-                                                            <a download="${message.message.basename.slice(message.message.basename.indexOf("_") + 1)}" href="${message.message.dirname + "/" + message.message.basename}" class="p-2 font-size-20 fw-medium">
-                                                                <i class="ri-download-2-line"></i>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="message-img-link">
-                                                        <a class="dropdown-toggle dropdown-toggle-btn p-1" href="javascript: void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                            <i class="ri-more-2-fill"></i>
-                                                        </a>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" download="${message.message.dirname + "/" + message.message.basename}" href="public/images/1688207375${message.message.dirname + "/" + message.message.basename}"> Download
-                                                                <i class="ri-download-2-line float-end text-muted"></i>
-                                                            </a>
-                                                            <a class="dropdown-item js-copy-link" href="${message.message.dirname + "/" + message.message.basename}">Copy link<i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                            <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
-                                                        </div>
-                                                    </div>
-
-                                                 </div>
-                                                <p class="chat-time mb-0">
-                                                    <span class="text-trancate"> ${message.message.extension} : ${message.message.filesize} </span>
-                                                    <span><i class="ri-time-line align-middle"></i> ${sqlToJSFormat(message.created_on)} </span>
-                                                 </p>
-                                            </div>`;
-                            } else {
-                                htmlStr += `
-                                        <div class="ctext-wrap-content p-2">
-                                            <p class="mb-0">
-                                                ${message.message.message}
-                                            </p>
-                                            <p class="chat-time mb-0">
-                                            <small> <i class="ri-time-line align-middle"></i>  ${sqlToJSFormat(message.created_on)} </small>
-                                            </p>
-                                        </div>`;
-                            }
-
-
-                            htmlStr += `  </div>
-                                        </div>
-                                        </div>
-                                        </li>`;
-
+                                                    </li>
+                                                    `;
                         }
 
 
@@ -669,10 +715,8 @@ $(document).ready(function () {
                         if (lastSeenArr.length > 5) {
                             lastSeenArr.splice(0, 2);
                         }
-
                         lastSeenArr.push(activities.last_seen);
                         localStorage.setItem("last_seen", activities.last_seen);
-
                     }
 
                 } else {
@@ -833,30 +877,34 @@ $(document).ready(function () {
 
 
 
-    // when image menu dropdown show 
     let refreshTimeout = null;
-    $(document).on("click", "a.dropdown-toggle-btn", function () {
-        if ($(this).hasClass("show")) {
-            clearInterval(refreshMessage);
-            clearInterval(updateStatusInterval);
-            RTUpdateStatus("Reading...");
-            if (refreshTimeout) {
-                clearTimeout(refreshTimeout);
-                console.log("timeout cleared");
-            }
-        }
+    // when message dropdown menu show 
+    $(document).on('click', '.dropdown-toggle-btn', function () {
+        document.querySelectorAll(".dropdown-menu").forEach(function (e) {
+            if (e.className === "dropdown-menu show") {
 
-        $("a.dropdown-toggle-btn").each(this.addEventListener('hide.bs.dropdown', event => {
-            refreshTimeout = setTimeout(() => {
-                RTfetchMessages();
+                if (refreshTimeout) {
+                    clearTimeout(refreshTimeout);
+                }
+
+                clearInterval(refreshMessage);
                 clearInterval(updateStatusInterval);
-                RTUpdateStatus(null);
-            }, 5000);
-
-        }));
-
+                RTUpdateStatus("Reading...");
+            }
+        })
 
     });
+
+    // // when message dropdown menu close 
+    $("a.dropdown-toggle-btn").each(this.addEventListener('hide.bs.dropdown', event => {
+        refreshTimeout = setTimeout(() => {
+            RTfetchMessages();
+            clearInterval(updateStatusInterval);
+            RTUpdateStatus(null);
+        }, 3000);
+    }));
+
+
 
 
 });

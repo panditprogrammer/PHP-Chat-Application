@@ -243,6 +243,33 @@ class User
         return $stmt->execute();
     }
 
+    // get single message 
+    public function getSingleMessage($messageId)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM chatting WHERE id = :id");
+        $stmt->bindParam(":id", $messageId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    // delete message 
+    public function deleteMessage($messageId)
+    {
+        $rawMessage = $this->getSingleMessage($messageId);
+        $msgArr = explode("!!bin!!", $rawMessage['message']);
+
+        // delete file 
+        if (count($msgArr) > 1) {
+            $attachFilePath = "public/files/" . $msgArr[1];
+            if (file_exists($attachFilePath)) {
+                unlink($attachFilePath);
+            }
+        }
+
+        $stmt = $this->db->prepare("DELETE FROM chatting WHERE id = :id");
+        $stmt->bindParam(":id", $messageId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
     public function updateLastSeen($userId, $timestamp)
     {
         $stmt = $this->db->prepare("UPDATE users SET last_seen = :last_seen WHERE id = :userId");
