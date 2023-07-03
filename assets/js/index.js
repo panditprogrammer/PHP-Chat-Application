@@ -350,6 +350,13 @@ $(document).ready(function () {
 // ajax message
 $(document).ready(function () {
 
+    // copy to clipboard
+    $(document).on("click", ".js-copy-link", function (e) {
+        e.preventDefault();
+        navigator.clipboard.writeText(this.href)
+            .then(() => { })
+            .catch((error) => { console.error(error) });
+    })
 
     // when file is attach
     let isFileSelected = false;
@@ -469,11 +476,10 @@ $(document).ready(function () {
                                                             <i class="ri-more-2-fill"></i>
                                                         </a>
                                                         <div class="dropdown-menu">
-                                                            <a class="dropdown-item" download="${message.message.basename.slice(message.message.basename.indexOf("_"))}" href="${message.message.dirname + "/" + message.message.basename}" class="fw-medium"> Download
+                                                            <a class="dropdown-item" download="${message.message.basename.slice(message.message.basename.indexOf("_") + 1)}" href="${message.message.dirname + "/" + message.message.basename}" class="fw-medium"> Download
                                                                 <i class="ri-download-2-line float-end text-muted"></i>
                                                             </a>
-                                                            <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                            <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                            <a class="dropdown-item js-copy-link" href="${message.message.dirname + "/" + message.message.basename}">Copy link<i class="ri-file-copy-line float-end text-muted"></i></a>
                                                             <a class="dropdown-item text-danger" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                         </div>
                                                     </div>
@@ -491,12 +497,12 @@ $(document).ready(function () {
                                                         <!-- attach file  -->
                                                         <div class="text-start flex-grow-1 overflow-hidden">
                                                             <h3> <i class="ri-file-2-fill"></i> </h3>
-                                                            <h5 class="font-size-14 text-truncate mb-1">${message.message.basename.slice(message.message.basename.indexOf("_"))}</h5>
+                                                            <h5 class="font-size-14 text-truncate mb-1">${message.message.basename.slice(message.message.basename.indexOf("_") + 1)}</h5>
                                                             <p class="text-muted text-truncate font-size-13 mb-0"> ${message.message.filesize} </p>
                                                         </div>
 
                                                         <div class="ms-4">
-                                                            <a download="${message.message.basename.slice(message.message.basename.indexOf("_"))}" href="${message.message.dirname + "/" + message.message.basename}" class="p-2 font-size-20 fw-medium">
+                                                            <a download="${message.message.basename.slice(message.message.basename.indexOf("_") + 1)}" href="${message.message.dirname + "/" + message.message.basename}" class="p-2 font-size-20 fw-medium">
                                                                 <i class="ri-download-2-line"></i>
                                                             </a>
                                                         </div>
@@ -510,6 +516,7 @@ $(document).ready(function () {
                                                             <a class="dropdown-item" download="${message.message.dirname + "/" + message.message.basename}" href="public/images/1688207375${message.message.dirname + "/" + message.message.basename}"> Download
                                                                 <i class="ri-download-2-line float-end text-muted"></i>
                                                             </a>
+                                                            <a class="dropdown-item js-copy-link" href="${message.message.dirname + "/" + message.message.basename}">Copy link<i class="ri-file-copy-line float-end text-muted"></i></a>
                                                             <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                         </div>
                                                     </div>
@@ -558,11 +565,10 @@ $(document).ready(function () {
                                                                 <i class="ri-more-2-fill"></i>
                                                             </a>
                                                             <div class="dropdown-menu">
-                                                                <a class="dropdown-item" download="${message.message.basename.slice(message.message.basename.indexOf("_"))}" href="${message.message.dirname + "/" + message.message.basename}" class="fw-medium"> Download
+                                                                <a class="dropdown-item" download="${message.message.basename.slice(message.message.basename.indexOf("_") + 1)}" href="${message.message.dirname + "/" + message.message.basename}" class="fw-medium"> Download
                                                                     <i class="ri-download-2-line float-end text-muted"></i>
                                                                 </a>
-                                                                <a class="dropdown-item" href="javascript: void(0);">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                                <a class="dropdown-item" href="javascript: void(0);">Save <i class="ri-save-line float-end text-muted"></i></a>
+                                                                <a class="dropdown-item js-copy-link" href="${message.message.dirname + "/" + message.message.basename}">Copy link<i class="ri-file-copy-line float-end text-muted"></i></a>
                                                                 <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                             </div>
                                                         </div>
@@ -580,12 +586,12 @@ $(document).ready(function () {
                                                         <!-- attach file  -->
                                                         <div class="text-start flex-grow-1 overflow-hidden">
                                                             <h3> <i class="ri-file-2-fill"></i> </h3>
-                                                            <h5 class="font-size-14 text-truncate mb-1">${message.message.basename.slice(message.message.basename.indexOf("_"))}</h5>
+                                                            <h5 class="font-size-14 text-truncate mb-1">${message.message.basename.slice(message.message.basename.indexOf("_") + 1)}</h5>
                                                             <p class="text-muted text-truncate font-size-13 mb-0"> ${message.message.filesize} </p>
                                                         </div>
 
                                                         <div class="ms-4">
-                                                            <a download="${message.message.basename.slice(message.message.basename.indexOf("_"))}" href="${message.message.dirname + "/" + message.message.basename}" class="p-2 font-size-20 fw-medium">
+                                                            <a download="${message.message.basename.slice(message.message.basename.indexOf("_") + 1)}" href="${message.message.dirname + "/" + message.message.basename}" class="p-2 font-size-20 fw-medium">
                                                                 <i class="ri-download-2-line"></i>
                                                             </a>
                                                         </div>
@@ -599,6 +605,7 @@ $(document).ready(function () {
                                                             <a class="dropdown-item" download="${message.message.dirname + "/" + message.message.basename}" href="public/images/1688207375${message.message.dirname + "/" + message.message.basename}"> Download
                                                                 <i class="ri-download-2-line float-end text-muted"></i>
                                                             </a>
+                                                            <a class="dropdown-item js-copy-link" href="${message.message.dirname + "/" + message.message.basename}">Copy link<i class="ri-file-copy-line float-end text-muted"></i></a>
                                                             <a class="dropdown-item" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-muted"></i></a>
                                                         </div>
                                                     </div>
@@ -824,19 +831,32 @@ $(document).ready(function () {
         RTUpdateStatus(null);
     })
 
-    // when image menu dropdown show 
-    $("a.dropdown-toggle-btn").each(this.addEventListener('show.bs.dropdown', event => {
-        clearInterval(refreshMessage);
-        clearInterval(updateStatusInterval);
-        RTUpdateStatus("Reading...");
-    }));
 
-    // when image menu dropdown hide
-    $("a.dropdown-toggle-btn").each(this.addEventListener('hide.bs.dropdown', event => {
-        RTfetchMessages();
-        clearInterval(updateStatusInterval);
-        RTUpdateStatus(null);
-    }));
+
+    // when image menu dropdown show 
+    let refreshTimeout = null;
+    $(document).on("click", "a.dropdown-toggle-btn", function () {
+        if ($(this).hasClass("show")) {
+            clearInterval(refreshMessage);
+            clearInterval(updateStatusInterval);
+            RTUpdateStatus("Reading...");
+            if (refreshTimeout) {
+                clearTimeout(refreshTimeout);
+                console.log("timeout cleared");
+            }
+        }
+
+        $("a.dropdown-toggle-btn").each(this.addEventListener('hide.bs.dropdown', event => {
+            refreshTimeout = setTimeout(() => {
+                RTfetchMessages();
+                clearInterval(updateStatusInterval);
+                RTUpdateStatus(null);
+            }, 5000);
+
+        }));
+
+
+    });
 
 
 });

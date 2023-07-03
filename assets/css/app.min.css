@@ -1068,6 +1068,7 @@
     }
 }
 
+/* ============================ chat top ============================= */
 .user-chat-topbar {
     height: 66px;
 }
@@ -1109,6 +1110,20 @@
         -webkit-box-pack: end;
         -ms-flex-pack: end;
         justify-content: flex-end
+    }
+}
+
+/* ============================ chat body ============================= */
+
+
+.chat-conversation {
+    height: calc(100vh - 141px);
+    overflow-y: auto;
+}
+
+@media (max-width: 991.98px) {
+    .chat-conversation {
+        height: calc(92vh - 141px);
     }
 }
 
@@ -1314,16 +1329,8 @@
     background-color: #343a40
 }
 
-.chat-conversation {
-    height: calc(100vh - 141px);
-    overflow-y: auto;
-}
 
-@media (max-width: 991.98px) {
-    .chat-conversation {
-        height: calc(100vh - 141px);
-    }
-}
+/* ============================ chat bottom ============================= */
 
 .chat-input-section {
     background-color: var(--bs-white);

@@ -1976,7 +1976,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                     <ul class="list-inline mb-0 h-100">
                                         <li class="list-inline-item h-100 position-relative" data-bs-toggle="tooltip" data-bs-placement="top" title="Attached File">
                                             <input type="file" style="display: none;" name="attachment" id="attachment">
-                                            <label for="attachment" class="btn btn-link text-decoration-none font-size-16 h-100 btn-lg waves-effect <?php if (!isset($userProfileData)) echo "disabled"; ?>">
+                                            <label for="attachment" class="btn btn-link d-flex justify-content-center align-items-center text-decoration-none font-size-16 h-100 btn-lg waves-effect <?php if (!isset($userProfileData)) echo "disabled"; ?>">
                                                 <i class="ri-link"></i>
                                             </label>
 

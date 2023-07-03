@@ -143,8 +143,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST)) {
     }
 
 
-
-
     if (!empty($fromUser) && !empty($sendTo) && !empty($message)) {
 
         if ($userObject->saveMessage($fromUser, $sendTo, $message)) {
