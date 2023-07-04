@@ -358,34 +358,35 @@ $(document).ready(function () {
             .catch((error) => { console.error(error) });
     })
 
-    // delete message
+    function deleteMessageById(messageId) {
+        $.ajax({
+            url: "send-receive.php",
+            type: "GET",
+            cache: false,
+            data: { messageId: messageId },
+            success: function (res) {
+                if (res === "false") {
+                    alert("Message can't be delete!");
+                }
+            }
+        });
+    }
+
+
+    // delete message with file
     $(document).on("click", ".js-delete-message", function (e) {
-        let messageId = $(this).attr("data-deleteid");
-        console.log($(this));
-        // $.ajax({
-        //     url: "send-receive.php",
-        //     type: "GET",
-        //     cache: false,
-        //     data: { messageId: messageId },
-        //     success: function (res) {
-        //         if (res === "false") {
-        //             alert("Message can't be delete!");
-        //         }
-        //     }
-        // });
+        deleteMessageById($(this).attr("data-deleteid"))
     });
 
-    // when file is attach
-    let isFileSelected = false;
+
+    // let user know to file is attach
     $("#showFileAttached").hide();
     $("#uploading-status").hide();
     $('#attachment').change(function (e) {
         if ($('#attachment').val()) {
             $("#showFileAttached").show();
-            isFileSelected = true;
         } else {
             $("#showFileAttached").hide();
-            isFileSelected = false;
         }
     });
 
@@ -429,7 +430,7 @@ $(document).ready(function () {
     var remoteUserStatusColor = $("#remoteUserStatusColor");
     var lastSeenArr = Array();
     var activities = null;
-    let refreshTimeout = null;
+    let refreshMsgTimeout = null;
 
 
 
@@ -444,6 +445,9 @@ $(document).ready(function () {
     //===================== get remote user from db ====================
     // if chat is opened
     function RTfetchMessages() {
+        if (refreshMessage) {
+            clearInterval(refreshMessage);
+        }
         if (sendToUser) {
             refreshMessage = setInterval(() => {
                 getMessage();
@@ -575,9 +579,7 @@ $(document).ready(function () {
                                             <div class="user-chat-content">
                                                 <div class="ctext-wrap">
                                                     <div class="ctext-wrap-content p-2">
-                                                        <p class="mb-0" id="copyMessageId${message.id}">
-                                                            ${message.message.message}
-                                                        </p>
+                                                        <p class="mb-0" id="copyMessage${message.id}">${message.message.message}</p>
                                                         <p class="chat-time mb-0">
                                                         <small></small>
                                                         <small> <i class="ri-time-line align-middle"></i> ${sqlToJSFormat(message.created_on)}</small>
@@ -684,19 +686,17 @@ $(document).ready(function () {
                                                     <li>
                                                         <div class="conversation-list mt-2">
 
-                                                        <div class="dropdown-menu message-menu">
-                                                        <a class="dropdown-item js-copy-message" data-copyid="${message.id}" href="javascript:void()">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
-                                                        <div class="dropdown-divider my-1"></div>
-                                                        <a class="dropdown-item js-delete-message text-danger" data-deleteid="9999" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-danger"></i></a>
-            
-                                                    </div>
+                                                            <div class="dropdown-menu message-menu">
+                                                                <a class="dropdown-item js-copy-message" data-copyid="${message.id}" href="javascript:void()">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                                <div class="dropdown-divider my-1"></div>
+                                                                <a class="dropdown-item js-delete-message text-danger" data-deleteid="${message.id}" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-danger"></i></a>
+                    
+                                                            </div>
 
                                                             <div class="user-chat-content">
                                                                 <div class="ctext-wrap">
                                                                     <div class="ctext-wrap-content p-2">
-                                                                        <p class="mb-0" id="copyMessage${message.id}">
-                                                                            ${message.message.message}
-                                                                        </p>
+                                                                        <p class="mb-0" id="copyMessage${message.id}">${message.message.message}</p>
                                                                         <p class="chat-time mb-0">
                                                                         <small> <i class="ri-time-line align-middle"></i>  ${sqlToJSFormat(message.created_on)} </small>
                                                                         <small></small>
@@ -794,7 +794,7 @@ $(document).ready(function () {
     }
 
 
-    // set last seen
+    // set last seen default
     updateLastSeenInterval = setInterval(() => {
         updateLastSeen(fromUser);
     }, 500);
@@ -813,6 +813,9 @@ $(document).ready(function () {
     }
 
     function RTUpdateStatus(status) {
+        if (updateLastSeenInterval) {
+            clearInterval(updateLastSeenInterval);
+        }
         updateStatusInterval = setInterval(() => {
             updateStatus(status);
         }, 500);
@@ -888,22 +891,17 @@ $(document).ready(function () {
         isEmptyInputArea();
     });
 
-    // when textarea is active
+    // when user write -textarea is active
     messageInputArea.focusin(() => {
-
         if (refreshMessage)
             clearInterval(refreshMessage);
         if (updateLastSeenInterval)
             clearInterval(updateStatusInterval);
-
         RTUpdateStatus("Typing...");
-
     })
 
     messageInputArea.focusout(() => {
         RTfetchMessages();
-        if (updateLastSeenInterval)
-            clearInterval(updateStatusInterval);
         RTUpdateStatus(null);
     })
 
@@ -911,20 +909,22 @@ $(document).ready(function () {
 
     // on scroll chat div 
     $(".chat-conversation").scroll(function () {
-        stopRefreshMsg(refreshTimeout);
+        stopRefreshMsg();
         startRefreshMsg();
     })
 
 
 
     // stop getting live msg 
-    function stopRefreshMsg(refreshTimeout) {
-        if (refreshTimeout) {
-            clearTimeout(refreshTimeout);
+    function stopRefreshMsg() {
+       
+        if (refreshMsgTimeout) {
+            clearTimeout(refreshMsgTimeout);
         }
 
         if (refreshMessage)
             clearInterval(refreshMessage);
+
         if (updateLastSeenInterval)
             clearInterval(updateStatusInterval);
 
@@ -933,7 +933,7 @@ $(document).ready(function () {
 
     // restart fetch message 
     function startRefreshMsg() {
-        refreshTimeout = setTimeout(() => {
+        refreshMsgTimeout = setTimeout(() => {
             RTfetchMessages();
             if (updateLastSeenInterval)
                 clearInterval(updateStatusInterval);
@@ -942,41 +942,87 @@ $(document).ready(function () {
     }
 
 
-    // when message dropdown menu show 
+    // when message file attchment dropdown menu show 
     $(document).on('click', '.dropdown-toggle-btn', function (e) {
         e.stopPropagation();
         document.querySelectorAll(".dropdown-menu").forEach(function (e) {
             if (e.className === "dropdown-menu show") {
-
-                stopRefreshMsg(refreshTimeout);
+                stopRefreshMsg();
             }
         })
 
     });
 
-    // // when message dropdown menu close 
+    // // when message file attchment dropdown menu close 
     $("a.dropdown-toggle-btn").each(this.addEventListener('hide.bs.dropdown', event => {
         startRefreshMsg();
     }));
 
 
-    // delete string message 
+
+
+    // message dropdown menu event handling
     $(document).on("click", "#chatMessages > li", (function (e) {
         e.stopPropagation();
+        let currentMsgDropdownMenu = null;
+
 
         if (!$(this).find(".message-img-link").length) {
-
-            stopRefreshMsg(refreshTimeout);
-
-            // active message 
+            stopRefreshMsg();
             $(this).toggleClass("active");
-            let dropdownMessageMenu = $(this).find(".conversation-list  > .message-menu");
-            // dropdownMessageMenu.toggleClass("show");
-            dropdownMessageMenu.toggle();
+
+            // show the dropdown menu 
+            currentMsgDropdownMenu = $(this).find(".conversation-list > .message-menu");
+            currentMsgDropdownMenu.toggle();
+
+            // close other dropdown menu 
+            $(this).siblings().removeClass("active");
+            $("#chatMessages > li").find(function () {
+                $(".conversation-list > .message-menu").not(currentMsgDropdownMenu).each(function () {
+                    $(this).hide();
+                });
+                $(this).show();
+            })
+
+
+            // message menu button click copy event 
+            $(document).on("click", ".js-copy-message", function (et) {
+                et.stopPropagation();
+                
+                navigator.clipboard.writeText($("#copyMessage" + $(this).data("copyid")).text())
+                .then(()=>{
+                }).catch((error)=>{
+                    console.error(error)
+                })
+
+                $(this).parents("#chatMessages > li").removeClass("active");
+                currentMsgDropdownMenu.hide();
+                startRefreshMsg();
+            })
+
+
+            // message menu button click delete event 
+            $(document).on("click", ".js-delete-message", function (ed) {
+                ed.stopPropagation();
+                $(this).parents("#chatMessages > li").html(
+                    `<div class="conversation-list mt-2">
+                        <div class="user-chat-content">
+                            <div class="ctext-wrap">
+                                <div class="ctext-wrap-content p-2">
+                                    <em class='small text-muted'>Message deleted!</em>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`);
+                startRefreshMsg();
+            });
+
+
+
         }
 
-    }));
 
+    }));
 
 });
 
