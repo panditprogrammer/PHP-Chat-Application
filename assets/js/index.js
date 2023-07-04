@@ -429,6 +429,8 @@ $(document).ready(function () {
     var remoteUserStatusColor = $("#remoteUserStatusColor");
     var lastSeenArr = Array();
     var activities = null;
+    let refreshTimeout = null;
+
 
 
     if (sendToUser) {
@@ -469,8 +471,10 @@ $(document).ready(function () {
 
                         if (message.fromUser == fromUser) {
 
-                            // html head 
-                            htmlStr += `
+
+                            if (message.message.mimetype) {
+                                // html head 
+                                htmlStr += `
                                         <li class="right">
                                             <div class="conversation-list">
                                                 <div class="user-chat-content">
@@ -478,10 +482,10 @@ $(document).ready(function () {
                                                     `;
 
 
-                            // html body Image or String 
-                            if (message.message.mimetype && message.message.mimetype.startsWith("image/")) {
+                                // html body Image or String 
+                                if (message.message.mimetype.startsWith("image/")) {
 
-                                htmlStr += ` <div class="ctext-wrap-content p-2">
+                                    htmlStr += ` <div class="ctext-wrap-content p-2">
                                                 <div class="d-flex align-items-start position-relative">
                                                     <!-- attach image  -->
                                                     <a class="popup-img d-inline-block" href="${message.message.dirname + "/" + message.message.basename}" title="Project 1">
@@ -509,8 +513,8 @@ $(document).ready(function () {
                                                 </p>
                                             </div>`;
 
-                            } else if (message.message.mimetype) {
-                                htmlStr += ` <div class="ctext-wrap-content p-2">
+                                } else {
+                                    htmlStr += ` <div class="ctext-wrap-content p-2">
                                                 <div class="card mb-1">
                                                     <div class="d-flex flex-wrap align-items-start p-2 py-1">
                                                         <!-- attach file  -->
@@ -546,24 +550,32 @@ $(document).ready(function () {
                                                      <span><i class="ri-time-line align-middle"></i> ${sqlToJSFormat(message.created_on)} </span>
                                                  </p>
                                             </div>`;
-                            }
-                            // html foot 
-                            htmlStr += `
+                                }
+                                // html foot 
+                                htmlStr += `
                                                  </div>
                                                 </div>
                                             </div>
                                         </li>`;
 
+                            }
 
 
                             // message 
                             htmlStr += `
                                     <li class="right">
                                         <div class="conversation-list">
+
+                                            <div class="dropdown-menu message-menu">
+                                                <a class="dropdown-item js-copy-message" data-copyid="${message.id}" href="javascript:void()">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                <div class="dropdown-divider my-1"></div>
+                                                <a class="dropdown-item js-delete-message text-danger" data-deleteid="${message.id}" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-danger"></i></a>
+                                            </div>
+
                                             <div class="user-chat-content">
                                                 <div class="ctext-wrap">
                                                     <div class="ctext-wrap-content p-2">
-                                                        <p class="mb-0">
+                                                        <p class="mb-0" id="copyMessageId${message.id}">
                                                             ${message.message.message}
                                                         </p>
                                                         <p class="chat-time mb-0">
@@ -578,15 +590,19 @@ $(document).ready(function () {
                                      `;
 
                         } else {
-                            // html head 
-                            htmlStr += `<li>
+
+
+                            if (message.message.mimetype) {
+
+                                // html head 
+                                htmlStr += `<li>
                                             <div class="conversation-list mt-2">
                                                 <div class="user-chat-content">
                                                     <div class="ctext-wrap">`;
 
-                            // html body Image or String 
-                            if (message.message.mimetype && message.message.mimetype.startsWith("image/")) {
-                                htmlStr += ` <div class="ctext-wrap-content p-2">
+                                // html body Image or String 
+                                if (message.message.mimetype.startsWith("image/")) {
+                                    htmlStr += ` <div class="ctext-wrap-content p-2">
                                                             <div class="d-flex align-items-start position-relative">
                                                                 <!-- attach image  -->
                                                                 <a class="popup-img d-inline-block" href="${message.message.dirname + "/" + message.message.basename}" title="Project 1">
@@ -614,8 +630,8 @@ $(document).ready(function () {
                                                             </p>
                                                         </div>
                                                     </div>`;
-                            } else if (message.message.mimetype) {
-                                htmlStr += `<div class="ctext-wrap-content p-2">
+                                } else {
+                                    htmlStr += `<div class="ctext-wrap-content p-2">
                                                         <div class="card mb-1">
                                                             <div class="d-flex flex-wrap align-items-start p-2 py-1">
                                                                 <!-- attach file  -->
@@ -652,22 +668,33 @@ $(document).ready(function () {
                                                             <span><i class="ri-time-line align-middle"></i> ${sqlToJSFormat(message.created_on)} </span>
                                                         </p>
                                                     </div>`;
-                            }
-                            // html foot 
-                            htmlStr += ` </div>
+                                }
+
+                                // html foot 
+                                htmlStr += ` </div>
                                        </div>
                                     </div>
                                 </li>`;
+                            }
+
 
 
                             //    message 
                             htmlStr += `
                                                     <li>
                                                         <div class="conversation-list mt-2">
+
+                                                        <div class="dropdown-menu message-menu">
+                                                        <a class="dropdown-item js-copy-message" data-copyid="${message.id}" href="javascript:void()">Copy <i class="ri-file-copy-line float-end text-muted"></i></a>
+                                                        <div class="dropdown-divider my-1"></div>
+                                                        <a class="dropdown-item js-delete-message text-danger" data-deleteid="9999" href="javascript: void(0);">Delete <i class="ri-delete-bin-line float-end text-danger"></i></a>
+            
+                                                    </div>
+
                                                             <div class="user-chat-content">
                                                                 <div class="ctext-wrap">
                                                                     <div class="ctext-wrap-content p-2">
-                                                                        <p class="mb-0">
+                                                                        <p class="mb-0" id="copyMessage${message.id}">
                                                                             ${message.message.message}
                                                                         </p>
                                                                         <p class="chat-time mb-0">
@@ -863,33 +890,65 @@ $(document).ready(function () {
 
     // when textarea is active
     messageInputArea.focusin(() => {
-        clearInterval(refreshMessage);
-        clearInterval(updateStatusInterval);
+
+        if (refreshMessage)
+            clearInterval(refreshMessage);
+        if (updateLastSeenInterval)
+            clearInterval(updateStatusInterval);
+
         RTUpdateStatus("Typing...");
 
     })
 
     messageInputArea.focusout(() => {
         RTfetchMessages();
-        clearInterval(updateStatusInterval);
+        if (updateLastSeenInterval)
+            clearInterval(updateStatusInterval);
         RTUpdateStatus(null);
     })
 
 
 
-    let refreshTimeout = null;
+    // on scroll chat div 
+    $(".chat-conversation").scroll(function () {
+        stopRefreshMsg(refreshTimeout);
+        startRefreshMsg();
+    })
+
+
+
+    // stop getting live msg 
+    function stopRefreshMsg(refreshTimeout) {
+        if (refreshTimeout) {
+            clearTimeout(refreshTimeout);
+        }
+
+        if (refreshMessage)
+            clearInterval(refreshMessage);
+        if (updateLastSeenInterval)
+            clearInterval(updateStatusInterval);
+
+        RTUpdateStatus("Reading...");
+    }
+
+    // restart fetch message 
+    function startRefreshMsg() {
+        refreshTimeout = setTimeout(() => {
+            RTfetchMessages();
+            if (updateLastSeenInterval)
+                clearInterval(updateStatusInterval);
+            RTUpdateStatus(null);
+        }, 3000);
+    }
+
+
     // when message dropdown menu show 
-    $(document).on('click', '.dropdown-toggle-btn', function () {
+    $(document).on('click', '.dropdown-toggle-btn', function (e) {
+        e.stopPropagation();
         document.querySelectorAll(".dropdown-menu").forEach(function (e) {
             if (e.className === "dropdown-menu show") {
 
-                if (refreshTimeout) {
-                    clearTimeout(refreshTimeout);
-                }
-
-                clearInterval(refreshMessage);
-                clearInterval(updateStatusInterval);
-                RTUpdateStatus("Reading...");
+                stopRefreshMsg(refreshTimeout);
             }
         })
 
@@ -897,14 +956,20 @@ $(document).ready(function () {
 
     // // when message dropdown menu close 
     $("a.dropdown-toggle-btn").each(this.addEventListener('hide.bs.dropdown', event => {
-        refreshTimeout = setTimeout(() => {
-            RTfetchMessages();
-            clearInterval(updateStatusInterval);
-            RTUpdateStatus(null);
-        }, 3000);
+        startRefreshMsg();
     }));
 
 
+    // delete string message 
+    $(document).on("click", "#chatMessages > li", (function (e) {
+        e.stopPropagation();
+
+        if(!$(this).find(".message-img-link").length){
+
+            console.log("li clicked");
+        }
+        
+    }));
 
 
 });

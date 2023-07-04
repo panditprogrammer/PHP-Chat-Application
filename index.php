@@ -1936,9 +1936,10 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                         <?php
                         if ($userProfileData) {
                         ?>
-                            <ul class="list-unstyled mb-0 w-100" id="chatMessages">
-                                <!-- dynamic messages  -->
-                            </ul>
+                            <ul class="list-unstyled mb-0 w-100" id="chatMessages"> 
+                            <!-- dynamic messages  -->
+                            </ul> 
+
 
                         <?php
                         } else {

@@ -17,7 +17,9 @@
     --bs-theme-mode-icon: "";
     --bs-accordion-button-bg: #f5f7fb;
     --bs-accordion-bg: #fff;
-    --bs-dropdown-bg: #fff
+    --bs-dropdown-bg: #fff;
+    scroll-behavior: smooth;
+    transition: all 0.5s;
 }
 
 [data-bs-theme=dark] {
@@ -105,7 +107,7 @@
 .waves-circle {
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
-    -webkit-mask-image: -webkit-radial-gradient(circle, #fff 100%, #000 100%)
+    -webkit-mask-image: -webkit-radial-gradient(circle, #fff 100%, #000 100%);
 }
 
 .waves-button,
@@ -1122,7 +1124,7 @@
 }
 
 @media screen and (max-width: 991.98px) {
-    
+
     .chat-conversation {
         height: calc(92vh - 141px);
     }
@@ -1181,6 +1183,14 @@
     width: fit-content;
     max-width: 80%;
     border-radius: .2rem;
+    position: relative;
+}
+
+.chat-conversation li .conversation-list .message-menu{
+    position: absolute;
+    top: 0 !important;
+    left: 100%;
+
 }
 
 
@@ -1304,6 +1314,12 @@
 
 .chat-conversation li.right .conversation-list {
     justify-content: end;
+}
+
+.chat-conversation li.right .conversation-list .message-menu{
+    right: 100% !important;
+    left: auto !important;
+
 }
 
 .chat-conversation li.right .conversation-list .message-img-link {
