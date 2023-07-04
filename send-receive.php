@@ -5,8 +5,8 @@ require_once "core/init.php";
 
 // get messages 
 if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['fetch'])) {
-    $fromUser = trim(htmlentities($_GET['fromUser']));
-    $sendTo = trim(htmlentities($_GET['sendToUser']));
+    $fromUser = $userObject->getSafeValue($_GET['fromUser']);
+    $sendTo = $userObject->getSafeValue($_GET['sendToUser']);
 
 
     function size2Byte($size)
@@ -22,38 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['fetch'])) {
         return ($size | 0) . " " . $currUnit;
     }
 
-
     if (!empty($fromUser) && !empty($sendTo)) {
-
-        $data = $userObject->getMessage($fromUser, $sendTo);
-        $messageDataArr = json_decode(json_encode($data), true);
-
-        foreach ($messageDataArr as $key => $value) {
-
-            foreach ($value as $k => $v) {
-
-                if ($k === "message") {
-
-                    $rawMessage = $messageDataArr[$key][$k];
-                    $msgArr = explode("!!bin!!", $rawMessage);
-
-                    $data = array("message" => $msgArr[0]);
-
-                    // modify result array and set file info with string message 
-                    if (count($msgArr) > 1) {
-                        $attachFilePath = "public/files/" . $msgArr[1];
-                        $data = array_merge($data, pathinfo($attachFilePath), array("filesize" => size2Byte(filesize($attachFilePath))), array("mimetype" => mime_content_type($attachFilePath)));
-                        $messageDataArr[$key]["message"] = $data;
-                    } else {
-                        $data = array_merge($data, array("filesize" => 0));
-                        $messageDataArr[$key]["message"] = $data;
-                    }
-                    $messageDataArr[$key][$k] = $data;
-                }
-            }
-        }
-
-        echo json_encode($messageDataArr);
+        echo json_encode($userObject->getMessage($fromUser, $sendTo));
     } else {
         echo "0";
     }
@@ -65,8 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['fetch'])) {
 if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['timeStamp'])) {
 
 
-    $fromUser = trim(htmlentities($_GET['fromUser']));
-    $timeStamp = trim(htmlentities($_GET['timeStamp']));
+    $fromUser = $userObject->getSafeValue($_GET['fromUser']);
+    $timeStamp = $userObject->getSafeValue($_GET['timeStamp']);
 
     if (!empty($fromUser) && !empty($timeStamp)) {
         $userObject->updateLastSeen($fromUser, $timeStamp);
@@ -80,9 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['timeStamp'])) {
 // update user status
 if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['status'])) {
 
-    $fromUser = trim(htmlentities($_GET['fromUser']));
-    $sendTo = trim(htmlentities($_GET['sendTo']));
-    $status = trim(htmlentities($_GET['status']));
+    $fromUser = $userObject->getSafeValue($_GET['fromUser']);
+    $sendTo = $userObject->getSafeValue($_GET['sendTo']);
+    $status = $userObject->getSafeValue($_GET['status']);
 
     if (!empty($fromUser) && !empty($sendTo)) {
         $userObject->updateStatus($fromUser, $sendTo, $status);
@@ -96,8 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['status'])) {
 // get user activities
 if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['getActivity'])) {
 
-    $fromUser = trim(htmlentities($_GET['fromUser']));
-    $sendTo = trim(htmlentities($_GET['sendTo']));
+    $fromUser = $userObject->getSafeValue($_GET['fromUser']);
+    $sendTo = $userObject->getSafeValue($_GET['sendTo']);
 
     if (!empty($fromUser) && !empty($sendTo)) {
         $userStatus = $userObject->getStatus($sendTo, $fromUser);
@@ -116,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['getActivity'])) {
 // get single user last seen
 if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['checkLastSeen'])) {
 
-    $userId = trim(htmlentities($_GET['userId']));
+    $userId = $userObject->getSafeValue($_GET['userId']);
 
     if (!empty($userId)) {
         $lastSeen = $userObject->getLastSeen($userId);
@@ -130,9 +100,9 @@ if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['checkLastSeen'])) {
 // post methods 
 if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST)) {
 
-    $fromUser = trim(htmlentities($_POST['fromUser']));
-    $sendTo = trim(htmlentities($_POST['sendToUser']));
-    $message = trim(htmlentities($_POST['message']));
+    $fromUser = $userObject->getSafeValue($_POST['fromUser']);
+    $sendTo = $userObject->getSafeValue($_POST['sendToUser']);
+    $message = $userObject->getSafeValue($_POST['message']);
 
     $attachment = $_FILES['attachment'];
 
@@ -157,11 +127,11 @@ if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST)) {
 
 
 
-if($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['messageId']) && $_GET['messageId'] > 0){
-    
-    if($userObject->deleteMessage($_GET['messageId'])){
+if ($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['messageId']) && $_GET['messageId'] > 0) {
+
+    if ($userObject->deleteMessage($_GET['messageId'])) {
         echo "true";
-    }else{
+    } else {
         echo "false";
     }
 }

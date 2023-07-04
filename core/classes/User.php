@@ -78,6 +78,12 @@ class User
     }
 
 
+    public function getSafeValue($string)
+    {
+        return trim(htmlentities($string));
+    }
+
+
     public function getUserById($userId = null)
     {
         $userId = ((!empty($userId)) ? $userId : $this->userId);
@@ -213,7 +219,35 @@ class User
         $stmt->bindParam(":fromUser", $fromUser, PDO::PARAM_INT);
         $stmt->bindParam(":sendTo", $sendTo, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_OBJ);
+        $data = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        $messageDataArr = json_decode(json_encode($data), true);
+        foreach ($messageDataArr as $key => $value) {
+
+            foreach ($value as $k => $v) {
+
+                if ($k === "message") {
+
+                    $rawMessage = $messageDataArr[$key][$k];
+                    $msgArr = explode("!!bin!!", $rawMessage);
+
+                    $data = array("message" => html_entity_decode($msgArr[0]));
+
+                    // modify result array and set file info with string message 
+                    if (count($msgArr) > 1) {
+                        $attachFilePath = "public/files/" . $msgArr[1];
+                        $data = array_merge($data, pathinfo($attachFilePath), array("filesize" => size2Byte(filesize($attachFilePath))), array("mimetype" => mime_content_type($attachFilePath)));
+                        $messageDataArr[$key]["message"] = $data;
+                    } else {
+                        $data = array_merge($data, array("filesize" => 0));
+                        $messageDataArr[$key]["message"] = $data;
+                    }
+                    $messageDataArr[$key][$k] = $data;
+                }
+            }
+        }
+
+        return $messageDataArr;
     }
 
     // checking numm of message 

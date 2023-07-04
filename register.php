@@ -27,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                         } else {
                             if ($userObject->registerUser($email, $username, $password)) {
                                 $userObject->redirect("login.php");
+                                $_SESSION['register_success'] = true;
                             } else {
                                 $msg = "Unable to Register! Please try again.";
                             }
@@ -38,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                     $msg = "Please fill the required fields!";
                 }
             } else {
-                $msg = "Invalid Username format!";
+                $msg = "Only uppercase, lowercase and digits are allowed!";
             }
         } else {
             $msg = "Password Missmatch!";

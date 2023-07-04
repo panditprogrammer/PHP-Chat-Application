@@ -5,6 +5,8 @@ if ($userObject->isLoggedIn()) {
     $userObject->redirect(ROOT_URL);
 }
 
+$alertType = "danger";
+
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
     if (isset($_POST)) {
@@ -93,8 +95,15 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                         <h4>Sign in</h4>
                         <p class="text-muted mb-4">Sign in to continue to <?php echo SITE_NAME; ?>.</p>
                         <?php
+
+                        if (isset($_SESSION['register_success'])) {
+                            $alertType = "success";
+                            $msg = "Registration Successfull!";
+                        }
+                        unset($_SESSION['register_success']);
+
                         if (isset($msg))
-                            echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            echo '<div class="alert alert-' . $alertType . ' alert-dismissible fade show" role="alert">
                                     ' . $msg . '
                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>';
@@ -107,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                                 <form action="" method="post">
 
                                     <div class="mb-3">
-                                        <label class="form-label">Username</label>
+                                        <label class="form-label">Email</label>
                                         <div class="input-group mb-3 bg-light-subtle rounded-3">
                                             <span class="input-group-text text-muted" id="basic-addon3">
                                                 <i class="ri-user-2-line"></i>
@@ -117,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                                     </div>
 
                                     <div class="mb-4">
-                                       
+
                                         <label class="form-label">Password</label>
                                         <div class="input-group mb-3 bg-light-subtle rounded-3">
                                             <span class="input-group-text text-muted" id="basic-addon4">
