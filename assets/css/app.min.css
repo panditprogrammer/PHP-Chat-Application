@@ -1176,6 +1176,11 @@
     display: flex;
     align-items: center;
     justify-content: start;
+    cursor: pointer;
+}
+
+.chat-conversation li.active{
+    background: var(--bs-sidebar-menu-item-active-bg);
 }
 
 
@@ -1189,7 +1194,7 @@
 .chat-conversation li .conversation-list .message-menu{
     position: absolute;
     top: 0 !important;
-    left: 100%;
+    /* left: 100%; */
 
 }
 

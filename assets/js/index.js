@@ -964,11 +964,17 @@ $(document).ready(function () {
     $(document).on("click", "#chatMessages > li", (function (e) {
         e.stopPropagation();
 
-        if(!$(this).find(".message-img-link").length){
+        if (!$(this).find(".message-img-link").length) {
 
-            console.log("li clicked");
+            stopRefreshMsg(refreshTimeout);
+
+            // active message 
+            $(this).toggleClass("active");
+            let dropdownMessageMenu = $(this).find(".conversation-list  > .message-menu");
+            // dropdownMessageMenu.toggleClass("show");
+            dropdownMessageMenu.toggle();
         }
-        
+
     }));
 
 
