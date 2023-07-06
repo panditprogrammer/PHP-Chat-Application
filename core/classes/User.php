@@ -59,8 +59,6 @@ class User
         $stmt->bindParam(":created_on", $current_timestamp, PDO::PARAM_STR);
 
         return $stmt->execute();
-
-        return $stmt->execute();
     }
 
     public function hash($password)
@@ -97,6 +95,31 @@ class User
     public function isLoggedIn()
     {
         return ((isset($_SESSION['userId'])) ? true : false);
+    }
+
+    public function login($username, $password)
+    {
+        $message = false;
+        if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
+
+            if ($user = $this->emailExist($username)) {
+
+                if (password_verify($password, $user->password)) {
+                    session_regenerate_id();
+                    $_SESSION['userId'] = $user->id;
+
+                    $this->redirect(ROOT_URL);
+                } else {
+                    $message = "Incorrect Username or Password";
+                }
+            } else {
+                $message = "username is not exist!";
+            }
+        } else {
+            $message = "Invalid Email format!";
+        }
+
+        return $message;
     }
 
     public function logout()

@@ -347,8 +347,40 @@ $(document).ready(function () {
 });
 
 
-// ajax message
+// ajax manage message
 $(document).ready(function () {
+
+
+    // check theme 
+    localStorage.getItem("darkMode") === "dark" ? document.body.setAttribute("data-bs-theme", "dark") : document.body.setAttribute("data-bs-theme", "light");
+
+    // detect fromUser is online or not  
+    function checkMyNetwork() {
+        if (navigator.onLine) {
+            $("#isThisUserOnline").html(`<i class="ri-checkbox-blank-circle-fill font-size-10 status-success me-1 ms-0 d-inline-block"></i> Active`);
+        }
+        else {
+            $("#isThisUserOnline").html(`<i class="ri-checkbox-blank-circle-fill font-size-10 me-1 ms-0 d-inline-block"></i> No Internet`);
+        }
+
+        window.addEventListener("online", () => {
+            $("#isThisUserOnline").html(`<i class="ri-checkbox-blank-circle-fill font-size-10 status-success me-1 ms-0 d-inline-block"></i> Active`);
+            location.reload();
+        });
+        window.addEventListener("offline", () => {
+            $("#isThisUserOnline").html(`<i class="ri-checkbox-blank-circle-fill font-size-10 me-1 ms-0 d-inline-block"></i> No Internet`);
+        });
+    }
+
+    checkMyNetwork();
+
+
+    //    user local time 
+    setInterval((() => {
+        $("#currentLocalTime").text(new Date().toLocaleTimeString());
+    }), 1000);
+
+
 
     // copy to clipboard
     $(document).on("click", ".js-copy-link", function (e) {
@@ -735,6 +767,7 @@ $(document).ready(function () {
             success: function (res) {
                 if (res !== "false") {
                     activities = JSON.parse(res);
+
                     if (activities) {
                         if (activities.status)
                             localStorage.setItem("remoteUserStatus", activities.status);
@@ -753,6 +786,7 @@ $(document).ready(function () {
         });
     }
 
+
     function setLastSeen() {
         setInterval(() => {
             if (isSameElements(lastSeenArr)) {
@@ -761,6 +795,7 @@ $(document).ready(function () {
             } else {
                 localStorage.setItem("remoteUserStatus", "Online");
                 remoteUserStatusColor.css("color", "#06d6a0");
+
             }
         }, 1000);
     }
@@ -794,13 +829,14 @@ $(document).ready(function () {
     }
 
 
-    // set last seen default
+    // set last seen default this user
     updateLastSeenInterval = setInterval(() => {
         updateLastSeen(fromUser);
     }, 500);
 
-    // set Realtime Update
+    // set Realtime Update this user
     function updateStatus(status) {
+
         $.ajax({
             url: "send-receive.php",
             type: "GET",
@@ -812,9 +848,29 @@ $(document).ready(function () {
         });
     }
 
+
+    //  set status for remote user
+    function setRemoteUserStatus() {
+        let status = null;
+        setInterval(() => {
+            $.ajax({
+                url: "send-receive.php",
+                type: "GET",
+                cache: false,
+                data: { fromUser: sendToUser, sendTo: fromUser, status: status },
+                success: function (res) {
+                    // do nothing
+                }
+            });
+        }, 5000);
+    }
+
+    setRemoteUserStatus();
+
+
     function RTUpdateStatus(status) {
-        if (updateLastSeenInterval) {
-            clearInterval(updateLastSeenInterval);
+        if (updateStatusInterval) {
+            clearInterval(updateStatusInterval);
         }
         updateStatusInterval = setInterval(() => {
             updateStatus(status);
@@ -903,6 +959,7 @@ $(document).ready(function () {
     messageInputArea.focusout(() => {
         RTfetchMessages();
         RTUpdateStatus(null);
+        console.log("focus out");
     })
 
 
@@ -917,7 +974,7 @@ $(document).ready(function () {
 
     // stop getting live msg 
     function stopRefreshMsg() {
-       
+
         if (refreshMsgTimeout) {
             clearTimeout(refreshMsgTimeout);
         }
@@ -971,6 +1028,11 @@ $(document).ready(function () {
             stopRefreshMsg();
             $(this).toggleClass("active");
 
+            // when li click and done nothing operation 
+            if (!$(this).hasClass("active")) {
+                startRefreshMsg();
+            }
+
             // show the dropdown menu 
             currentMsgDropdownMenu = $(this).find(".conversation-list > .message-menu");
             currentMsgDropdownMenu.toggle();
@@ -988,12 +1050,12 @@ $(document).ready(function () {
             // message menu button click copy event 
             $(document).on("click", ".js-copy-message", function (et) {
                 et.stopPropagation();
-                
+
                 navigator.clipboard.writeText($("#copyMessage" + $(this).data("copyid")).text())
-                .then(()=>{
-                }).catch((error)=>{
-                    console.error(error)
-                })
+                    .then(() => {
+                    }).catch((error) => {
+                        console.error(error)
+                    })
 
                 $(this).parents("#chatMessages > li").removeClass("active");
                 currentMsgDropdownMenu.hide();
@@ -1016,9 +1078,6 @@ $(document).ready(function () {
                     </div>`);
                 startRefreshMsg();
             });
-
-
-
         }
 
 

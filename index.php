@@ -195,14 +195,16 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                             </div>
 
                             <h5 class="font-size-16 mb-1 text-truncate"><?php $user->name ? print($user->name) : print($user->username); ?></h5>
-                            <p class="text-muted text-truncate mb-1"><i class="ri-record-circle-fill font-size-10 text-success me-1 ms-0 d-inline-block"></i> Active</p>
+                            <p class="text-truncate mb-1" id="isThisUserOnline">
+                                
+                            </p>
                         </div>
                         <!-- End profile user -->
 
                         <!-- Start user-profile-desc -->
                         <div class="p-2 user-profile-desc" data-simplebar>
-                            <div class="text-muted">
-                                <p class="mb-4">If several languages coalesce, the grammar of the resulting language is more simple and regular than that of the individual.</p>
+                            <div class="text-muted text-center">
+                                <p class="mb-4">Being deeply loved by someone gives you strength, while loving someone deeply gives you courage.</p>
                             </div>
 
 
@@ -229,19 +231,15 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
 
                                             <div class="mt-4">
                                                 <p class="text-muted mb-1">Time</p>
-                                                <h5 class="font-size-14">11:40 AM</h5>
+                                                <h5 class="font-size-14" id="currentLocalTime"></h5>
                                             </div>
 
-                                            <div class="mt-4">
-                                                <p class="text-muted mb-1">Location</p>
-                                                <h5 class="font-size-14 mb-0">California, USA</h5>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <!-- End About card -->
 
-                                <div class="card accordion-item border">
+                                <!-- <div class="card accordion-item border">
                                     <div class="accordion-header" id="attachfile2">
                                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#attachfile" aria-expanded="false" aria-controls="attachfile">
                                             <h5 class="font-size-14 m-0">
@@ -400,7 +398,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                                 <!-- End Attached Files card -->
                             </div>
                             <!-- end profile-user-accordion -->
@@ -1873,7 +1871,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                         <h6 class="mb-0 text-truncate">
                                             <a href="javascript:void(0)" class="text-reset user-profile-<?php $userProfileData ? print("show") : print(""); ?>"> <?php $userProfileData ? print($userProfileData->username) : print(""); ?></a>
                                         </h6>
-                                        <small class="small d-block" style="font-size: 0.75rem;" id="remoteUserStatus">...</small>
+                                        <small class="small d-block text-dark" style="font-size: 0.75rem;" id="remoteUserStatus">...</small>
                                     </div>
                                 </div>
                             </div>
@@ -1977,7 +1975,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                                     <ul class="list-inline mb-0 h-100">
                                         <li class="list-inline-item h-100 position-relative" data-bs-toggle="tooltip" data-bs-placement="top" title="Attached File">
                                             <input type="file" style="display: none;" name="attachment" id="attachment">
-                                            <label for="attachment" class="btn btn-link d-flex justify-content-center align-items-center text-decoration-none font-size-16 h-100 btn-lg waves-effect <?php if (!isset($userProfileData)) echo "disabled"; ?>">
+                                            <label for="attachment" class="btn btn-link d-flex justify-content-center align-items-center text-decoration-none font-size-16 h-100 btn-lg bg-light shadow-sm waves-effect <?php if (!isset($userProfileData)) echo "disabled"; ?>">
                                                 <i class="ri-link"></i>
                                             </label>
 
@@ -2035,7 +2033,7 @@ if (isset($_GET['username']) && !empty($_GET['username'])) {
                         </div>
 
                         <h5 class="font-size-16 mb-1 text-truncate"><?php $userProfileData ? print($userProfileData->username) : print(""); ?></h5>
-                        <p class="text-muted text-truncate mb-1"><i class="ri-record-circle-fill font-size-10 text-success me-1 ms-0"></i> Active</p>
+                        <p class="text-success text-truncate mb-1"><i class="ri-checkbox-blank-circle-fill font-size-10 text-success me-1 ms-0"></i> Active</p>
                     </div>
                     <!-- End profile user -->
 

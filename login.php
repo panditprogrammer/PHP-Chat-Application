@@ -6,7 +6,7 @@ if ($userObject->isLoggedIn()) {
 }
 
 $alertType = "danger";
-
+$msg = null;
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
     if (isset($_POST)) {
@@ -15,22 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
         if (!empty($username) && !empty($password)) {
 
-            if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
-
-                if ($user = $userObject->emailExist($username)) {
-
-                    if (password_verify($password, $user->password)) {
-                        session_regenerate_id();
-                        $_SESSION['userId'] = $user->id;
-                        $userObject->redirect(ROOT_URL);
-                    } else {
-                        $msg = "Incorrect Username or Password";
-                    }
-                } else {
-                    $msg = "username is not exist!";
-                }
-            } else {
-                $msg = "Invalid Email format!";
+            $logResult = $userObject->login($username, $password);
+            if ($logResult) {
+                $msg = $logResult;
             }
         } else {
             $msg = "Please enter username and password!";
@@ -99,8 +86,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                         if (isset($_SESSION['register_success'])) {
                             $alertType = "success";
                             $msg = "Registration Successfull!";
+                            unset($_SESSION['register_success']);
                         }
-                        unset($_SESSION['register_success']);
 
                         if (isset($msg))
                             echo '<div class="alert alert-' . $alertType . ' alert-dismissible fade show" role="alert">
